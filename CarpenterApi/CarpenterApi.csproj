@@ -1,0 +1,36 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <AzureFunctionsVersion>v4</AzureFunctionsVersion>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Remove="StableHordeApi.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <OpenApiReference Include="OpenAPIs\StableHordeApi.json" CodeGenerator="NSwagCSharp" Namespace="StableHordeApi" Options="$(OpenApiGenerateCodeOptions) /OperationGenerationMode:SingleClientFromOperationId" ClassName="{controller}Client">
+      <SourceUri>https://stablehorde.net/api/swagger.json</SourceUri>
+    </OpenApiReference>
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Azure.WebJobs.Extensions.OpenApi" Version="1.0.0" />
+    <PackageReference Include="Microsoft.Extensions.ApiDescription.Client" Version="7.0.2">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.NET.Sdk.Functions" Version="4.1.1" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+    <PackageReference Include="NSwag.ApiDescription.Client" Version="13.18.2">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="host.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="local.settings.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToPublishDirectory>Never</CopyToPublishDirectory>
+    </None>
+  </ItemGroup>
+</Project>
