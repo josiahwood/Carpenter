@@ -103,7 +103,7 @@ namespace CarpenterApi
 
                             if(claim.Subject != null)
                             {
-                                subject = $"{claim.Subject.Label}:{claim.Subject.Name}";
+                                subject = $"{claim.Subject.Label}:{claim.Subject.Name}:{claim.Subject.NameClaimType}:{claim.Subject.RoleClaimType}";
                             }
 
                             identity += $"Issuer: {claim.Issuer}, Subject: {subject}, Value: {claim.Value}, ValueType: {claim.ValueType}, Properties: {properties};";
