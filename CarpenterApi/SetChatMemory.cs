@@ -63,15 +63,10 @@ namespace CarpenterApi
 
             if (result != null)
             {
-                dynamic document = new
-                {
-                    id = result.id,
-                    userId,
-                    memory
-                };
-
+                result.memory = memory;
+                
                 Uri documentUri = UriFactory.CreateDocumentUri("carpenter-dev", "chat-memories", result.id);
-                await documentClient.UpsertDocumentAsync(documentUri, document);
+                await documentClient.ReplaceDocumentAsync(documentUri, result);
             }
             else
             {
