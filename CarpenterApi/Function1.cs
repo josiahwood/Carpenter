@@ -106,7 +106,7 @@ namespace CarpenterApi
                                 subject = $"{claim.Subject.Label}:{claim.Subject.Name}:{claim.Subject.NameClaimType}:{claim.Subject.RoleClaimType}";
                             }
 
-                            identity += $"Issuer: {claim.Issuer}, Subject: {subject}, Value: {claim.Value}, ValueType: {claim.ValueType}, Properties: {properties};";
+                            identity += $"Issuer: {claim.Issuer}, Subject: {subject}, Value: {claim.Value}, ValueType: {claim.ValueType}, Type: {claim.Type}, Properties: {properties};";
                         }
                     }
                 }
