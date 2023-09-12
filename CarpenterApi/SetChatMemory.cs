@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Xml.Linq;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Azure.Cosmos;
 using Microsoft.Azure.Documents.Client;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
@@ -33,9 +34,9 @@ namespace CarpenterApi
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "text/plain", bodyType: typeof(string), Description = "The OK response")]
         public async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = null)] HttpRequest req,
-            [CosmosDB(databaseName: "carpenter-dev", collectionName: "chat-memories",
-                ConnectionStringSetting = "CosmosDbConnectionString", CreateIfNotExists = true
-                )] DocumentClient documentClient,
+            [CosmosDB(databaseName: "carpenter-dev", containerName: "chat-memories",
+                Connection = "CosmosDbConnectionString", CreateIfNotExists = true
+                )] CosmosClient client,
             ClaimsPrincipal claimsPrincipal)
         {
             _logger.LogInformation("C# HTTP trigger function processed a request.");
@@ -54,21 +55,27 @@ namespace CarpenterApi
 
             string memory = await new StreamReader(req.Body).ReadToEndAsync();
 
-            Uri collectionUri = UriFactory.CreateDocumentCollectionUri("carpenter-dev", "chat-memories");
+            Container container = client.GetDatabase("carpenter-dev").GetContainer("chat-memories");
+            QueryDefinition queryDefinition = new QueryDefinition("SELECT TOP 1 * FROM chat-memories c WHERE c.userId = @searchterm").WithParameter("@searchterm", userId);
+            bool updated = false;
 
-            string query = $"SELECT * FROM c WHERE c.userId = \"{userId}\"";
-            var queryObj = documentClient.CreateDocumentQuery(collectionUri, query);
-
-            dynamic? result = queryObj.FirstOrDefault();
-
-            if (result != null)
+            using (var iterator = container.GetItemQueryIterator<dynamic>(queryDefinition))
             {
-                result.memory = memory;
-                
-                Uri documentUri = UriFactory.CreateDocumentUri("carpenter-dev", "chat-memories", result.id);
-                await documentClient.ReplaceDocumentAsync(documentUri, result);
+                while(iterator.HasMoreResults)
+                {
+                    var document = (await iterator.ReadNextAsync()).FirstOrDefault();
+                    
+                    if(document != null)
+                    {
+                        document.memory = memory;
+                        await container.ReplaceItemAsync(document, document.id);
+                        updated = true;
+                        break;
+                    }
+                }
             }
-            else
+
+            if(!updated)
             {
                 dynamic document = new
                 {
@@ -76,8 +83,7 @@ namespace CarpenterApi
                     userId,
                     memory
                 };
-
-                await documentClient.CreateDocumentAsync(collectionUri, document);
+                container.CreateItemAsync(document);
             }
 
             return new OkResult();

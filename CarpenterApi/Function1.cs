@@ -47,17 +47,22 @@ namespace CarpenterApi
             //    ? "This HTTP triggered function executed successfully. Pass a name in the query string or in the request body for a personalized response."
             //    : $"Hello, {name}. This HTTP triggered function executed successfully.";
 
-            HttpClient httpClient = new HttpClient();
-            StableHordeApi.Client client = new Client(httpClient);
-            
-            client.BaseUrl = "https://stablehorde.net/api";
+            HttpClient httpClient = new();
+            StableHordeApi.Client client = new(httpClient)
+            {
+                BaseUrl = "https://stablehorde.net/api"
+            };
 
-            GenerationInputKobold payload = new GenerationInputKobold();
-            payload.Prompt = name;
-            payload.Params = new ModelGenerationInputKobold();
-            payload.Params.N = 1;
-            payload.Params.Max_context_length = 1024;
-            payload.Params.Max_length = 256;
+            GenerationInputKobold payload = new()
+            {
+                Prompt = name,
+                Params = new ModelGenerationInputKobold
+                {
+                    N = 1,
+                    Max_context_length = 1024,
+                    Max_length = 256
+                }
+            };
 
             var generateResult = await client.Post_text_async_generateAsync("***REMOVED***", null, payload, null);
             string id = generateResult.Id;
