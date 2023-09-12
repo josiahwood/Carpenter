@@ -12,6 +12,12 @@ export class ChatMemoryComponent {
   constructor(private nameService: NameService) {
   }
 
+  public onChatMemoryValueChange(event: Event): void {
+    console.log(event.target);
+    const value = (event.target as any).value;
+    this.chatMemory = value;
+  }
+
   onSetMemory(): void {
     console.log("onSetMemory");
     console.log(this.chatMemory);
