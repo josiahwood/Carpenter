@@ -80,13 +80,20 @@ namespace CarpenterApi
 
                 if(claimsPrincipal.Identity != null)
                 {
-                    identity = "no Name";
+                    identity = "no Name or Claims";
 
-                    
-
-                    if(claimsPrincipal.Identity.Name != null)
+                    if (claimsPrincipal.Identity.Name != null)
                     {
                         identity = claimsPrincipal.Identity.Name;
+                    }
+                    else if (claimsPrincipal.Claims.Count() > 0)
+                    {
+                        identity = "";
+
+                        foreach(var claim in claimsPrincipal.Claims)
+                        {
+                            identity += $"{claim.Issuer},{claim.Subject},{claim.Value};";
+                        }
                     }
                 }
             }
