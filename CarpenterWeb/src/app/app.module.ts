@@ -9,6 +9,7 @@ import { ChatLogComponent } from './chat-log/chat-log.component';
 import { SignInComponent } from './sign-in/sign-in.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ChatMemoryComponent } from './chat-memory/chat-memory.component';
+import { BASE_PATH } from './carpenter-api-client';
 
 @NgModule({
   declarations: [
@@ -25,7 +26,7 @@ import { ChatMemoryComponent } from './chat-memory/chat-memory.component';
     // see https://github.com/angular/angular/issues/20575
     HttpClientModule
   ],
-  providers: [],
+  providers: [{ provide: BASE_PATH, useValue: 'https://zealous-wave-0e26a4710.3.azurestaticapps.net/api' }],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
