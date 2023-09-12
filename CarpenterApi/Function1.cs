@@ -70,49 +70,9 @@ namespace CarpenterApi
                 statusResult = await client.Get_text_async_statusAsync(null, null, id);
             }
 
-            string identity = "no ClaimsPrincipal";
+            Claim nameIdentifierClaim = claimsPrincipal.FindFirst(ClaimTypes.NameIdentifier);
 
-            //claimsPrincipal = req.HttpContext.User;
-
-            if (claimsPrincipal != null)
-            {
-                identity = "no Identity";
-
-                if (claimsPrincipal.Identity != null)
-                {
-                    identity = "no Name or Claims";
-
-                    if (claimsPrincipal.Identity.Name != null)
-                    {
-                        identity = claimsPrincipal.Identity.Name;
-                    }
-                    else if (claimsPrincipal.Claims.Count() > 0)
-                    {
-                        identity = "";
-
-                        foreach (var claim in claimsPrincipal.Claims)
-                        {
-                            string properties = "";
-
-                            foreach(var property in claim.Properties)
-                            {
-                                properties += property.Key + ":" + property.Value + ",";
-                            }
-
-                            string subject = "";
-
-                            if(claim.Subject != null)
-                            {
-                                subject = $"{claim.Subject.Label}:{claim.Subject.Name}:{claim.Subject.NameClaimType}:{claim.Subject.RoleClaimType}";
-                            }
-
-                            identity += $"Issuer: {claim.Issuer}, Subject: {subject}, Value: {claim.Value}, ValueType: {claim.ValueType}, Type: {claim.Type}, Properties: {properties};";
-                        }
-                    }
-                }
-            }
-
-            return new OkObjectResult(new object[] { statusResult, identity });
+            return new OkObjectResult(new object[] { statusResult, nameIdentifierClaim.Value });
             //return new OkObjectResult(responseMessage);
         }
     }
