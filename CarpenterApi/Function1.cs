@@ -70,7 +70,14 @@ namespace CarpenterApi
                 statusResult = await client.Get_text_async_statusAsync(null, null, id);
             }
 
-            return new OkObjectResult(new object[] { statusResult, claimsPrincipal.Identity });
+            string identity = "no identity";
+
+            if(claimsPrincipal != null)
+            {
+                identity = claimsPrincipal.ToString();
+            }
+
+            return new OkObjectResult(new object[] { statusResult, identity });
             //return new OkObjectResult(responseMessage);
         }
     }
