@@ -70,33 +70,33 @@ namespace CarpenterApi
                 statusResult = await client.Get_text_async_statusAsync(null, null, id);
             }
 
-            //string identity = "no ClaimsPrincipal";
+            string identity = "no ClaimsPrincipal";
 
             //claimsPrincipal = req.HttpContext.User;
 
-            //if(claimsPrincipal != null)
-            //{
-            //    identity = "no Identity";
+            if (claimsPrincipal != null)
+            {
+                identity = "no Identity";
 
-            //    if(claimsPrincipal.Identity != null)
-            //    {
-            //        identity = "no Name or Claims";
+                if (claimsPrincipal.Identity != null)
+                {
+                    identity = "no Name or Claims";
 
-            //        if (claimsPrincipal.Identity.Name != null)
-            //        {
-            //            identity = claimsPrincipal.Identity.Name;
-            //        }
-            //        else if (claimsPrincipal.Claims.Count() > 0)
-            //        {
-            //            identity = "";
+                    if (claimsPrincipal.Identity.Name != null)
+                    {
+                        identity = claimsPrincipal.Identity.Name;
+                    }
+                    else if (claimsPrincipal.Claims.Count() > 0)
+                    {
+                        identity = "";
 
-            //            foreach(var claim in claimsPrincipal.Claims)
-            //            {
-            //                identity += $"{claim.Issuer},{claim.Subject},{claim.Value},{claim.ValueType};";
-            //            }
-            //        }
-            //    }
-            //}
+                        foreach (var claim in claimsPrincipal.Claims)
+                        {
+                            identity += $"Issuer: {claim.Issuer}, Subject: {claim.Subject}, Value: {claim.Value}, ValueType: {claim.ValueType};";
+                        }
+                    }
+                }
+            }
 
             return new OkObjectResult(new object[] { statusResult, claimsPrincipal.Claims });
             //return new OkObjectResult(responseMessage);
