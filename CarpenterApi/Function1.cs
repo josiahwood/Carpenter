@@ -98,8 +98,15 @@ namespace CarpenterApi
                             {
                                 properties += property.Key + ":" + property.Value + ",";
                             }
-                            
-                            identity += $"Issuer: {claim.Issuer}, Subject: {claim.Subject}, Value: {claim.Value}, ValueType: {claim.ValueType}, Properties: {properties};";
+
+                            string subject = "";
+
+                            if(claim.Subject != null)
+                            {
+                                subject = $"{claim.Subject.Label}:{claim.Subject.Name}";
+                            }
+
+                            identity += $"Issuer: {claim.Issuer}, Subject: {subject}, Value: {claim.Value}, ValueType: {claim.ValueType}, Properties: {properties};";
                         }
                     }
                 }
