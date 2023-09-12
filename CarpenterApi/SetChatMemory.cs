@@ -31,7 +31,7 @@ namespace CarpenterApi
         public async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = null)] HttpRequest req,
             [CosmosDB(databaseName: "carpenter-dev", collectionName: "chat-memories",
-                ConnectionStringSetting = "CosmosDbConnectionString"
+                ConnectionStringSetting = "CosmosDbConnectionString", CreateIfNotExists = true
                 )]IAsyncCollector<dynamic> documentsOut,
             ClaimsPrincipal claimsPrincipal)
         {
