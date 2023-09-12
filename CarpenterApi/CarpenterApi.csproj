@@ -5,9 +5,6 @@
     <UserSecretsId>1166c677-6754-46d7-9b9c-0d944f212434</UserSecretsId>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Remove="StableHordeApi.cs" />
-  </ItemGroup>
-  <ItemGroup>
     <OpenApiReference Include="OpenAPIs\StableHordeApi.json" CodeGenerator="NSwagCSharp" Namespace="StableHordeApi" Options="$(OpenApiGenerateCodeOptions) /OperationGenerationMode:SingleClientFromOperationId" ClassName="{controller}Client">
       <SourceUri>https://stablehorde.net/api/swagger.json</SourceUri>
     </OpenApiReference>

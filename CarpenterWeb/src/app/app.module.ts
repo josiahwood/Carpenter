@@ -5,12 +5,14 @@ import { AppComponent } from './app.component';
 import { ChatLogComponent } from './chat-log/chat-log.component';
 import { SignInComponent } from './sign-in/sign-in.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { ChatMemoryComponent } from './chat-memory/chat-memory.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     ChatLogComponent,
-    SignInComponent
+    SignInComponent,
+    ChatMemoryComponent
   ],
   imports: [
     BrowserModule,
