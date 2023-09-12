@@ -78,7 +78,12 @@ namespace CarpenterApi
 
                 if(claimsPrincipal.Identity != null)
                 {
-                    identity = claimsPrincipal.Identity.ToString();
+                    identity = "no Name";
+
+                    if(claimsPrincipal.Identity.Name != null)
+                    {
+                        identity = claimsPrincipal.Identity.Name;
+                    }
                 }
             }
 
