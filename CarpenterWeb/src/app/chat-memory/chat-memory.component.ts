@@ -7,12 +7,15 @@ import { NameService } from '../carpenter-api-client';
   styleUrls: ['./chat-memory.component.css']
 })
 export class ChatMemoryComponent {
-public chatMemory = "";
+  public chatMemory = "";
 
   constructor(private nameService: NameService) {
   }
 
   onSetMemory(): void {
+    console.log("onSetMemory");
+    console.log(this.chatMemory);
+
     this.nameService.run_1(this.chatMemory);
   }
 }
