@@ -72,7 +72,7 @@ namespace CarpenterApi
 
             string identity = "no ClaimsPrincipal";
 
-            claimsPrincipal = ClaimsPrincipal.Current;
+            claimsPrincipal = req.HttpContext.User;
 
             if(claimsPrincipal != null)
             {
