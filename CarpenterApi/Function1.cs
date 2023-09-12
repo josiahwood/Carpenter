@@ -92,7 +92,14 @@ namespace CarpenterApi
 
                         foreach (var claim in claimsPrincipal.Claims)
                         {
-                            identity += $"Issuer: {claim.Issuer}, Subject: {claim.Subject}, Value: {claim.Value}, ValueType: {claim.ValueType};";
+                            string properties = "";
+
+                            foreach(var property in claim.Properties)
+                            {
+                                properties += property.Key + ":" + property.Value + ",";
+                            }
+                            
+                            identity += $"Issuer: {claim.Issuer}, Subject: {claim.Subject}, Value: {claim.Value}, ValueType: {claim.ValueType}, Properties: {properties};";
                         }
                     }
                 }
