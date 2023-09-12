@@ -1,6 +1,9 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
+import { ApiModule } from './carpenter-api-client/api.module'
+import { HttpClientModule } from '@angular/common/http';
+
 import { AppComponent } from './app.component';
 import { ChatLogComponent } from './chat-log/chat-log.component';
 import { SignInComponent } from './sign-in/sign-in.component';
@@ -16,7 +19,11 @@ import { ChatMemoryComponent } from './chat-memory/chat-memory.component';
   ],
   imports: [
     BrowserModule,
-    BrowserAnimationsModule
+    BrowserAnimationsModule,
+    ApiModule,
+    // make sure to import the HttpClientModule in the AppModule only,
+    // see https://github.com/angular/angular/issues/20575
+    HttpClientModule
   ],
   providers: [],
   bootstrap: [AppComponent]

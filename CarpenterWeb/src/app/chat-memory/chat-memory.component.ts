@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { NameService } from '../carpenter-api-client';
 
 @Component({
   selector: 'app-chat-memory',
@@ -6,9 +7,12 @@ import { Component } from '@angular/core';
   styleUrls: ['./chat-memory.component.css']
 })
 export class ChatMemoryComponent {
-  public chatMemory = "";
+public chatMemory = "";
 
-  onSetMemory():void {
+  constructor(private nameService: NameService) {
+  }
 
+  onSetMemory(): void {
+    this.nameService.run_1(this.chatMemory);
   }
 }
