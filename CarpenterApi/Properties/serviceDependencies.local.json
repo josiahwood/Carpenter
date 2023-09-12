@@ -6,6 +6,17 @@
     "storage1": {
       "type": "storage.emulator",
       "connectionId": "AzureWebJobsStorage"
+    },
+    "secrets1": {
+      "type": "secrets.user"
+    },
+    "cosmosdb1": {
+      "serviceConnectorResourceId": "/subscriptions/[parameters('subscriptionId')]/resourceGroups/[parameters('resourceGroupName')]/providers/Microsoft.ServiceLinker/locations/southcentralus/connectors/ConnectionStringsCarpenterDev_68C4B86CE7",
+      "secretStore": "LocalSecretsFile",
+      "resourceId": "/subscriptions/[parameters('subscriptionId')]/resourceGroups/[parameters('resourceGroupName')]/providers/Microsoft.DocumentDB/databaseAccounts/db-carpenter-dev-cus-002",
+      "type": "cosmosdb.azure",
+      "connectionId": "ConnectionStrings:CarpenterDev",
+      "dynamicId": null
     }
   }
 }
