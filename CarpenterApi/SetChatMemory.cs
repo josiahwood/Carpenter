@@ -38,11 +38,20 @@ namespace CarpenterApi
         {
             _logger.LogInformation("C# HTTP trigger function processed a request.");
 
-            Claim nameIdentifierClaim = claimsPrincipal.FindFirst(ClaimTypes.NameIdentifier);
-            string userId = nameIdentifierClaim.Value;
+            string userId = "00000000000000000000000000000000";
+
+            if (claimsPrincipal != null)
+            {
+                Claim nameIdentifierClaim = claimsPrincipal.FindFirst(ClaimTypes.NameIdentifier);
+
+                if (nameIdentifierClaim != null)
+                {
+                    userId = nameIdentifierClaim.Value;
+                }
+            }
 
             string memory = await new StreamReader(req.Body).ReadToEndAsync();
-            
+
             await documentsOut.AddAsync(new
             {
                 id = Guid.NewGuid(),
