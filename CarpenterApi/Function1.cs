@@ -72,6 +72,8 @@ namespace CarpenterApi
 
             string identity = "no ClaimsPrincipal";
 
+            claimsPrincipal = ClaimsPrincipal.Current;
+
             if(claimsPrincipal != null)
             {
                 identity = "no Identity";
@@ -79,6 +81,8 @@ namespace CarpenterApi
                 if(claimsPrincipal.Identity != null)
                 {
                     identity = "no Name";
+
+                    
 
                     if(claimsPrincipal.Identity.Name != null)
                     {
