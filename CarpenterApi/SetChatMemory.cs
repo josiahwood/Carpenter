@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using System.Net;
 using System.Security.Claims;
@@ -44,6 +45,7 @@ namespace CarpenterApi
             
             await documentsOut.AddAsync(new
             {
+                id = Guid.NewGuid(),
                 userId,
                 memory
             });

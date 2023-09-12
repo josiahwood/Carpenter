@@ -26,7 +26,7 @@ import { Configuration }                                     from '../configurat
 @Injectable()
 export class NameService {
 
-    protected basePath = 'https://88ba5f67-442c-4a39-bae3-49c1cc8b83c5.azurewebsites.net/api';
+    protected basePath = 'https://zealous-wave-0e26a4710.3.azurestaticapps.net/api';
     public defaultHeaders = new HttpHeaders();
     public configuration = new Configuration();
 
