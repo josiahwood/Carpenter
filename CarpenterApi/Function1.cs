@@ -98,7 +98,7 @@ namespace CarpenterApi
                 }
             }
 
-            return new OkObjectResult(new object[] { statusResult, claimsPrincipal.Claims });
+            return new OkObjectResult(new object[] { statusResult, identity });
             //return new OkObjectResult(responseMessage);
         }
     }
