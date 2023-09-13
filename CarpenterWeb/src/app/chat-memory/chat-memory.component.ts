@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import { NameService } from '../carpenter-api-client';
 import { HttpClient } from '@angular/common/http';
 
 @Component({
@@ -10,7 +9,7 @@ import { HttpClient } from '@angular/common/http';
 export class ChatMemoryComponent {
   public chatMemory: string = "";
 
-  constructor(private nameService: NameService, private httpClient: HttpClient) {
+  constructor(private httpClient: HttpClient) {
   }
 
   async ngOnInit() {
@@ -50,6 +49,5 @@ export class ChatMemoryComponent {
       complete: () => {
       }
     });
-    //this.nameService.run_1(this.chatMemory);
   }
 }

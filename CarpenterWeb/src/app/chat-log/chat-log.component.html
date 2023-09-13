@@ -1,1 +1,3 @@
-<p>chat-log works!</p>
+<h1>Chat Log</h1><br />
+<textarea [value]="userChatMessage" (input)="onUserChatMessageValueChange($event)"></textarea><br />
+<button type="button" (click)="onSendUserChatMessage()">Send User Chat Message</button>
