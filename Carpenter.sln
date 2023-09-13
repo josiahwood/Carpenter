@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CarpenterApi", "CarpenterAp
 EndProject
 Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "CarpenterWeb", "CarpenterWeb\CarpenterWeb.esproj", "{A622D31D-F849-48BD-B142-2033AA07C22B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CarpenterBlazor", "CarpenterBlazor\CarpenterBlazor.csproj", "{68E8031E-A2FF-422B-9EC2-B6499D01F063}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CarpenterBlazor", "CarpenterBlazor\CarpenterBlazor.csproj", "{68E8031E-A2FF-422B-9EC2-B6499D01F063}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

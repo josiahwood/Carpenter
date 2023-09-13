@@ -54,4 +54,40 @@ export class ChatLogComponent {
       }
     });
   }
+
+  async onGenerateAIChatMessage() {
+    console.log("onGenerateAIChatMessage");
+
+    var url = "https://zealous-wave-0e26a4710.3.azurestaticapps.net/api/GenerateAIChatMessage";
+
+    this.httpClient.get(url).subscribe({
+      next: (data) => {
+        console.log(data);
+      },
+      error: (error) => {
+        console.log('Log the error here: ', error);
+      },
+      complete: async () => {
+        
+      }
+    });
+  }
+
+  async onUpdateMessageGenerationStatus() {
+    console.log("onUpdateMessageGenerationStatus");
+
+    var url = "https://zealous-wave-0e26a4710.3.azurestaticapps.net/api/GetMessageGenerations";
+
+    this.httpClient.get(url).subscribe({
+      next: (data) => {
+        console.log(data);
+      },
+      error: (error) => {
+        console.log('Log the error here: ', error);
+      },
+      complete: async () => {
+
+      }
+    });
+  }
 }

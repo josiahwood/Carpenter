@@ -39,31 +39,20 @@ namespace CarpenterApi
         {
             _logger.LogInformation("C# HTTP trigger function processed a request.");
 
-            string userId = "00000000000000000000000000000000";
-
-            if (claimsPrincipal != null)
-            {
-                Claim nameIdentifierClaim = claimsPrincipal.FindFirst(ClaimTypes.NameIdentifier);
-
-                if (nameIdentifierClaim != null)
-                {
-                    userId = nameIdentifierClaim.Value;
-                }
-            }
+            CarpenterUser user = CarpenterUser.GetCurrentUser(claimsPrincipal);
 
             string userChatMessage = await new StreamReader(req.Body).ReadToEndAsync();
-
-            Container container = client.GetDatabase("carpenter-dev").GetContainer("chat-messages");
             
             ChatMessage chatMessage = new()
             {
                 id = Guid.NewGuid(),
-                userId = userId,
+                userId = user.userId,
                 timestamp = DateTime.UtcNow,
-                sender = "User",
+                sender = ChatMessage.UserSender,
                 message = userChatMessage
             };
-            await container.CreateItemAsync(chatMessage);
+
+            await chatMessage.Write(client);
 
             return new OkResult();
         }

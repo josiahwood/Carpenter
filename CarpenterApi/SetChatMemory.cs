@@ -42,22 +42,12 @@ namespace CarpenterApi
         {
             _logger.LogInformation("C# HTTP trigger function processed a request.");
 
-            string userId = "00000000000000000000000000000000";
-
-            if (claimsPrincipal != null)
-            {
-                Claim nameIdentifierClaim = claimsPrincipal.FindFirst(ClaimTypes.NameIdentifier);
-
-                if (nameIdentifierClaim != null)
-                {
-                    userId = nameIdentifierClaim.Value;
-                }
-            }
+            CarpenterUser user = CarpenterUser.GetCurrentUser(claimsPrincipal);
 
             string memory = await new StreamReader(req.Body).ReadToEndAsync();
 
             Container container = client.GetDatabase("carpenter-dev").GetContainer("chat-memories");
-            QueryDefinition queryDefinition = new QueryDefinition("SELECT TOP 1 * FROM c WHERE c.userId = @searchterm").WithParameter("@searchterm", userId);
+            QueryDefinition queryDefinition = new QueryDefinition("SELECT TOP 1 * FROM c WHERE c.userId = @searchterm").WithParameter("@searchterm", user.userId);
             bool updated = false;
 
             using (var iterator = container.GetItemQueryIterator<ChatMemory>(queryDefinition))
@@ -81,7 +71,7 @@ namespace CarpenterApi
                 ChatMemory chatMemory = new()
                 {
                     id = Guid.NewGuid(),
-                    userId = userId,
+                    userId = user.userId,
                     memory = memory
                 };
                 await container.CreateItemAsync(chatMemory);

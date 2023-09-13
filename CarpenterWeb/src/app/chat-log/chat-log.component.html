@@ -6,4 +6,6 @@
   <br/>
 </div>
 <textarea [value]="userChatMessage" (input)="onUserChatMessageValueChange($event)"></textarea><br />
-<button type="button" (click)="onSendUserChatMessage()">Send User Chat Message</button>
+<button type="button" (click)="onSendUserChatMessage()">Send User Chat Message</button><br/>
+<button type="button" (click)="onGenerateAIChatMessage()">Generate AI Chat Message</button><br/>
+<button type="button" (click)="onUpdateMessageGenerationStatus()">Update Message Generation Status</button>

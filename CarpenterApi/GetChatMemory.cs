@@ -41,35 +41,17 @@ namespace CarpenterApi
         {
             _logger.LogInformation("C# HTTP trigger function processed a request.");
 
-            string userId = "00000000000000000000000000000000";
+            CarpenterUser user = CarpenterUser.GetCurrentUser(claimsPrincipal);
+            ChatMemory chatMemory = await ChatMemory.GetChatMemory(client, user);
 
-            if (claimsPrincipal != null)
+            if (chatMemory != null)
             {
-                Claim nameIdentifierClaim = claimsPrincipal.FindFirst(ClaimTypes.NameIdentifier);
-
-                if (nameIdentifierClaim != null)
-                {
-                    userId = nameIdentifierClaim.Value;
-                }
+                return new OkObjectResult(chatMemory.memory);
             }
-
-            Container container = client.GetDatabase("carpenter-dev").GetContainer("chat-memories");
-            QueryDefinition queryDefinition = new QueryDefinition("SELECT TOP 1 * FROM c WHERE c.userId = @searchterm").WithParameter("@searchterm", userId);
-            
-            using (var iterator = container.GetItemQueryIterator<ChatMemory>(queryDefinition))
+            else
             {
-                while (iterator.HasMoreResults)
-                {
-                    var chatMemory = (await iterator.ReadNextAsync()).FirstOrDefault();
-
-                    if (chatMemory != null)
-                    {
-                        return new OkObjectResult(chatMemory.memory);
-                    }
-                }
+                return new OkObjectResult("");
             }
-
-            return new OkObjectResult("");
         }
     }
 }
