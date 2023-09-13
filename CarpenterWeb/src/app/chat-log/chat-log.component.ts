@@ -12,7 +12,7 @@ export class ChatLogComponent {
   constructor(private httpClient: HttpClient) {
   }
 
-  public onUserChatMessageeValueChange(event: Event): void {
+  public onUserChatMessageValueChange(event: Event): void {
     console.log(event.target);
     const value = (event.target as any).value;
     this.userChatMessage = value;
