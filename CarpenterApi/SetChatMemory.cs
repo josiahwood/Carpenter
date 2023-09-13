@@ -5,6 +5,7 @@ using System.Net;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Xml.Linq;
+using CarpenterApi.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.Cosmos;
@@ -56,19 +57,19 @@ namespace CarpenterApi
             string memory = await new StreamReader(req.Body).ReadToEndAsync();
 
             Container container = client.GetDatabase("carpenter-dev").GetContainer("chat-memories");
-            QueryDefinition queryDefinition = new QueryDefinition("SELECT TOP 1 * FROM chat-memories c WHERE c.userId = @searchterm").WithParameter("@searchterm", userId);
+            QueryDefinition queryDefinition = new QueryDefinition("SELECT TOP 1 * FROM c WHERE c.userId = @searchterm").WithParameter("@searchterm", userId);
             bool updated = false;
 
-            using (var iterator = container.GetItemQueryIterator<dynamic>(queryDefinition))
+            using (var iterator = container.GetItemQueryIterator<ChatMemory>(queryDefinition))
             {
                 while(iterator.HasMoreResults)
                 {
-                    var document = (await iterator.ReadNextAsync()).FirstOrDefault();
+                    var chatMemory = (await iterator.ReadNextAsync()).FirstOrDefault();
                     
-                    if(document != null)
+                    if(chatMemory != null)
                     {
-                        document.memory = memory;
-                        await container.ReplaceItemAsync(document, document.id);
+                        chatMemory.memory = memory;
+                        await container.ReplaceItemAsync(chatMemory, chatMemory.id.ToString());
                         updated = true;
                         break;
                     }
@@ -77,13 +78,13 @@ namespace CarpenterApi
 
             if(!updated)
             {
-                dynamic document = new
+                ChatMemory chatMemory = new()
                 {
                     id = Guid.NewGuid(),
-                    userId,
-                    memory
+                    userId = userId,
+                    memory = memory
                 };
-                container.CreateItemAsync(document);
+                await container.CreateItemAsync(chatMemory);
             }
 
             return new OkResult();
