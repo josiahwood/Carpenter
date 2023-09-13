@@ -35,7 +35,7 @@ export class ChatLogComponent {
     this.userChatMessage = value;
   }
 
-  onSendUserChatMessage(): void {
+  async onSendUserChatMessage() {
     console.log("onSendUserChatMessage");
     console.log(this.userChatMessage);
 
@@ -48,8 +48,9 @@ export class ChatLogComponent {
       error: (error) => {
         console.log('Log the error here: ', error);
       },
-      complete: () => {
+      complete: async () => {
         this.userChatMessage = "";
+        this.chatMessages = await this.getChatMessages();
       }
     });
   }
