@@ -25,7 +25,13 @@ export class ChatMemoryComponent {
 
     var url = "https://zealous-wave-0e26a4710.3.azurestaticapps.net/api/SetChatMemory";
     var body = this.chatMemory;
-    this.httpClient.post(url, body);
+    this.httpClient.post(url, body).subscribe(
+      data => {
+        console.log(data);
+      },
+      error => {
+        console.log('Log the error here: ', error);
+      });
     //this.nameService.run_1(this.chatMemory);
   }
 }
