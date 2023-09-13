@@ -33,7 +33,7 @@ namespace CarpenterApi
         public async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = null)] HttpRequest req,
             [CosmosDB(databaseName: "carpenter-dev", containerName: "chat-messages",
-                Connection = "CosmosDbConnectionString", CreateIfNotExists = true
+                Connection = "CosmosDbConnectionString"
                 )] CosmosClient client,
             ClaimsPrincipal claimsPrincipal)
         {
@@ -59,7 +59,7 @@ namespace CarpenterApi
             {
                 id = Guid.NewGuid(),
                 userId = userId,
-                dateTime = DateTime.UtcNow,
+                timestamp = DateTime.UtcNow,
                 sender = "User",
                 message = userChatMessage
             };

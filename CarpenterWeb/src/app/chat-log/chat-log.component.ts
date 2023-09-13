@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Component } from '@angular/core';
+import { ChatMessage } from '../models/chat-message';
 
 @Component({
   selector: 'app-chat-log',
@@ -7,9 +8,25 @@ import { Component } from '@angular/core';
   styleUrls: ['./chat-log.component.css']
 })
 export class ChatLogComponent {
+  public chatMessages: ChatMessage[] = [];
   public userChatMessage: string = "";
 
   constructor(private httpClient: HttpClient) {
+  }
+
+  async ngOnInit() {
+    this.chatMessages = await this.getChatMessages();
+  }
+
+  async getChatMessages() {
+    try {
+      const response = await fetch('/api/GetChatMessages');
+      const payload = await response.json();
+      return payload;
+    } catch (error) {
+      console.error('No chat messages could be found');
+      return [];
+    }
   }
 
   public onUserChatMessageValueChange(event: Event): void {
@@ -32,6 +49,7 @@ export class ChatLogComponent {
         console.log('Log the error here: ', error);
       },
       complete: () => {
+        this.userChatMessage = "";
       }
     });
   }

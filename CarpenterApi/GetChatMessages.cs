@@ -1,4 +1,4 @@
-using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -18,23 +18,23 @@ using Newtonsoft.Json;
 
 namespace CarpenterApi
 {
-    public class GetChatMemory
+    public class GetChatMessages
     {
-        private readonly ILogger<GetChatMemory> _logger;
+        private readonly ILogger<GetChatMessages> _logger;
 
-        public GetChatMemory(ILogger<GetChatMemory> log)
+        public GetChatMessages(ILogger<GetChatMessages> log)
         {
             _logger = log;
         }
 
-        [FunctionName("GetChatMemory")]
+        [FunctionName("GetChatMessages")]
         [OpenApiOperation(operationId: "Run")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "text/plain", bodyType: typeof(string), Description = "The OK response")]
         public async Task<IActionResult> Run(
 #pragma warning disable IDE0060 // Remove unused parameter
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = null)] HttpRequest req,
 #pragma warning restore IDE0060 // Remove unused parameter
-            [CosmosDB(databaseName: "carpenter-dev", containerName: "chat-memories",
+            [CosmosDB(databaseName: "carpenter-dev", containerName: "chat-messages",
                 Connection = "CosmosDbConnectionString"
                 )] CosmosClient client,
             ClaimsPrincipal claimsPrincipal)
@@ -53,23 +53,25 @@ namespace CarpenterApi
                 }
             }
 
-            Container container = client.GetDatabase("carpenter-dev").GetContainer("chat-memories");
-            QueryDefinition queryDefinition = new QueryDefinition("SELECT TOP 1 * FROM c WHERE c.userId = @searchterm").WithParameter("@searchterm", userId);
-            
-            using (var iterator = container.GetItemQueryIterator<ChatMemory>(queryDefinition))
+            Container container = client.GetDatabase("carpenter-dev").GetContainer("chat-messages");
+            QueryDefinition queryDefinition = new QueryDefinition("SELECT * FROM c WHERE c.userId = @searchterm ORDER BY c.timestamp ASC").WithParameter("@searchterm", userId);
+
+            List<ChatMessage> chatMessages = new();
+
+            using (var iterator = container.GetItemQueryIterator<ChatMessage>(queryDefinition))
             {
                 while (iterator.HasMoreResults)
                 {
-                    var chatMemory = (await iterator.ReadNextAsync()).FirstOrDefault();
+                    var readNext = await iterator.ReadNextAsync();
 
-                    if (chatMemory != null)
+                    foreach (var chatMessage in readNext)
                     {
-                        return new OkObjectResult(chatMemory.memory);
+                        chatMessages.Add(chatMessage);
                     }
                 }
             }
 
-            return new OkObjectResult("");
+            return new OkObjectResult(chatMessages);
         }
     }
 }

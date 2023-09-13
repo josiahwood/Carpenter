@@ -1,3 +1,9 @@
-<h1>Chat Log</h1><br />
+<h1>Chat Log</h1>
+<div *ngFor="let chatMessage of chatMessages">
+  <span>{{chatMessage.timestamp}}: </span>
+  <span>{{chatMessage.sender}}: </span>
+  <span>{{chatMessage.message}}</span>
+  <br/>
+</div>
 <textarea [value]="userChatMessage" (input)="onUserChatMessageValueChange($event)"></textarea><br />
 <button type="button" (click)="onSendUserChatMessage()">Send User Chat Message</button>

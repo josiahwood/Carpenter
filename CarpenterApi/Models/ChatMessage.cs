@@ -10,7 +10,7 @@ namespace CarpenterApi.Models
     {
         public Guid id;
         public string userId;
-        public DateTime dateTime;
+        public DateTime timestamp;
         public string sender;
         public string message;
         public ModelParameters modelParameters;

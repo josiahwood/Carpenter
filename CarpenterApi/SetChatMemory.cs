@@ -36,7 +36,7 @@ namespace CarpenterApi
         public async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = null)] HttpRequest req,
             [CosmosDB(databaseName: "carpenter-dev", containerName: "chat-memories",
-                Connection = "CosmosDbConnectionString", CreateIfNotExists = true
+                Connection = "CosmosDbConnectionString"
                 )] CosmosClient client,
             ClaimsPrincipal claimsPrincipal)
         {
