@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { NameService } from '../carpenter-api-client';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-chat-memory',
@@ -9,7 +10,7 @@ import { NameService } from '../carpenter-api-client';
 export class ChatMemoryComponent {
   public chatMemory = "";
 
-  constructor(private nameService: NameService) {
+  constructor(private nameService: NameService, private httpClient: HttpClient) {
   }
 
   public onChatMemoryValueChange(event: Event): void {
@@ -22,6 +23,9 @@ export class ChatMemoryComponent {
     console.log("onSetMemory");
     console.log(this.chatMemory);
 
-    this.nameService.run_1(this.chatMemory);
+    var url = "https://zealous-wave-0e26a4710.3.azurestaticapps.net/api/SetChatMemory";
+    var body = this.chatMemory;
+    this.httpClient.post(url, body);
+    //this.nameService.run_1(this.chatMemory);
   }
 }
