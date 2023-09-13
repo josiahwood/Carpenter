@@ -1,10 +1,12 @@
 ﻿using Microsoft.Azure.Cosmos;
+using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Extensions;
 using StableHordeApi;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace CarpenterApi.Models
@@ -32,6 +34,7 @@ namespace CarpenterApi.Models
         public int maxInputLength;
         public int maxOutputLength;
         public string prompt;
+        public DateTime timestamp;
         public string purpose;
 
         // Outputs
@@ -51,7 +54,7 @@ namespace CarpenterApi.Models
             await container.ReplaceItemAsync(this, id.ToString());
         }
 
-        public static async Task<MessageGeneration> StartGeneration(CosmosClient client, CarpenterUser user, string prompt, string purpose)
+        public static async Task<MessageGeneration> StartGeneration(CosmosClient client, DateTime timestamp, CarpenterUser user, string prompt, string purpose)
         {
             MessageGeneration messageGeneration = new()
             {
@@ -60,6 +63,7 @@ namespace CarpenterApi.Models
                 maxInputLength = MaxInputLength,
                 maxOutputLength = MaxOutputLength,
                 prompt = prompt,
+                timestamp = timestamp,
                 purpose = purpose
             };
             
@@ -117,9 +121,9 @@ namespace CarpenterApi.Models
                             {
                                 id = Guid.NewGuid(),
                                 userId = userId,
-                                timestamp = DateTime.UtcNow,
+                                timestamp = timestamp,
                                 sender = ChatMessage.AISender,
-                                message = generatedOutput,
+                                message = TrimMessage(generatedOutput),
                                 messageGenerationId = id
                             };
 
@@ -157,6 +161,31 @@ namespace CarpenterApi.Models
             }
 
             return messageGenerations;
+        }
+
+        private static string TrimMessage(string message)
+        {
+            var lines = message.Split(Environment.NewLine, StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
+            string trimmed = "";
+
+            foreach (var line in lines)
+            {
+                if (Regex.IsMatch(line, @"^\d{4}"))
+                {
+                    break;
+                }
+                else
+                {
+                    if(!trimmed.IsNullOrWhiteSpace())
+                    {
+                        trimmed += Environment.NewLine;
+                    }
+                    
+                    trimmed += line;
+                }
+            }
+
+            return trimmed;
         }
     }
 }

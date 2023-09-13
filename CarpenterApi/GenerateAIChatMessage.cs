@@ -54,7 +54,11 @@ namespace CarpenterApi
                 prompt += $"{chatMessage.timestamp:yyyy-MM-dd HH:mm:ss zzz} {chatMessage.sender}: {chatMessage.message}" + Environment.NewLine;
             }
 
-            MessageGeneration messageGeneration = await MessageGeneration.StartGeneration(client, user, prompt, MessageGeneration.AIChatMessagePurpose);
+            DateTime aiTimestamp = DateTime.UtcNow;
+
+            prompt += $"{aiTimestamp:yyyy-MM-dd HH:mm:ss zzz} {ChatMessage.AISender}: ";
+
+            MessageGeneration messageGeneration = await MessageGeneration.StartGeneration(client, aiTimestamp, user, prompt, MessageGeneration.AIChatMessagePurpose);
 
             return new OkObjectResult(messageGeneration);
         }
