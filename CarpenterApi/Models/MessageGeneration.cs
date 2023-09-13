@@ -143,7 +143,7 @@ namespace CarpenterApi.Models
         public static async Task<IEnumerable<MessageGeneration>> GetNotDoneMessageGenerations(CosmosClient client, CarpenterUser user)
         {
             Container container = client.GetDatabase("carpenter-dev").GetContainer("message-generations");
-            QueryDefinition queryDefinition = new QueryDefinition("SELECT * FROM c WHERE c.userId = @searchterm").WithParameter("@searchterm", user.userId);
+            QueryDefinition queryDefinition = new QueryDefinition("SELECT * FROM c WHERE c.userId = @searchterm AND c.status != 'done'").WithParameter("@searchterm", user.userId);
 
             List<MessageGeneration> messageGenerations = new();
 
