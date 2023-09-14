@@ -6,10 +6,10 @@
       "outputLocation": "dist\\carpenter-web",
       "appBuildCommand": "npm run build",
       "run": "npm start",
-      "appDevserverUrl": "http://localhost:4200",
-      "navigationFallback": {
-        "rewrite": "/index.html"
-      }
+      "appDevserverUrl": "http://localhost:4200"
     }
+  },
+  "navigationFallback": {
+    "rewrite": "/index.html"
   }
 }
