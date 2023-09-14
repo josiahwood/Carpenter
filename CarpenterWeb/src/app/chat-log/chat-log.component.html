@@ -1,25 +1,29 @@
-<div style="padding:5px">
-  <h1 class="mat-h1">Chat Log</h1>
-  <div *ngFor="let chatMessage of chatMessages" style="flex:1 1 auto">
-    <ng-container *ngIf="chatMessage.sender === 'User'; else aiChat">
-      <mat-card style="margin-left: 20px; margin-top: 2px; margin-bottom: 2px">
-        <mat-card-header>
-          <mat-card-subtitle>{{chatMessage.sender}}: {{chatMessage.timestamp | date:'medium'}}</mat-card-subtitle>
-        </mat-card-header>
-        <mat-card-content>{{chatMessage.message}}</mat-card-content>
-      </mat-card>
-    </ng-container>
-    <ng-template #aiChat>
-      <mat-card style="margin-right: 20px; margin-top: 2px; margin-bottom: 2px">
-        <mat-card-header>
-          <mat-card-subtitle>{{chatMessage.sender}}: {{chatMessage.timestamp | date:'medium'}}</mat-card-subtitle>
-        </mat-card-header>
-        <mat-card-content>{{chatMessage.message}}</mat-card-content>
-      </mat-card>
-    </ng-template>
+<div style="display: flex; flex-direction: column; height:100%">
+  <h1 class="mat-h1" style="margin:5px">Chat Log</h1>
+  <div style="flex: 1 1 auto; overflow-y: scroll; padding: 5px">
+    <div *ngFor="let chatMessage of chatMessages">
+      <ng-container *ngIf="chatMessage.sender === 'User'; else aiChat">
+        <mat-card style="margin-left: 20px; margin-top: 2px; margin-bottom: 2px">
+          <mat-card-header>
+            <mat-card-subtitle>{{chatMessage.sender}}: {{chatMessage.timestamp | date:'medium'}}</mat-card-subtitle>
+          </mat-card-header>
+          <mat-card-content>{{chatMessage.message}}</mat-card-content>
+        </mat-card>
+      </ng-container>
+      <ng-template #aiChat>
+        <mat-card style="margin-right: 20px; margin-top: 2px; margin-bottom: 2px">
+          <mat-card-header>
+            <mat-card-subtitle>{{chatMessage.sender}}: {{chatMessage.timestamp | date:'medium'}}</mat-card-subtitle>
+          </mat-card-header>
+          <mat-card-content>{{chatMessage.message}}</mat-card-content>
+        </mat-card>
+      </ng-template>
+    </div>
   </div>
-  <textarea [value]="userChatMessage" (input)="onUserChatMessageValueChange($event)"></textarea><br />
-  <button type="button" (click)="onSendUserChatMessage()">Send User Chat Message</button><br/>
-  <button type="button" (click)="onGenerateAIChatMessage()">Generate AI Chat Message</button><br/>
-  <button type="button" (click)="onUpdateMessageGenerationStatus()">Update Message Generation Status</button>
+  <div style="padding: 5px; display:flex; flex-direction: column">
+    <textarea [value]="userChatMessage" (input)="onUserChatMessageValueChange($event)" style="height:5em"></textarea>
+    <button type="button" (click)="onSendUserChatMessage()">Send User Chat Message</button>
+    <button type="button" (click)="onGenerateAIChatMessage()">Generate AI Chat Message</button>
+    <button type="button" (click)="onUpdateMessageGenerationStatus()">Update Message Generation Status</button>
+  </div>
 </div>

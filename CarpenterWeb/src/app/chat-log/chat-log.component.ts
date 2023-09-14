@@ -19,6 +19,49 @@ export class ChatLogComponent {
   }
 
   async getChatMessages() {
+    //return [
+    //  {
+    //    sender: "User",
+    //    message: "Message"
+    //  },
+    //  {
+    //    sender: "AI",
+    //    message: "Message"
+    //  },
+    //  {
+    //    sender: "User",
+    //    message: "Message"
+    //  },
+    //  {
+    //    sender: "AI",
+    //    message: "Message"
+    //  },
+    //  {
+    //    sender: "User",
+    //    message: "Message"
+    //  },
+    //  {
+    //    sender: "AI",
+    //    message: "Message"
+    //  },
+    //  {
+    //    sender: "User",
+    //    message: "Message"
+    //  },
+    //  {
+    //    sender: "AI",
+    //    message: "Message"
+    //  },
+    //  {
+    //    sender: "User",
+    //    message: "Message"
+    //  },
+    //  {
+    //    sender: "AI",
+    //    message: "Message"
+    //  }
+    //];
+
     try {
       const response = await fetch('/api/GetChatMessages');
       const payload = await response.json();
