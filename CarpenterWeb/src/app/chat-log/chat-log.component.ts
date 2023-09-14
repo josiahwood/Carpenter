@@ -18,7 +18,7 @@ export class ChatLogComponent {
 
   async ngOnInit() {
     this.chatMessages = await this.getChatMessages();
-    this.chatLogDiv.nativeElement.scrollTo(0, this.chatLogDiv.nativeElement.scrollHeight);
+    this.chatLogDiv.nativeElement.scrollTop = this.chatLogDiv.nativeElement.scrollHeight;
   }
 
   async getChatMessages() {
@@ -146,7 +146,7 @@ export class ChatLogComponent {
       complete: async () => {
         if (messageGenerationData.length == 0) {
           this.chatMessages = await this.getChatMessages();
-          this.chatLogDiv.nativeElement.scrollTo(0, this.chatLogDiv.nativeElement.scrollHeight);
+          this.chatLogDiv.nativeElement.scrollTop = this.chatLogDiv.nativeElement.scrollHeight;
           this.isWaiting = false;
         }
         else {
