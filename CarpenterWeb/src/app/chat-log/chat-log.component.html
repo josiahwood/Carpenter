@@ -20,10 +20,17 @@
       </ng-template>
     </div>
   </div>
-  <div style="padding: 5px; display:flex; flex-direction: column">
-    <textarea [value]="userChatMessage" (input)="onUserChatMessageValueChange($event)" style="height:5em"></textarea>
-    <button type="button" (click)="onSendUserChatMessage()">Send User Chat Message</button>
-    <button type="button" (click)="onGenerateAIChatMessage()">Generate AI Chat Message</button>
-    <button type="button" (click)="onUpdateMessageGenerationStatus()">Update Message Generation Status</button>
+  <div style="padding: 5px; display:flex; flex-direction: row">
+    <textarea [value]="userChatMessage" (input)="onUserChatMessageValueChange($event)" style="height:5em; flex: 1 1 auto; resize: none"></textarea>
+    <button type="button" (click)="onSendUserChatMessage()">
+      <ng-container *ngIf="!isWaiting; else isWaitingTemplate">
+        <mat-icon>send</mat-icon>
+      </ng-container>
+      <ng-template #isWaitingTemplate>
+        <mat-progress-spinner mode="indeterminate" style="width: 24px; height:24px"></mat-progress-spinner>
+      </ng-template>
+    </button>
+    <!--<button type="button" (click)="onGenerateAIChatMessage()">Generate AI Chat Message</button>
+    <button type="button" (click)="onUpdateMessageGenerationStatus()">Update Message Generation Status</button>-->
   </div>
 </div>

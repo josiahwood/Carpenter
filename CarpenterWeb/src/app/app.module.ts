@@ -17,6 +17,7 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
 import { MatCardModule } from '@angular/material/card';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner'
 import { AppRoutingModule } from './app-routing.module';
 
 @NgModule({
@@ -40,6 +41,7 @@ import { AppRoutingModule } from './app-routing.module';
     MatIconModule,
     MatListModule,
     MatCardModule,
+    MatProgressSpinnerModule,
     AppRoutingModule
   ],
   providers: [{ provide: BASE_PATH, useValue: 'https://zealous-wave-0e26a4710.3.azurestaticapps.net/api' }],

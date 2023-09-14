@@ -10,6 +10,7 @@ import { ChatMessage } from '../models/chat-message';
 export class ChatLogComponent {
   public chatMessages: ChatMessage[] = [];
   public userChatMessage: string = "";
+  public isWaiting: boolean = false;
 
   constructor(private httpClient: HttpClient) {
   }
@@ -78,9 +79,15 @@ export class ChatLogComponent {
     this.userChatMessage = value;
   }
 
+  async delay(ms: number) {
+    await new Promise(resolve => setTimeout(() => resolve(""), ms)).then(() => console.log("fired"));
+  }
+
   async onSendUserChatMessage() {
     console.log("onSendUserChatMessage");
     console.log(this.userChatMessage);
+
+    this.isWaiting = true;
 
     var url = "https://zealous-wave-0e26a4710.3.azurestaticapps.net/api/SendUserChatMessage";
     var body = this.userChatMessage;
@@ -90,10 +97,11 @@ export class ChatLogComponent {
       },
       error: (error) => {
         console.log('Log the error here: ', error);
+        this.isWaiting = false;
       },
       complete: async () => {
         this.userChatMessage = "";
-        this.chatMessages = await this.getChatMessages();
+        await this.onGenerateAIChatMessage();
       }
     });
   }
@@ -109,9 +117,10 @@ export class ChatLogComponent {
       },
       error: (error) => {
         console.log('Log the error here: ', error);
+        this.isWaiting = false;
       },
       complete: async () => {
-        
+        await this.onUpdateMessageGenerationStatus();
       }
     });
   }
@@ -121,15 +130,27 @@ export class ChatLogComponent {
 
     var url = "https://zealous-wave-0e26a4710.3.azurestaticapps.net/api/GetMessageGenerations";
 
+    var messageGenerationData: string;
+
     this.httpClient.get(url).subscribe({
       next: (data) => {
+        messageGenerationData = data as string;
         console.log(data);
       },
       error: (error) => {
         console.log('Log the error here: ', error);
+        this.isWaiting = false;
       },
       complete: async () => {
+        var values: Array<object> = JSON.parse(messageGenerationData) as Array<object>;
 
+        if (values.length == 0) {
+          this.chatMessages = await this.getChatMessages();
+          this.isWaiting = false;
+        }
+        else {
+          setTimeout(this.onUpdateMessageGenerationStatus, 1000);
+        }
       }
     });
   }
