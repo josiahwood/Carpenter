@@ -1,5 +1,5 @@
 <div style="display:flex; flex-direction:column; height:100%">
   <h1 class="mat-h1" style="margin:5px">Chat Memory</h1>
   <textarea [value]="chatMemory" (input)="onChatMemoryValueChange($event)" style="resize: none; flex: 1 1 auto; margin:5px"></textarea>
-  <button type="button" (click)="onSetMemory()" style="margin:5px">Set Memory</button>
+  <button type="button" mat-raised-button color="primary" (click)="onSetMemory()" style="margin:5px">Set Memory</button>
 </div>
