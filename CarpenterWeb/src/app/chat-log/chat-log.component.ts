@@ -130,11 +130,11 @@ export class ChatLogComponent {
 
     var url = "https://zealous-wave-0e26a4710.3.azurestaticapps.net/api/GetMessageGenerations";
 
-    var messageGenerationData: string;
+    var messageGenerationData: Array<object>;
 
     this.httpClient.get(url).subscribe({
       next: (data) => {
-        messageGenerationData = data as string;
+        messageGenerationData = data as Array<object>;
         console.log(data);
       },
       error: (error) => {
@@ -142,9 +142,7 @@ export class ChatLogComponent {
         this.isWaiting = false;
       },
       complete: async () => {
-        var values: Array<object> = JSON.parse(messageGenerationData) as Array<object>;
-
-        if (values.length == 0) {
+        if (messageGenerationData.length == 0) {
           this.chatMessages = await this.getChatMessages();
           this.isWaiting = false;
         }
