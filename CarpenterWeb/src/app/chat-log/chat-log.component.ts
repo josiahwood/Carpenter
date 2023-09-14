@@ -147,7 +147,7 @@ export class ChatLogComponent {
           this.isWaiting = false;
         }
         else {
-          setTimeout(this.onUpdateMessageGenerationStatus, 1000);
+          setTimeout(async () => { await this.onUpdateMessageGenerationStatus(); }, 1000);
         }
       }
     });
