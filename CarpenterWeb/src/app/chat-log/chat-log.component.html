@@ -2,7 +2,7 @@
   <h1 class="mat-h1">Chat Log</h1>
   <div *ngFor="let chatMessage of chatMessages" style="flex:1 1 auto">
     <ng-container *ngIf="chatMessage.sender === 'User'; else aiChat">
-      <mat-card style="margin-left: 20px; margin-top: 1px; margin-bottom: 1px">
+      <mat-card style="margin-left: 20px; margin-top: 2px; margin-bottom: 2px">
         <mat-card-header>
           <mat-card-subtitle>{{chatMessage.sender}}: {{chatMessage.timestamp | date:'medium'}}</mat-card-subtitle>
         </mat-card-header>
@@ -10,7 +10,7 @@
       </mat-card>
     </ng-container>
     <ng-template #aiChat>
-      <mat-card style="margin-right: 20px; margin-top: 1px; margin-bottom: 1px">
+      <mat-card style="margin-right: 20px; margin-top: 2px; margin-bottom: 2px">
         <mat-card-header>
           <mat-card-subtitle>{{chatMessage.sender}}: {{chatMessage.timestamp | date:'medium'}}</mat-card-subtitle>
         </mat-card-header>
