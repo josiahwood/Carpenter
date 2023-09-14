@@ -1,11 +1,21 @@
 <h1 class="mat-h1">Chat Log</h1>
 <div *ngFor="let chatMessage of chatMessages">
-  <mat-card>
-    <mat-card-header>
-      <mat-card-subtitle>{{chatMessage.timestamp}}</mat-card-subtitle>
-    </mat-card-header>
-    <mat-card-content>{{chatMessage.sender}}: {{chatMessage.message}}</mat-card-content>
-  </mat-card>
+  <ng-container *ngIf="chatMessage.sender='User'; else aiChat">
+    <mat-card style="margin-left:20px">
+      <mat-card-header>
+        <mat-card-subtitle>{{chatMessage.sender}}: {{chatMessage.timestamp | date:'medium'}}</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>{{chatMessage.message}}</mat-card-content>
+    </mat-card>
+  </ng-container>
+  <ng-template #aiChat>
+    <mat-card style="margin-right:20px">
+      <mat-card-header>
+        <mat-card-subtitle>{{chatMessage.sender}}: {{chatMessage.timestamp | date:'medium'}}</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>{{chatMessage.message}}</mat-card-content>
+    </mat-card>
+  </ng-template>
 </div>
 <textarea [value]="userChatMessage" (input)="onUserChatMessageValueChange($event)"></textarea><br />
 <button type="button" (click)="onSendUserChatMessage()">Send User Chat Message</button><br/>
