@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Component } from '@angular/core';
+import { Component, ElementRef, ViewChild } from '@angular/core';
 import { ChatMessage } from '../models/chat-message';
 
 @Component({
@@ -8,6 +8,7 @@ import { ChatMessage } from '../models/chat-message';
   styleUrls: ['./chat-log.component.css']
 })
 export class ChatLogComponent {
+  @ViewChild('chatLogDiv') chatLogDiv!: ElementRef;
   public chatMessages: ChatMessage[] = [];
   public userChatMessage: string = "";
   public isWaiting: boolean = false;
@@ -17,6 +18,7 @@ export class ChatLogComponent {
 
   async ngOnInit() {
     this.chatMessages = await this.getChatMessages();
+    this.chatLogDiv.nativeElement.scrollTo(0, this.chatLogDiv.nativeElement.scrollHeight);
   }
 
   async getChatMessages() {
@@ -144,6 +146,7 @@ export class ChatLogComponent {
       complete: async () => {
         if (messageGenerationData.length == 0) {
           this.chatMessages = await this.getChatMessages();
+          this.chatLogDiv.nativeElement.scrollTo(0, this.chatLogDiv.nativeElement.scrollHeight);
           this.isWaiting = false;
         }
         else {
