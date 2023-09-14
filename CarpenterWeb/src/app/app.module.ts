@@ -10,13 +10,21 @@ import { SignInComponent } from './sign-in/sign-in.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ChatMemoryComponent } from './chat-memory/chat-memory.component';
 import { BASE_PATH } from './carpenter-api-client';
+import { NavigationComponent } from './navigation/navigation.component';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatButtonModule } from '@angular/material/button';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatIconModule } from '@angular/material/icon';
+import { MatListModule } from '@angular/material/list';
+import { AppRoutingModule } from './app-routing.module';
 
 @NgModule({
   declarations: [
     AppComponent,
     ChatLogComponent,
     SignInComponent,
-    ChatMemoryComponent
+    ChatMemoryComponent,
+    NavigationComponent
   ],
   imports: [
     BrowserModule,
@@ -24,7 +32,13 @@ import { BASE_PATH } from './carpenter-api-client';
     ApiModule,
     // make sure to import the HttpClientModule in the AppModule only,
     // see https://github.com/angular/angular/issues/20575
-    HttpClientModule
+    HttpClientModule,
+    MatToolbarModule,
+    MatButtonModule,
+    MatSidenavModule,
+    MatIconModule,
+    MatListModule,
+    AppRoutingModule
   ],
   providers: [{ provide: BASE_PATH, useValue: 'https://zealous-wave-0e26a4710.3.azurestaticapps.net/api' }],
   bootstrap: [AppComponent]
