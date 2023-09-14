@@ -1,9 +1,11 @@
-<h1>Chat Log</h1>
+<h1 class="mat-h1">Chat Log</h1>
 <div *ngFor="let chatMessage of chatMessages">
-  <span>{{chatMessage.timestamp}}: </span>
-  <span>{{chatMessage.sender}}: </span>
-  <span>{{chatMessage.message}}</span>
-  <br/>
+  <mat-card>
+    <mat-card-header>
+      <mat-card-subtitle>{{chatMessage.timestamp}}</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>{{chatMessage.sender}}: {{chatMessage.message}}</mat-card-content>
+  </mat-card>
 </div>
 <textarea [value]="userChatMessage" (input)="onUserChatMessageValueChange($event)"></textarea><br />
 <button type="button" (click)="onSendUserChatMessage()">Send User Chat Message</button><br/>
