@@ -12,6 +12,16 @@ export class CarpenterApiService {
   constructor(private httpClient:HttpClient) { }
 
   async getChatMessages(): Promise<ChatMessage[]> {
+    //return [
+    //  {
+    //    id: "1234",
+    //    userId: "0000",
+    //    timestamp: new Date(),
+    //    sender: "User",
+    //    message: "This is the message that is really really really really really really really really really really really really really really really really really really really really really really really really really really really really really really really really really really really really really really really really really really long."
+    //  }
+    //];
+
     var url = "https://zealous-wave-0e26a4710.3.azurestaticapps.net/api/GetChatMessages";
 
     return await lastValueFrom<ChatMessage[]>(this.httpClient.get<ChatMessage[]>(url));

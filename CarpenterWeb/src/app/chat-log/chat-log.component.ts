@@ -2,6 +2,8 @@ import { Component, ElementRef, ViewChild } from '@angular/core';
 import { ChatMessage } from '../models/chat-message';
 import { MessageGeneration } from '../models/message-generation'
 import { CarpenterApiService } from '../carpenter-api.service';
+import { MatDialog } from '@angular/material/dialog';
+import { ChatMessageDialogComponent } from '../chat-message-dialog/chat-message-dialog.component';
 
 @Component({
   selector: 'app-chat-log',
@@ -14,7 +16,7 @@ export class ChatLogComponent {
   public userChatMessage: string = "";
   public isWaiting: boolean = false;
 
-  constructor(private apiService: CarpenterApiService) {
+  constructor(private apiService: CarpenterApiService, public dialog: MatDialog) {
   }
 
   async ngOnInit() {
@@ -28,6 +30,14 @@ export class ChatLogComponent {
     console.log(event.target);
     const value = (event.target as any).value;
     this.userChatMessage = value;
+  }
+
+  async onChatMessageClicked(chatMessage:ChatMessage) {
+    let dialogRef = this.dialog.open(ChatMessageDialogComponent, {
+      data: chatMessage,
+      height: '300px',
+      width: '300px',
+    });
   }
 
   async onSendUserChatMessage() {

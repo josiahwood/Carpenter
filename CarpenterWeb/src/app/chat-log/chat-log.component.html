@@ -3,7 +3,7 @@
   <div style="flex: 1 1 auto; overflow-y: scroll; padding: 5px" #chatLogDiv>
     <div *ngFor="let chatMessage of chatMessages">
       <ng-container *ngIf="chatMessage.sender === 'User'; else aiChat">
-        <mat-card style="margin-left: 20px; margin-top: 2px; margin-bottom: 2px">
+        <mat-card style="margin-left: 20px; margin-top: 2px; margin-bottom: 2px" (click)="onChatMessageClicked(chatMessage)">
           <mat-card-header>
             <mat-card-subtitle>{{chatMessage.sender}}: {{chatMessage.timestamp | date:'medium'}}</mat-card-subtitle>
           </mat-card-header>

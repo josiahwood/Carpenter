@@ -1,0 +1,6 @@
+<div style="padding:5px; display: flex; flex-direction:column; height:100%; box-sizing:border-box">
+  <span>Sender: {{data.sender}}</span>
+  <span>Timestamp: {{data.timestamp | date:'medium'}}</span>
+  <span>Message:</span>
+  <textarea value="{{data.message}}" style="flex:1 1 auto; resize:none"></textarea>
+</div>

@@ -18,8 +18,11 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
 import { MatCardModule } from '@angular/material/card';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner'
+import { MatExpansionModule } from '@angular/material/expansion'
+import { MatDialogModule } from '@angular/material/dialog'
 import { AppRoutingModule } from './app-routing.module';
 import { MessageGenerationsComponent } from './message-generations/message-generations.component';
+import { ChatMessageDialogComponent } from './chat-message-dialog/chat-message-dialog.component';
 
 @NgModule({
   declarations: [
@@ -28,7 +31,8 @@ import { MessageGenerationsComponent } from './message-generations/message-gener
     SignInComponent,
     ChatMemoryComponent,
     NavigationComponent,
-    MessageGenerationsComponent
+    MessageGenerationsComponent,
+    ChatMessageDialogComponent
   ],
   imports: [
     BrowserModule,
@@ -43,7 +47,9 @@ import { MessageGenerationsComponent } from './message-generations/message-gener
     MatIconModule,
     MatListModule,
     MatCardModule,
+    MatExpansionModule,
     MatProgressSpinnerModule,
+    MatDialogModule,
     AppRoutingModule
   ],
   providers: [{ provide: BASE_PATH, useValue: 'https://zealous-wave-0e26a4710.3.azurestaticapps.net/api' }],
