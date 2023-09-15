@@ -22,7 +22,7 @@ namespace CarpenterApi.Models
         public string message;
         public Guid messageGenerationId;
 
-        public static async Task<IEnumerable<ChatMessage>> GetChatMessages(CosmosClient client, CarpenterUser user)
+        public static async Task<IList<ChatMessage>> GetChatMessages(CosmosClient client, CarpenterUser user)
         {
             Container container = client.GetDatabase("carpenter-dev").GetContainer("chat-messages");
             QueryDefinition queryDefinition = new QueryDefinition("SELECT * FROM c WHERE c.userId = @searchterm ORDER BY c.timestamp ASC").WithParameter("@searchterm", user.userId);

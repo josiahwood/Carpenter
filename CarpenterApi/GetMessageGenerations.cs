@@ -29,7 +29,9 @@ namespace CarpenterApi
         [OpenApiOperation(operationId: "Run")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "text/plain", bodyType: typeof(string), Description = "The OK response")]
         public async Task<IActionResult> Run(
+#pragma warning disable IDE0060 // Remove unused parameter
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = null)] HttpRequest req,
+#pragma warning restore IDE0060 // Remove unused parameter
             [CosmosDB(databaseName: "carpenter-dev", containerName: "chat-messages",
                 Connection = "CosmosDbConnectionString"
                 )] CosmosClient client,

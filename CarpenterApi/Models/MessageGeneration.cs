@@ -14,8 +14,10 @@ namespace CarpenterApi.Models
     internal class MessageGeneration
     {
         public const string AIChatMessagePurpose = "aiChatMessage";
+        public const string ChatSummaryPurpose = "chatSummary";
 
         public const string NoneStatus = "none";
+        public const string SummarizingStatus = "summarizing";
         public const string PendingStatus = "pending";
         public const string GeneratingStatus = "generating";
         public const string DoneStatus = "done";

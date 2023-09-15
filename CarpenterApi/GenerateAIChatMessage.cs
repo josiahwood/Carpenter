@@ -35,7 +35,9 @@ namespace CarpenterApi
         [OpenApiOperation(operationId: "Run")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "text/plain", bodyType: typeof(string), Description = "The OK response")]
         public async Task<IActionResult> Run(
+#pragma warning disable IDE0060 // Remove unused parameter
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = null)] HttpRequest req,
+#pragma warning restore IDE0060 // Remove unused parameter
             [CosmosDB(databaseName: "carpenter-dev", containerName: "chat-messages",
                 Connection = "CosmosDbConnectionString"
                 )] CosmosClient client,
@@ -47,18 +49,18 @@ namespace CarpenterApi
             ChatMemory chatMemory = await ChatMemory.GetChatMemory(client, user);
             var chatMessages = await ChatMessage.GetChatMessages(client, user);
 
-            string prompt = chatMemory.memory + Environment.NewLine;
-
-            foreach (ChatMessage chatMessage in chatMessages)
+            ChatMessage aiPrompt = new()
             {
-                prompt += $"{chatMessage.timestamp:yyyy-MM-dd HH:mm:ss zzz} {chatMessage.sender}: {chatMessage.message}" + Environment.NewLine;
-            }
+                timestamp = DateTime.UtcNow,
+                sender = ChatMessage.AISender,
+                message = ""
+            };
 
-            DateTime aiTimestamp = DateTime.UtcNow;
+            chatMessages.Add(aiPrompt);
 
-            prompt += $"{aiTimestamp:yyyy-MM-dd HH:mm:ss zzz} {ChatMessage.AISender}: ";
+            string prompt = PromptGeneration.GeneratePromptTruncateHistory(chatMemory, chatMessages, null, 1024);
 
-            MessageGeneration messageGeneration = await MessageGeneration.StartGeneration(client, aiTimestamp, user, prompt, MessageGeneration.AIChatMessagePurpose);
+            MessageGeneration messageGeneration = await MessageGeneration.StartGeneration(client, aiPrompt.timestamp, user, prompt, MessageGeneration.AIChatMessagePurpose);
 
             return new OkObjectResult(messageGeneration);
         }

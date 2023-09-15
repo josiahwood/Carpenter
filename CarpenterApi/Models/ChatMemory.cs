@@ -20,16 +20,14 @@ namespace CarpenterApi.Models
             Container container = client.GetDatabase("carpenter-dev").GetContainer("chat-memories");
             QueryDefinition queryDefinition = new QueryDefinition("SELECT TOP 1 * FROM c WHERE c.userId = @searchterm").WithParameter("@searchterm", user.userId);
 
-            using (var iterator = container.GetItemQueryIterator<ChatMemory>(queryDefinition))
+            using var iterator = container.GetItemQueryIterator<ChatMemory>(queryDefinition);
+            while (iterator.HasMoreResults)
             {
-                while (iterator.HasMoreResults)
-                {
-                    var chatMemory = (await iterator.ReadNextAsync()).FirstOrDefault();
+                var chatMemory = (await iterator.ReadNextAsync()).FirstOrDefault();
 
-                    if (chatMemory != null)
-                    {
-                        return chatMemory;
-                    }
+                if (chatMemory != null)
+                {
+                    return chatMemory;
                 }
             }
 
