@@ -1,1 +1,25 @@
-<p>message-generations works!</p>
+<div style="display: flex; flex-direction: column; height:100%">
+  <h1 class="mat-h1" style="margin:5px">Message Generations</h1>
+  <div style="flex: 1 1 auto; overflow-y: scroll; padding: 5px" #messageGenerationsDiv>
+    <div *ngFor="let messageGeneration of messageGenerations">
+      <mat-card style="margin-left: 20px; margin-top: 2px; margin-bottom: 2px">
+        <mat-card-header>
+          <mat-card-subtitle>{{messageGeneration.timestamp | date:'medium'}}</mat-card-subtitle>
+        </mat-card-header>
+        <mat-card-content>
+          <span>id: {{messageGeneration.id}}</span><br />
+          <span>model: {{messageGeneration.model}}</span><br />
+          <span>worker: {{messageGeneration.worker}}</span><br />
+          <span>maxInputLength: {{messageGeneration.maxInputLength}}</span><br />
+          <span>maxOutputLength: {{messageGeneration.maxOutputLength}}</span><br />
+          <span>purpose: {{messageGeneration.purpose}}</span><br />
+          <span>status: {{messageGeneration.status}}</span><br />
+          <span>prompt:</span><br />
+          <span style="margin-left:20px">{{messageGeneration.prompt}}</span><br />
+          <span>generatedOutput:</span><br />
+          <span style="margin-left:20px">{{messageGeneration.generatedOutput}}</span><br />
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </div>
+</div>

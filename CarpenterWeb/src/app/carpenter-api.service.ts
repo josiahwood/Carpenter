@@ -30,7 +30,13 @@ export class CarpenterApiService {
     return await lastValueFrom(this.httpClient.get(url));
   }
 
-  async getNotDoneMessageGenerations():Promise<MessageGeneration[]> {
+  async getMessageGenerations(): Promise<MessageGeneration[]> {
+    var url = "https://zealous-wave-0e26a4710.3.azurestaticapps.net/api/GetMessageGenerations";
+
+    return await lastValueFrom<MessageGeneration[]>(this.httpClient.get<MessageGeneration[]>(url));
+  }
+
+  async getNotDoneMessageGenerations(): Promise<MessageGeneration[]> {
     var url = "https://zealous-wave-0e26a4710.3.azurestaticapps.net/api/GetNotDoneMessageGenerations";
 
     return await lastValueFrom<MessageGeneration[]>(this.httpClient.get<MessageGeneration[]>(url));
