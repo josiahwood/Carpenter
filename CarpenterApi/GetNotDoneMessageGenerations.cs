@@ -16,16 +16,16 @@ using Newtonsoft.Json;
 
 namespace CarpenterApi
 {
-    public class GetMessageGenerations
+    public class GetNotDoneMessageGenerations
     {
         private readonly ILogger<GetMessageGenerations> _logger;
 
-        public GetMessageGenerations(ILogger<GetMessageGenerations> log)
+        public GetNotDoneMessageGenerations(ILogger<GetMessageGenerations> log)
         {
             _logger = log;
         }
 
-        [FunctionName("GetMessageGenerations")]
+        [FunctionName("GetNotDoneMessageGenerations")]
         [OpenApiOperation(operationId: "Run")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "text/plain", bodyType: typeof(string), Description = "The OK response")]
         public async Task<IActionResult> Run(
@@ -40,16 +40,12 @@ namespace CarpenterApi
             _logger.LogInformation("C# HTTP trigger function processed a request.");
 
             CarpenterUser user = CarpenterUser.GetCurrentUser(claimsPrincipal);
-            var messageGenerations = await MessageGeneration.GetMessageGenerations(client, user);
+            var messageGenerations = await MessageGeneration.GetNotDoneMessageGenerations(client, user);
             List<MessageGeneration> updatedMessageGenerations = new();
 
             foreach(var messageGeneration in messageGenerations)
             {
-                if (messageGeneration.status != "done")
-                {
-                    await messageGeneration.UpdateStatus(client);
-                }
-
+                await messageGeneration.UpdateStatus(client);
                 updatedMessageGenerations.Add(messageGeneration);
             }
 

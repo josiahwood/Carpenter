@@ -1,6 +1,7 @@
-import { HttpClient } from '@angular/common/http';
 import { Component, ElementRef, ViewChild } from '@angular/core';
 import { ChatMessage } from '../models/chat-message';
+import { MessageGeneration } from '../models/message-generation'
+import { CarpenterApiService } from '../carpenter-api.service';
 
 @Component({
   selector: 'app-chat-log',
@@ -13,68 +14,14 @@ export class ChatLogComponent {
   public userChatMessage: string = "";
   public isWaiting: boolean = false;
 
-  constructor(private httpClient: HttpClient) {
+  constructor(private apiService: CarpenterApiService) {
   }
 
   async ngOnInit() {
-    this.chatMessages = await this.getChatMessages();
+    this.chatMessages = await this.apiService.getChatMessages();
     setTimeout(() => {
       this.chatLogDiv.nativeElement.scrollTop = this.chatLogDiv.nativeElement.scrollHeight;
     }, 0);
-  }
-
-  async getChatMessages() {
-    //return [
-    //  {
-    //    sender: "User",
-    //    message: "Message"
-    //  },
-    //  {
-    //    sender: "AI",
-    //    message: "Message"
-    //  },
-    //  {
-    //    sender: "User",
-    //    message: "Message"
-    //  },
-    //  {
-    //    sender: "AI",
-    //    message: "Message"
-    //  },
-    //  {
-    //    sender: "User",
-    //    message: "Message"
-    //  },
-    //  {
-    //    sender: "AI",
-    //    message: "Message"
-    //  },
-    //  {
-    //    sender: "User",
-    //    message: "Message"
-    //  },
-    //  {
-    //    sender: "AI",
-    //    message: "Message"
-    //  },
-    //  {
-    //    sender: "User",
-    //    message: "Message"
-    //  },
-    //  {
-    //    sender: "AI",
-    //    message: "Message"
-    //  }
-    //];
-
-    try {
-      const response = await fetch('/api/GetChatMessages');
-      const payload = await response.json();
-      return payload;
-    } catch (error) {
-      console.error('No chat messages could be found');
-      return [];
-    }
   }
 
   public onUserChatMessageValueChange(event: Event): void {
@@ -83,80 +30,31 @@ export class ChatLogComponent {
     this.userChatMessage = value;
   }
 
-  async delay(ms: number) {
-    await new Promise(resolve => setTimeout(() => resolve(""), ms)).then(() => console.log("fired"));
-  }
-
   async onSendUserChatMessage() {
     console.log("onSendUserChatMessage");
     console.log(this.userChatMessage);
 
     this.isWaiting = true;
 
-    var url = "https://zealous-wave-0e26a4710.3.azurestaticapps.net/api/SendUserChatMessage";
-    var body = this.userChatMessage;
-    this.httpClient.post(url, body).subscribe({
-      next: (data) => {
-        console.log(data);
-      },
-      error: (error) => {
-        console.log('Log the error here: ', error);
-        this.isWaiting = false;
-      },
-      complete: async () => {
-        this.userChatMessage = "";
-        await this.onGenerateAIChatMessage();
-      }
-    });
-  }
-
-  async onGenerateAIChatMessage() {
-    console.log("onGenerateAIChatMessage");
-
-    var url = "https://zealous-wave-0e26a4710.3.azurestaticapps.net/api/GenerateAIChatMessage";
-
-    this.httpClient.get(url).subscribe({
-      next: (data) => {
-        console.log(data);
-      },
-      error: (error) => {
-        console.log('Log the error here: ', error);
-        this.isWaiting = false;
-      },
-      complete: async () => {
-        await this.onUpdateMessageGenerationStatus();
-      }
-    });
+    await this.apiService.sendUserChatMessage(this.userChatMessage);
+    this.userChatMessage = "";
+    await this.apiService.generateAIChatMessage();
+    await this.onUpdateMessageGenerationStatus();
   }
 
   async onUpdateMessageGenerationStatus() {
-    console.log("onUpdateMessageGenerationStatus");
+    var messageGenerations:MessageGeneration[] = await this.apiService.getNotDoneMessageGenerations();
 
-    var url = "https://zealous-wave-0e26a4710.3.azurestaticapps.net/api/GetMessageGenerations";
+    if (messageGenerations.length == 0) {
+      this.chatMessages = await this.apiService.getChatMessages();
+      this.isWaiting = false;
 
-    var messageGenerationData: Array<object>;
-
-    this.httpClient.get(url).subscribe({
-      next: (data) => {
-        messageGenerationData = data as Array<object>;
-        console.log(data);
-      },
-      error: (error) => {
-        console.log('Log the error here: ', error);
-        this.isWaiting = false;
-      },
-      complete: async () => {
-        if (messageGenerationData.length == 0) {
-          this.chatMessages = await this.getChatMessages();
-          this.isWaiting = false;
-          setTimeout(() => {
-            this.chatLogDiv.nativeElement.scrollTop = this.chatLogDiv.nativeElement.scrollHeight;
-          }, 0);
-        }
-        else {
-          setTimeout(async () => { await this.onUpdateMessageGenerationStatus(); }, 1000);
-        }
-      }
-    });
+      setTimeout(() => {
+        this.chatLogDiv.nativeElement.scrollTop = this.chatLogDiv.nativeElement.scrollHeight;
+      }, 0);
+    }
+    else {
+      setTimeout(async () => { await this.onUpdateMessageGenerationStatus(); }, 1000);
+    }
   }
 }

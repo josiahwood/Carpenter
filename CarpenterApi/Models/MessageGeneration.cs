@@ -142,6 +142,29 @@ namespace CarpenterApi.Models
             }
         }
 
+        public static async Task<IEnumerable<MessageGeneration>> GetMessageGenerations(CosmosClient client, CarpenterUser user)
+        {
+            Container container = client.GetDatabase("carpenter-dev").GetContainer("message-generations");
+            QueryDefinition queryDefinition = new QueryDefinition("SELECT * FROM c WHERE c.userId = @searchterm").WithParameter("@searchterm", user.userId);
+
+            List<MessageGeneration> messageGenerations = new();
+
+            using (var iterator = container.GetItemQueryIterator<MessageGeneration>(queryDefinition))
+            {
+                while (iterator.HasMoreResults)
+                {
+                    var readNext = await iterator.ReadNextAsync();
+
+                    foreach (var messageGeneration in readNext)
+                    {
+                        messageGenerations.Add(messageGeneration);
+                    }
+                }
+            }
+
+            return messageGenerations;
+        }
+
         public static async Task<IEnumerable<MessageGeneration>> GetNotDoneMessageGenerations(CosmosClient client, CarpenterUser user)
         {
             Container container = client.GetDatabase("carpenter-dev").GetContainer("message-generations");

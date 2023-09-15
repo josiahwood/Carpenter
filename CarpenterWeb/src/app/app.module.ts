@@ -19,6 +19,7 @@ import { MatListModule } from '@angular/material/list';
 import { MatCardModule } from '@angular/material/card';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner'
 import { AppRoutingModule } from './app-routing.module';
+import { MessageGenerationsComponent } from './message-generations/message-generations.component';
 
 @NgModule({
   declarations: [
@@ -26,7 +27,8 @@ import { AppRoutingModule } from './app-routing.module';
     ChatLogComponent,
     SignInComponent,
     ChatMemoryComponent,
-    NavigationComponent
+    NavigationComponent,
+    MessageGenerationsComponent
   ],
   imports: [
     BrowserModule,
