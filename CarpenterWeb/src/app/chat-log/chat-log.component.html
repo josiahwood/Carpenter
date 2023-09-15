@@ -11,7 +11,7 @@
         </mat-card>
       </ng-container>
       <ng-template #aiChat>
-        <mat-card style="margin-right: 20px; margin-top: 2px; margin-bottom: 2px">
+        <mat-card style="margin-right: 20px; margin-top: 2px; margin-bottom: 2px" (click)="onChatMessageClicked(chatMessage)">
           <mat-card-header>
             <mat-card-subtitle>{{chatMessage.sender}}: {{chatMessage.timestamp | date:'medium'}}</mat-card-subtitle>
           </mat-card-header>
