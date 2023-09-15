@@ -38,12 +38,12 @@ namespace CarpenterApi.Models
             return chatSummaries;
         }
 
-        public static async Task<ChatSummary> GetChatSummaryFromHash(CosmosClient client, CarpenterUser user, uint originalHash)
+        public static async Task<ChatSummary> GetChatSummaryFromHash(CosmosClient client, CarpenterUser user, uint promptHash)
         {
             Container container = client.GetDatabase("carpenter-dev").GetContainer("chat-summaries");
-            QueryDefinition queryDefinition = new QueryDefinition("SELECT TOP 1 * FROM c WHERE c.userId = @searchterm AND c.originalHash = @originalHash")
+            QueryDefinition queryDefinition = new QueryDefinition("SELECT TOP 1 * FROM c WHERE c.userId = @searchterm AND c.promptHash = @promptHash")
                 .WithParameter("@searchterm", user.userId)
-                .WithParameter("@originalHash", originalHash);
+                .WithParameter("@promptHash", promptHash);
 
             using var iterator = container.GetItemQueryIterator<ChatSummary>(queryDefinition);
             while (iterator.HasMoreResults)
