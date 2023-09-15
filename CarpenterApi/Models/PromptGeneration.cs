@@ -55,7 +55,7 @@ namespace CarpenterApi.Models
             
             while(tokenCount > maxTokens)
             {
-                (ChatSummary, int, MessageGeneration) summary = await GetChatSummaryOrMessageGeneration(client, user, chatMemory, chatSummary, chatMessages, 512);
+                (ChatSummary, int, MessageGeneration) summary = await GetChatSummaryOrMessageGeneration(client, user, chatMemory, chatSummary, chatMessages, MessageGeneration.SummarizationInputLength);
 
                 if (summary.Item3 != null)
                 {
@@ -92,7 +92,7 @@ namespace CarpenterApi.Models
                 timestamp = aiPrompt.timestamp,
                 prompt = prompt,
                 maxInputLength = maxTokens,
-                maxOutputLength = 256,
+                maxOutputLength = MessageGeneration.MaxOutputLength,
                 purpose = MessageGeneration.AIChatMessagePurpose,
                 status = MessageGeneration.NoneStatus
             };
@@ -154,7 +154,7 @@ namespace CarpenterApi.Models
                     id = Guid.NewGuid(),
                     userId = user.userId,
                     maxInputLength = maxTokens,
-                    maxOutputLength = 256,
+                    maxOutputLength = MessageGeneration.SummarizationOutputLength,
                     prompt = prompt,
                     purpose = MessageGeneration.ChatSummaryPurpose,
                     status = MessageGeneration.NoneStatus

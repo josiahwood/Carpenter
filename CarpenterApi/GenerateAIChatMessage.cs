@@ -49,7 +49,7 @@ namespace CarpenterApi
             ChatMemory chatMemory = await ChatMemory.GetChatMemory(client, user);
             var chatMessages = await ChatMessage.GetChatMessages(client, user);
 
-            MessageGeneration messageGeneration = await PromptGeneration.NextAIChatMessageGeneration(client, user, chatMemory, chatMessages, 1024);
+            MessageGeneration messageGeneration = await PromptGeneration.NextAIChatMessageGeneration(client, user, chatMemory, chatMessages, MessageGeneration.MaxInputLength);
 
             messageGeneration = await MessageGeneration.StartGeneration(client, messageGeneration);
 

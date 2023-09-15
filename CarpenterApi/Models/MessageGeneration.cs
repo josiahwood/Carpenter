@@ -24,8 +24,10 @@ namespace CarpenterApi.Models
         public const string DoneStatus = "done";
         public const string ErrorStatus = "error";
 
-        public const int MaxInputLength = 1024;
+        public const int MaxInputLength = 2048;
         public const int MaxOutputLength = 256;
+        public const int SummarizationInputLength = 1024;
+        public const int SummarizationOutputLength = 256;
 
         // Identifiers
         public Guid id;
@@ -154,7 +156,7 @@ namespace CarpenterApi.Models
                                 ChatMemory chatMemory = await ChatMemory.GetChatMemory(client, user);
                                 var chatMessages = await ChatMessage.GetChatMessages(client, user);
 
-                                MessageGeneration messageGeneration = await PromptGeneration.NextAIChatMessageGeneration(client, user, chatMemory, chatMessages, 1024);
+                                MessageGeneration messageGeneration = await PromptGeneration.NextAIChatMessageGeneration(client, user, chatMemory, chatMessages, MaxInputLength);
 
                                 await StartGeneration(client, messageGeneration);
 
