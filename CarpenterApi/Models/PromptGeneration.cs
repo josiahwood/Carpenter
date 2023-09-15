@@ -64,6 +64,7 @@ namespace CarpenterApi.Models
                 }
                 else
                 {
+                    chatSummary = summary.Item1;
                     prompt = chatMemory.memory;
                     prompt += Environment.NewLine + summary.Item1.ToPrompt();
 
