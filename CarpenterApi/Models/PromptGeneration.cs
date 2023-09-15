@@ -11,7 +11,7 @@ namespace CarpenterApi.Models
 {
     internal static class PromptGeneration
     {
-        private const string ChatSummarizationInstruction = "Summarize this chat session.";
+        private const string ChatSummarizationPrompt = "### Instruction:Summarize this chat session.\n###Response:";
 
         public static string ToPrompt(this ChatMessage chatMessage)
         {
@@ -20,7 +20,7 @@ namespace CarpenterApi.Models
 
         public static string ToPrompt(this ChatSummary chatSummary)
         {
-            return $"[Summary from {chatSummary.startTimestamp:yyyy-MM-dd HH:mm:ss zzz} to {chatSummary.endTimestamp:yyyy-MM-dd HH:mm:ss zzz}:{chatSummary.summary}]";
+            return $"[Summary:{chatSummary.summary}]";
         }
 
         public static uint GetHash(string value)
@@ -31,98 +31,136 @@ namespace CarpenterApi.Models
             return BitConverter.ToUInt32(hashBytes);
         }
 
-        public static async Task<string> GenerateNextChatPrompt(CosmosClient client, CarpenterUser user, ChatMemory chatMemory, ChatSummary chatSummary, IList<ChatMessage> chatMessages, string instruction, int maxTokens)
+        public static async Task<MessageGeneration> NextAIChatMessageGeneration(CosmosClient client, CarpenterUser user, ChatMemory chatMemory, IList<ChatMessage> chatMessages, int maxTokens)
         {
             var encoding = Tiktoken.Encoding.Get(Encodings.Cl100KBase);
             string prompt = chatMemory.memory;
 
-            if(chatSummary != null)
+            for (int i = 0; i < chatMessages.Count; i++)
             {
-                if (!prompt.IsNullOrWhiteSpace())
+                prompt += Environment.NewLine + chatMessages[i].ToPrompt();
+            }
+
+            ChatMessage aiPrompt = new()
+            {
+                timestamp = DateTime.UtcNow,
+                sender = ChatMessage.AISender,
+                message = ""
+            };
+
+            prompt += Environment.NewLine + aiPrompt.ToPrompt();
+            ChatSummary chatSummary = null;
+
+            int tokenCount = encoding.CountTokens(prompt);
+            
+            while(tokenCount > maxTokens)
+            {
+                (ChatSummary, int, MessageGeneration) summary = await GetChatSummaryOrMessageGeneration(client, user, chatMemory, chatSummary, chatMessages, 512);
+
+                if (summary.Item3 != null)
                 {
-                    prompt += Environment.NewLine;
+                    // we don't already have the next summary we need, so generate it
+                    return summary.Item3;
                 }
+                else
+                {
+                    prompt = chatMemory.memory;
+                    prompt += Environment.NewLine + summary.Item1.ToPrompt();
 
-                prompt += chatSummary.ToPrompt();
+                    // remove the chat messages that have been replaced by the summary
+                    for (int i = 0; i < summary.Item2; i++)
+                    {
+                        chatMessages.RemoveAt(0);
+                    }
+
+                    for(int i = 0; i < chatMessages.Count; i++)
+                    {
+                        prompt += Environment.NewLine + chatMessages[i].ToPrompt();
+                    }
+
+                    prompt += Environment.NewLine + aiPrompt.ToPrompt();
+
+                    tokenCount = encoding.CountTokens(prompt);
+                }
             }
 
-            string promptInstruction = prompt;
-
-            if (!instruction.IsNullOrWhiteSpace())
+            return new()
             {
-                promptInstruction += Environment.NewLine + "### Instruction:" + instruction + Environment.NewLine + "### Response:";
+                id = Guid.NewGuid(),
+                userId = user.userId,
+                timestamp = aiPrompt.timestamp,
+                prompt = prompt,
+                maxInputLength = maxTokens,
+                maxOutputLength = 256,
+                purpose = MessageGeneration.AIChatMessagePurpose,
+                status = MessageGeneration.NoneStatus
+            };
+        }
+
+        private static (string, int) GetChatSummaryPrompt(ChatMemory chatMemory, ChatSummary chatSummary, IList<ChatMessage> chatMessages, int maxTokens)
+        {
+            var encoding = Tiktoken.Encoding.Get(Encodings.Cl100KBase);
+            string prompt = chatMemory.memory;
+
+            if (chatSummary != null)
+            {
+                prompt += Environment.NewLine + chatSummary.ToPrompt();
             }
 
-            int lastIndexIncluded = 0;
-            bool summarizationNeeded = false;
+            string promptInstruction = prompt + Environment.NewLine + ChatSummarizationPrompt;
+
+            int chatMessagesIncluded = 0;
 
             for (int i = 0; i < chatMessages.Count; i++)
             {
                 string tempPrompt = prompt + Environment.NewLine + chatMessages[i].ToPrompt();
-                string tempPromptInstruction = tempPrompt;
-                
-                if (!instruction.IsNullOrWhiteSpace())
-                {
-                    tempPromptInstruction += Environment.NewLine + "### Instruction:" + instruction + Environment.NewLine + "### Response:";
-                }
+                string tempPromptInstruction = tempPrompt + Environment.NewLine + ChatSummarizationPrompt;
 
                 int tokenCount = encoding.CountTokens(tempPromptInstruction);
 
                 if (tokenCount > maxTokens)
                 {
-                    summarizationNeeded = true;
                     break;
                 }
                 else
                 {
-                    lastIndexIncluded = i;
+                    chatMessagesIncluded = i + 1;
                     prompt = tempPrompt;
                     promptInstruction = tempPromptInstruction;
                 }
             }
 
-            if (summarizationNeeded)
+            return (promptInstruction, chatMessagesIncluded);
+        }
+
+        public static async Task<(ChatSummary,int,MessageGeneration)> GetChatSummaryOrMessageGeneration(CosmosClient client, CarpenterUser user, ChatMemory chatMemory, ChatSummary chatSummary, IList<ChatMessage> chatMessages, int maxTokens)
+        {
+            (string,int) value = GetChatSummaryPrompt(chatMemory, chatSummary, chatMessages, maxTokens);
+            string prompt = value.Item1;
+            int chatMessagesIncluded = value.Item2;
+
+            uint promptHash = GetHash(prompt);
+            ChatSummary nextChatSummary = await ChatSummary.GetChatSummaryFromHash(client, user, promptHash);
+
+            if(nextChatSummary != null)
             {
-                if (instruction == ChatSummarizationInstruction && maxTokens == 512)
-                {
-                    // this is a summarization prompt already, see if this has already been done
-
-                    uint hash = GetHash(promptInstruction);
-
-                    ChatSummary nextChatSummary = await ChatSummary.GetChatSummaryFromHash(client, user, hash);
-
-                    if (nextChatSummary != null)
-                    {
-                        // this summary has already been done before, use it and recurse
-                        List<ChatMessage> nextChatMessages = new();
-
-                        for (int i = lastIndexIncluded + 1; i < chatMessages.Count; i++)
-                        {
-                            nextChatMessages.Add(chatMessages[i]);
-                        }
-
-                        return await GenerateNextChatPrompt(client, user, chatMemory, nextChatSummary, nextChatMessages, instruction, maxTokens);
-                    }
-                    else
-                    {
-                        // this is already a summary, but it's not in the database, so this is the next prompt needed
-                        return promptInstruction;
-                    }
-                }
-                else
-                {
-                    // summarization is needed, but this isn't a summarization prompt
-                    
-                    return await GenerateNextChatPrompt(client, user, chatMemory, chatSummary, chatMessages, ChatSummarizationInstruction, 512);
-                }
+                return (nextChatSummary, chatMessagesIncluded, null);
             }
             else
             {
-                // no summarization needed
-                return promptInstruction;
+                return (null, 0, new()
+                {
+                    id = Guid.NewGuid(),
+                    userId = user.userId,
+                    maxInputLength = maxTokens,
+                    maxOutputLength = 256,
+                    prompt = prompt,
+                    purpose = MessageGeneration.ChatSummaryPurpose,
+                    status = MessageGeneration.NoneStatus
+                });
             }
         }
-        
+
         public static string GeneratePromptTruncateHistory(ChatMemory chatMemory, IList<ChatMessage> chatMessages, string instruction, int maxTokens)
         {
             var encoding = Tiktoken.Encoding.Get(Encodings.Cl100KBase);

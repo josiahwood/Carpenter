@@ -45,7 +45,7 @@ namespace CarpenterApi
 
             foreach(var messageGeneration in messageGenerations)
             {
-                await messageGeneration.UpdateStatus(client);
+                await messageGeneration.UpdateStatus(client, user);
                 updatedMessageGenerations.Add(messageGeneration);
             }
 

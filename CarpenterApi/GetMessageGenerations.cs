@@ -47,7 +47,7 @@ namespace CarpenterApi
             {
                 if (messageGeneration.status != "done")
                 {
-                    await messageGeneration.UpdateStatus(client);
+                    await messageGeneration.UpdateStatus(client, user);
                 }
 
                 updatedMessageGenerations.Add(messageGeneration);

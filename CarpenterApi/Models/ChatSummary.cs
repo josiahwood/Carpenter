@@ -11,10 +11,7 @@ namespace CarpenterApi.Models
     {
         public Guid id;
         public string userId;
-        public DateTime startTimestamp; // inclusive
-        public DateTime endTimestamp;   // exclusive
-        public uint originalHash;
-        public string original;
+        public uint promptHash;
         public string summary;
         public Guid messageGenerationId;
 

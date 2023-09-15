@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Security.Claims;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -38,6 +39,7 @@ namespace CarpenterApi.Models
         public string prompt;
         public DateTime timestamp;
         public string purpose;
+        //public string nextPurpose;
 
         // Outputs
         public string stableHordeId;
@@ -56,19 +58,8 @@ namespace CarpenterApi.Models
             await container.ReplaceItemAsync(this, id.ToString());
         }
 
-        public static async Task<MessageGeneration> StartGeneration(CosmosClient client, DateTime timestamp, CarpenterUser user, string prompt, string purpose)
+        public static async Task<MessageGeneration> StartGeneration(CosmosClient client, MessageGeneration messageGeneration)
         {
-            MessageGeneration messageGeneration = new()
-            {
-                id = Guid.NewGuid(),
-                userId = user.userId,
-                maxInputLength = MaxInputLength,
-                maxOutputLength = MaxOutputLength,
-                prompt = prompt,
-                timestamp = timestamp,
-                purpose = purpose
-            };
-            
             HttpClient httpClient = new();
             StableHordeApi.Client apiClient = new(httpClient)
             {
@@ -94,7 +85,23 @@ namespace CarpenterApi.Models
             return messageGeneration;
         }
 
-        public async Task UpdateStatus(CosmosClient client)
+        public static async Task<MessageGeneration> StartGeneration(CosmosClient client, DateTime timestamp, CarpenterUser user, string prompt, string purpose)
+        {
+            MessageGeneration messageGeneration = new()
+            {
+                id = Guid.NewGuid(),
+                userId = user.userId,
+                maxInputLength = MaxInputLength,
+                maxOutputLength = MaxOutputLength,
+                prompt = prompt,
+                timestamp = timestamp,
+                purpose = purpose
+            };
+
+            return await StartGeneration(client, messageGeneration);
+        }
+
+        public async Task UpdateStatus(CosmosClient client, CarpenterUser user)
         {
             if (status != DoneStatus)
             {
@@ -117,19 +124,41 @@ namespace CarpenterApi.Models
                         worker = generation.Worker_name;
                         status = DoneStatus;
 
-                        if (purpose == AIChatMessagePurpose)
+                        switch(purpose)
                         {
-                            ChatMessage chatMessage = new()
-                            {
-                                id = Guid.NewGuid(),
-                                userId = userId,
-                                timestamp = timestamp,
-                                sender = ChatMessage.AISender,
-                                message = TrimMessage(generatedOutput),
-                                messageGenerationId = id
-                            };
+                            case AIChatMessagePurpose:
+                                ChatMessage chatMessage = new()
+                                {
+                                    id = Guid.NewGuid(),
+                                    userId = userId,
+                                    timestamp = timestamp,
+                                    sender = ChatMessage.AISender,
+                                    message = TrimMessage(generatedOutput),
+                                    messageGenerationId = id
+                                };
 
-                            await chatMessage.Write(client);
+                                await chatMessage.Write(client);
+                                break;
+                            case ChatSummaryPurpose:
+                                ChatSummary chatSummary = new()
+                                {
+                                    id = Guid.NewGuid(),
+                                    userId = userId,
+                                    promptHash = PromptGeneration.GetHash(prompt),
+                                    summary = generatedOutput,
+                                    messageGenerationId = id
+                                };
+
+                                await chatSummary.Write(client);
+
+                                ChatMemory chatMemory = await ChatMemory.GetChatMemory(client, user);
+                                var chatMessages = await ChatMessage.GetChatMessages(client, user);
+
+                                MessageGeneration messageGeneration = await PromptGeneration.NextAIChatMessageGeneration(client, user, chatMemory, chatMessages, 1024);
+
+                                await StartGeneration(client, messageGeneration);
+
+                                break;
                         }
                     }
                     else

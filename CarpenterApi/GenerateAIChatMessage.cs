@@ -49,18 +49,9 @@ namespace CarpenterApi
             ChatMemory chatMemory = await ChatMemory.GetChatMemory(client, user);
             var chatMessages = await ChatMessage.GetChatMessages(client, user);
 
-            ChatMessage aiPrompt = new()
-            {
-                timestamp = DateTime.UtcNow,
-                sender = ChatMessage.AISender,
-                message = ""
-            };
+            MessageGeneration messageGeneration = await PromptGeneration.NextAIChatMessageGeneration(client, user, chatMemory, chatMessages, 1024);
 
-            chatMessages.Add(aiPrompt);
-
-            string prompt = PromptGeneration.GeneratePromptTruncateHistory(chatMemory, chatMessages, null, 1024);
-
-            MessageGeneration messageGeneration = await MessageGeneration.StartGeneration(client, aiPrompt.timestamp, user, prompt, MessageGeneration.AIChatMessagePurpose);
+            messageGeneration = await MessageGeneration.StartGeneration(client, messageGeneration);
 
             return new OkObjectResult(messageGeneration);
         }
