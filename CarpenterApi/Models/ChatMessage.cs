@@ -50,5 +50,11 @@ namespace CarpenterApi.Models
             Container container = client.GetDatabase("carpenter-dev").GetContainer("chat-messages");
             await container.CreateItemAsync(this);
         }
+
+        public async Task Update(CosmosClient client)
+        {
+            Container container = client.GetDatabase("carpenter-dev").GetContainer("chat-messages");
+            await container.ReplaceItemAsync(this, id.ToString());
+        }
     }
 }
