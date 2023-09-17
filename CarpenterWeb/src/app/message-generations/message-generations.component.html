@@ -2,7 +2,7 @@
   <h1 class="mat-h1" style="margin:5px">Message Generations</h1>
   <div style="flex: 1 1 auto; overflow-y: scroll; padding: 5px" #messageGenerationsDiv>
     <div *ngFor="let messageGeneration of messageGenerations">
-      <mat-card style="margin-left: 20px; margin-top: 2px; margin-bottom: 2px">
+      <mat-card style="margin-top: 2px; margin-bottom: 2px">
         <mat-card-header>
           <mat-card-subtitle>{{messageGeneration.timestamp | date:'medium'}}</mat-card-subtitle>
         </mat-card-header>
