@@ -24,9 +24,9 @@ namespace CarpenterApi.Models
         public const string DoneStatus = "done";
         public const string ErrorStatus = "error";
 
-        public const int MaxInputLength = 2048;
+        public const int MaxInputLength = 4096;
         public const int MaxOutputLength = 256;
-        public const int SummarizationInputLength = 1024;
+        public const int SummarizationInputLength = 2048;
         public const int SummarizationOutputLength = 256;
 
         // Identifiers
