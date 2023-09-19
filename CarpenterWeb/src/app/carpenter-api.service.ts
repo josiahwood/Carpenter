@@ -13,7 +13,7 @@ export class CarpenterApiService {
 
   async getChatMemory(): Promise<string> {
     var url = "https://zealous-wave-0e26a4710.3.azurestaticapps.net/api/GetChatMemory";
-    return await lastValueFrom<string>(this.httpClient.get<string>(url));
+    return (await lastValueFrom(this.httpClient.get(url))).toString();
   }
 
   async setChatMemory(chatMemory: string): Promise<Object> {
