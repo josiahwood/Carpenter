@@ -1,0 +1,5 @@
+<div style="display:flex; flex-direction:column; height:100%">
+  <h1 class="mat-h1" style="margin:5px">Import Chat Log</h1>
+  <textarea [value]="chatLog" (input)="onChatLogValueChange($event)" style="resize: none; flex: 1 1 auto; margin:5px"></textarea>
+  <button type="button" mat-raised-button color="primary" (click)="onImportChatLog()" style="margin:5px">Import Chat Log</button>
+</div>

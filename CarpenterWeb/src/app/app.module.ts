@@ -23,6 +23,7 @@ import { MatDialogModule } from '@angular/material/dialog'
 import { AppRoutingModule } from './app-routing.module';
 import { MessageGenerationsComponent } from './message-generations/message-generations.component';
 import { ChatMessageDialogComponent } from './chat-message-dialog/chat-message-dialog.component';
+import { ImportChatLogComponent } from './import-chat-log/import-chat-log.component';
 
 @NgModule({
   declarations: [
@@ -32,7 +33,8 @@ import { ChatMessageDialogComponent } from './chat-message-dialog/chat-message-d
     ChatMemoryComponent,
     NavigationComponent,
     MessageGenerationsComponent,
-    ChatMessageDialogComponent
+    ChatMessageDialogComponent,
+    ImportChatLogComponent
   ],
   imports: [
     BrowserModule,

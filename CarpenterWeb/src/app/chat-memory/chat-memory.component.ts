@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { CarpenterApiService } from '../carpenter-api.service';
 
 @Component({
   selector: 'app-chat-memory',
@@ -9,22 +9,11 @@ import { HttpClient } from '@angular/common/http';
 export class ChatMemoryComponent {
   public chatMemory: string = "";
 
-  constructor(private httpClient: HttpClient) {
+  constructor(private apiService: CarpenterApiService) {
   }
 
   async ngOnInit() {
-    this.chatMemory = await this.getChatMemory();
-  }
-
-  async getChatMemory() {
-    try {
-      const response = await fetch('/api/GetChatMemory');
-      const payload = await response.text();
-      return payload;
-    } catch(error) {
-      console.error('No chat memory could be found');
-      return "";
-    }
+    this.chatMemory = await this.apiService.getChatMemory();
   }
 
   public onChatMemoryValueChange(event: Event): void {
@@ -34,20 +23,6 @@ export class ChatMemoryComponent {
   }
 
   onSetMemory(): void {
-    console.log("onSetMemory");
-    console.log(this.chatMemory);
-
-    var url = "https://zealous-wave-0e26a4710.3.azurestaticapps.net/api/SetChatMemory";
-    var body = this.chatMemory;
-    this.httpClient.post(url, body).subscribe({
-      next: (data) => {
-        console.log(data);
-      },
-      error: (error) => {
-        console.log('Log the error here: ', error);
-      },
-      complete: () => {
-      }
-    });
+    this.apiService.setChatMemory(this.chatMemory);
   }
 }

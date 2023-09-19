@@ -9,7 +9,19 @@ import { MessageGeneration } from './models/message-generation';
 })
 export class CarpenterApiService {
 
-  constructor(private httpClient:HttpClient) { }
+  constructor(private httpClient: HttpClient) { }
+
+  async getChatMemory(): Promise<string> {
+    var url = "https://zealous-wave-0e26a4710.3.azurestaticapps.net/api/GetChatMemory";
+    return await lastValueFrom<string>(this.httpClient.get<string>(url));
+  }
+
+  async setChatMemory(chatMemory: string): Promise<Object> {
+    var url = "https://zealous-wave-0e26a4710.3.azurestaticapps.net/api/SetChatMemory";
+    var body = chatMemory;
+
+    return await lastValueFrom(this.httpClient.post(url, body));
+  }
 
   async getChatMessages(): Promise<ChatMessage[]> {
     //return [
@@ -57,5 +69,12 @@ export class CarpenterApiService {
     var url = "https://zealous-wave-0e26a4710.3.azurestaticapps.net/api/GetNotDoneMessageGenerations";
 
     return await lastValueFrom<MessageGeneration[]>(this.httpClient.get<MessageGeneration[]>(url));
+  }
+
+  async importChatLog(chatLog: string): Promise<Object> {
+    var url = "https://zealous-wave-0e26a4710.3.azurestaticapps.net/api/ImportChatLog";
+    var body = chatLog;
+
+    return await lastValueFrom(this.httpClient.post(url, body));
   }
 }
