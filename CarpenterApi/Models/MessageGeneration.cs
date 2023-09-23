@@ -105,7 +105,7 @@ namespace CarpenterApi.Models
 
         public async Task UpdateStatus(CosmosClient client, CarpenterUser user)
         {
-            if (status != DoneStatus)
+            if (status != DoneStatus && status != ErrorStatus)
             {
                 HttpClient httpClient = new();
                 StableHordeApi.Client apiClient = new(httpClient)
@@ -113,7 +113,18 @@ namespace CarpenterApi.Models
                     BaseUrl = "https://stablehorde.net/api"
                 };
 
-                var statusResult = await apiClient.Get_text_async_statusAsync(null, null, stableHordeId);
+                RequestStatusKobold statusResult;
+
+                try
+                {
+                    statusResult = await apiClient.Get_text_async_statusAsync(null, null, stableHordeId);
+                }
+                catch(ApiException)
+                {
+                    status = ErrorStatus;
+                    await Update(client);
+                    return;
+                }
 
                 if (statusResult.Done == true)
                 {
