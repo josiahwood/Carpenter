@@ -3,6 +3,7 @@ import { QuickMessage } from '../models/quick-message';
 import { CarpenterApiService } from '../carpenter-api.service';
 import { MatDialog } from '@angular/material/dialog';
 import { QuickMessageDialogComponent } from '../quick-message-dialog/quick-message-dialog.component';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-quick-messages',
@@ -14,7 +15,7 @@ export class QuickMessagesComponent {
   public quickMessages: QuickMessage[] = [];
   public newQuickMessage: string = "";
 
-  constructor(private apiService: CarpenterApiService, public dialog: MatDialog) {
+  constructor(private apiService: CarpenterApiService, public dialog: MatDialog, private router:Router) {
   }
 
   async ngOnInit() {
@@ -30,7 +31,7 @@ export class QuickMessagesComponent {
     this.newQuickMessage = value;
   }
 
-  async onQuickMessageClicked(quickMessage: QuickMessage) {
+  async onEditQuickMessage(quickMessage: QuickMessage) {
     let dialogRef = this.dialog.open(QuickMessageDialogComponent, {
       data: quickMessage,
       height: '300px',
@@ -52,6 +53,7 @@ export class QuickMessagesComponent {
   async onUseQuickMessage(quickMessage: QuickMessage) {
     await this.apiService.sendUserChatMessage(quickMessage.message);
     await this.apiService.generateAIChatMessage();
+    this.router.navigate(['/chat-log']);
     // TODO: automatically navigate to chat log
   }
 }
