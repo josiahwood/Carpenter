@@ -7,8 +7,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CarpenterApi", "CarpenterAp
 EndProject
 Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "CarpenterWeb", "CarpenterWeb\CarpenterWeb.esproj", "{A622D31D-F849-48BD-B142-2033AA07C22B}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CarpenterBlazor", "CarpenterBlazor\CarpenterBlazor.csproj", "{68E8031E-A2FF-422B-9EC2-B6499D01F063}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -25,10 +23,6 @@ Global
 		{A622D31D-F849-48BD-B142-2033AA07C22B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A622D31D-F849-48BD-B142-2033AA07C22B}.Release|Any CPU.Build.0 = Release|Any CPU
 		{A622D31D-F849-48BD-B142-2033AA07C22B}.Release|Any CPU.Deploy.0 = Release|Any CPU
-		{68E8031E-A2FF-422B-9EC2-B6499D01F063}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{68E8031E-A2FF-422B-9EC2-B6499D01F063}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{68E8031E-A2FF-422B-9EC2-B6499D01F063}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{68E8031E-A2FF-422B-9EC2-B6499D01F063}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

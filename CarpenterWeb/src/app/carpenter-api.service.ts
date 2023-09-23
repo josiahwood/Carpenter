@@ -3,6 +3,7 @@ import { ChatMessage } from './models/chat-message';
 import { HttpClient } from '@angular/common/http';
 import { lastValueFrom } from 'rxjs';
 import { MessageGeneration } from './models/message-generation';
+import { QuickMessage } from './models/quick-message';
 
 @Injectable({
   providedIn: 'root'
@@ -49,6 +50,26 @@ export class CarpenterApiService {
   async editChatMessage(chatMessage: ChatMessage): Promise<Object> {
     var url = "https://zealous-wave-0e26a4710.3.azurestaticapps.net/api/EditChatMessage";
     var body = JSON.stringify(chatMessage);
+
+    return await lastValueFrom(this.httpClient.post(url, body));
+  }
+
+  async getQuickMessages(): Promise<QuickMessage[]> {
+    var url = "https://zealous-wave-0e26a4710.3.azurestaticapps.net/api/GetQuickMessages";
+
+    return await lastValueFrom<QuickMessage[]>(this.httpClient.get<QuickMessage[]>(url));
+  }
+
+  async createQuickMessage(quickMessage: string): Promise<Object> {
+    var url = "https://zealous-wave-0e26a4710.3.azurestaticapps.net/api/CreateQuickMessage";
+    var body = quickMessage;
+
+    return await lastValueFrom(this.httpClient.post(url, body));
+  }
+
+  async editQuickMessage(quickMessage: QuickMessage): Promise<Object> {
+    var url = "https://zealous-wave-0e26a4710.3.azurestaticapps.net/api/EditQuickMessage";
+    var body = JSON.stringify(quickMessage);
 
     return await lastValueFrom(this.httpClient.post(url, body));
   }

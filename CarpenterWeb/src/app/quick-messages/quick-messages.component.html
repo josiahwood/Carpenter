@@ -1,0 +1,19 @@
+<div style="display: flex; flex-direction: column; height:100%">
+  <h1 class="mat-h1" style="margin:5px">Quick Messages</h1>
+  <div style="flex: 1 1 auto; overflow-y: scroll; padding: 5px" #quickMessagesDiv>
+    <div *ngFor="let quickMessage of quickMessages">
+      <mat-card style="margin-top: 2px; margin-bottom: 2px" (click)="onQuickMessageClicked(quickMessage)">
+        <mat-card-content>
+          <span style="white-space-collapse: preserve">{{quickMessage.message}}</span><br/>
+          <button mat-raised-button color="primary" type="button" (click)="onUseQuickMessage(quickMessage)">Use Quick Message</button>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </div>
+  <div style="padding: 5px; display:flex; flex-direction: row">
+    <textarea [value]="newQuickMessage" (input)="onNewQuickMessageValueChange($event)" style="height:5em; flex: 1 1 auto; resize: none"></textarea>
+    <button mat-raised-button color="primary" type="button" (click)="onNewQuickMessage()" style="height: unset">
+      <mat-icon>playlist_add</mat-icon>
+    </button>
+  </div>
+</div>

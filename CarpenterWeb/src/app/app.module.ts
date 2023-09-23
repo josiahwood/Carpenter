@@ -24,6 +24,8 @@ import { AppRoutingModule } from './app-routing.module';
 import { MessageGenerationsComponent } from './message-generations/message-generations.component';
 import { ChatMessageDialogComponent } from './chat-message-dialog/chat-message-dialog.component';
 import { ImportChatLogComponent } from './import-chat-log/import-chat-log.component';
+import { QuickMessagesComponent } from './quick-messages/quick-messages.component';
+import { QuickMessageDialogComponent } from './quick-message-dialog/quick-message-dialog.component';
 
 @NgModule({
   declarations: [
@@ -34,7 +36,9 @@ import { ImportChatLogComponent } from './import-chat-log/import-chat-log.compon
     NavigationComponent,
     MessageGenerationsComponent,
     ChatMessageDialogComponent,
-    ImportChatLogComponent
+    ImportChatLogComponent,
+    QuickMessagesComponent,
+    QuickMessageDialogComponent
   ],
   imports: [
     BrowserModule,

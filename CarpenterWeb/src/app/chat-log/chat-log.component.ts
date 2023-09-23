@@ -24,6 +24,7 @@ export class ChatLogComponent {
     setTimeout(() => {
       this.chatLogDiv.nativeElement.scrollTop = this.chatLogDiv.nativeElement.scrollHeight;
     }, 0);
+    await this.onUpdateMessageGenerationStatus();
   }
 
   public onUserChatMessageValueChange(event: Event): void {
@@ -64,6 +65,7 @@ export class ChatLogComponent {
       }, 0);
     }
     else {
+      this.isWaiting = true;
       setTimeout(async () => { await this.onUpdateMessageGenerationStatus(); }, 1000);
     }
   }

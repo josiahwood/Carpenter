@@ -10,7 +10,6 @@
     <BuildOutputFolder>$(MSBuildProjectDirectory)\dist\CarpenterWeb</BuildOutputFolder>
   </PropertyGroup>
   <ItemGroup>
-    <Folder Include="src\app\models\" />
     <Folder Include="src\app\carpenter-api-client\" />
   </ItemGroup>
 </Project>

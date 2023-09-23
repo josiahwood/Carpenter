@@ -4,12 +4,14 @@ import { ChatLogComponent } from './chat-log/chat-log.component';
 import { ChatMemoryComponent } from './chat-memory/chat-memory.component';
 import { MessageGenerationsComponent } from './message-generations/message-generations.component';
 import { ImportChatLogComponent } from './import-chat-log/import-chat-log.component';
+import { QuickMessagesComponent } from './quick-messages/quick-messages.component';
 
 const routes: Routes = [
   { path: 'chat-log', component: ChatLogComponent },
+  { path: 'quick-messages', component: QuickMessagesComponent },
   { path: 'chat-memory', component: ChatMemoryComponent },
   { path: 'message-generations', component: MessageGenerationsComponent },
-  { path:'import-chat-log', component: ImportChatLogComponent}
+  { path: 'import-chat-log', component: ImportChatLogComponent }
 ];
 
 @NgModule({
