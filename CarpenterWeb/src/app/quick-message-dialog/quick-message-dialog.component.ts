@@ -16,7 +16,6 @@ export class QuickMessageDialogComponent {
   }
 
   public onQuickMessageMessageValueChange(event: Event): void {
-    console.log(event.target);
     const value = (event.target as any).value;
     this.tempMessage = value;
   }

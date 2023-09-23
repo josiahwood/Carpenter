@@ -54,6 +54,12 @@ export class CarpenterApiService {
     return await lastValueFrom(this.httpClient.post(url, body));
   }
 
+  async deleteChatMessage(id: string): Promise<Object> {
+    var url = "https://zealous-wave-0e26a4710.3.azurestaticapps.net/api/DeleteChatMessage?id=" + id;
+
+    return await lastValueFrom(this.httpClient.get(url));
+  }
+
   async getQuickMessages(): Promise<QuickMessage[]> {
     var url = "https://zealous-wave-0e26a4710.3.azurestaticapps.net/api/GetQuickMessages";
 

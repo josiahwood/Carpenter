@@ -56,5 +56,11 @@ namespace CarpenterApi.Models
             Container container = client.GetDatabase("carpenter-dev").GetContainer("chat-messages");
             await container.ReplaceItemAsync(this, id.ToString());
         }
+
+        public static async Task Delete(CosmosClient client, string id)
+        {
+            Container container = client.GetDatabase("carpenter-dev").GetContainer("chat-messages");
+            await container.DeleteItemAsync<ChatMessage>(id, new PartitionKey(id));
+        }
     }
 }

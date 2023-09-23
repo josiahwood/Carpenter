@@ -27,6 +27,11 @@ export class ChatMessageDialogComponent {
     this.closeDialog();
   }
 
+  public async onDelete() {
+    await this.apiService.deleteChatMessage(this.data.id);
+    this.closeDialog();
+  }
+
   closeDialog() {
     this.dialogRef.close();
   }
