@@ -3,7 +3,7 @@ import { ChatMessage } from '../models/chat-message';
 import { MessageGeneration } from '../models/message-generation'
 import { CarpenterApiService } from '../carpenter-api.service';
 import { MatDialog } from '@angular/material/dialog';
-import { ChatMessageDialogComponent } from '../chat-message-dialog/chat-message-dialog.component';
+import { ChatMessageDialogComponent, ChatMessageDialogResult } from '../chat-message-dialog/chat-message-dialog.component';
 
 @Component({
   selector: 'app-chat-log',
@@ -33,11 +33,21 @@ export class ChatLogComponent {
     this.userChatMessage = value;
   }
 
-  async onChatMessageClicked(chatMessage:ChatMessage) {
+  async onChatMessageClicked(chatMessage: ChatMessage) {
     let dialogRef = this.dialog.open(ChatMessageDialogComponent, {
       data: chatMessage,
       height: '300px',
       width: '300px',
+    });
+
+    dialogRef.afterClosed().subscribe((result: ChatMessageDialogResult) => {
+      if (result == ChatMessageDialogResult.Delete) {
+        const index = this.chatMessages.indexOf(chatMessage);
+
+        if (index > -1) {
+          this.chatMessages.splice(index, 1);
+        }
+      }
     });
   }
 

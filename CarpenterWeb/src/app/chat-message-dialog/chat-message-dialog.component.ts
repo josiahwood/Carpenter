@@ -3,6 +3,11 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { ChatMessage } from '../models/chat-message';
 import { CarpenterApiService } from '../carpenter-api.service';
 
+export enum ChatMessageDialogResult {
+  Update,
+  Delete
+}
+
 @Component({
   selector: 'app-chat-message-dialog',
   templateUrl: './chat-message-dialog.component.html',
@@ -24,15 +29,11 @@ export class ChatMessageDialogComponent {
   public async onUpdate() {
     this.data.message = this.tempMessage;
     await this.apiService.editChatMessage(this.data);
-    this.closeDialog();
+    this.dialogRef.close(ChatMessageDialogResult.Update);
   }
 
   public async onDelete() {
     await this.apiService.deleteChatMessage(this.data.id);
-    this.closeDialog();
-  }
-
-  closeDialog() {
-    this.dialogRef.close();
+    this.dialogRef.close(ChatMessageDialogResult.Delete);
   }
 }
