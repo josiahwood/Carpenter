@@ -14,18 +14,16 @@
   </mat-sidenav>
   <mat-sidenav-content style="display:flex; flex-direction: column; height:100%">
     <mat-toolbar color="primary">
-      <mat-toolbar-row>
-        <button type="button"
-                aria-label="Toggle sidenav"
-                mat-icon-button
-                (click)="drawer.toggle()"
-                *ngIf="isHandset$ | async">
-          <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
-        </button>
-        <span>Carpenter</span>
-        <span class="toolbar-spacer"></span>
-        <app-sign-in></app-sign-in>
-      </mat-toolbar-row>
+      <button type="button"
+              aria-label="Toggle sidenav"
+              mat-icon-button
+              (click)="drawer.toggle()"
+              *ngIf="isHandset$ | async">
+        <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
+      </button>
+      <span>Carpenter</span>
+      <span class="toolbar-spacer"></span>
+      <app-sign-in></app-sign-in>
     </mat-toolbar>
     <div style="flex: 1 1 auto; overflow:auto">
       <router-outlet></router-outlet>
