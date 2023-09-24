@@ -15,9 +15,13 @@
           <span>purpose: {{messageGeneration.purpose}}</span><br />
           <span>status: {{messageGeneration.status}}</span><br />
           <span>prompt:</span><br />
-          <span style="margin-left:20px; white-space-collapse: preserve">{{messageGeneration.prompt}}</span><br />
+          <div style="margin-left:20px">
+            <span style="white-space-collapse: preserve">{{messageGeneration.prompt}}</span>
+          </div><br />
           <span>generatedOutput:</span><br />
-          <span style="margin-left:20px;white-space-collapse: preserve">{{messageGeneration.generatedOutput}}</span><br />
+          <div style="margin-left:20px">
+            <span style="white-space-collapse: preserve">{{messageGeneration.generatedOutput}}</span>
+          </div>
         </mat-card-content>
       </mat-card>
     </div>
