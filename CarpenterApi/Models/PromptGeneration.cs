@@ -11,7 +11,7 @@ namespace CarpenterApi.Models
 {
     internal static class PromptGeneration
     {
-        private const string ChatSummarizationPrompt = "### Instruction:Summarize this chat session from the perspective of the AI, who is a psychotherapist seeking to perform Mindfulness-Based Cognitive Therapy with the user.\n### Response:";
+        //private const string ChatSummarizationPrompt = "### Instruction:Summarize this chat session from the perspective of the AI, who is a psychotherapist seeking to perform Mindfulness-Based Cognitive Therapy with the user.\n### Response:";
 
         public static string ToPrompt(this ChatMessage chatMessage)
         {
@@ -98,7 +98,7 @@ namespace CarpenterApi.Models
             };
         }
 
-        private static (string, int) GetChatSummaryPrompt(ChatMemory chatMemory, ChatSummary chatSummary, IList<ChatMessage> chatMessages, int maxTokens)
+        private static (string, int) GetChatSummaryPrompt(ChatMemory chatMemory, ChatSummarizationPrompt chatSummarizationPrompt, ChatSummary chatSummary, IList<ChatMessage> chatMessages, int maxTokens)
         {
             var encoding = Tiktoken.Encoding.Get(Encodings.Cl100KBase);
             string prompt = chatMemory.memory;
@@ -108,14 +108,14 @@ namespace CarpenterApi.Models
                 prompt += Environment.NewLine + chatSummary.ToPrompt();
             }
 
-            string promptInstruction = prompt + Environment.NewLine + ChatSummarizationPrompt;
+            string promptInstruction = prompt + Environment.NewLine + chatSummarizationPrompt.prompt;
 
             int chatMessagesIncluded = 0;
 
             for (int i = 0; i < chatMessages.Count; i++)
             {
                 string tempPrompt = prompt + Environment.NewLine + chatMessages[i].ToPrompt();
-                string tempPromptInstruction = tempPrompt + Environment.NewLine + ChatSummarizationPrompt;
+                string tempPromptInstruction = tempPrompt + Environment.NewLine + chatSummarizationPrompt.prompt;
 
                 int tokenCount = encoding.CountTokens(tempPromptInstruction);
 
@@ -136,7 +136,8 @@ namespace CarpenterApi.Models
 
         public static async Task<(ChatSummary,int,MessageGeneration)> GetChatSummaryOrMessageGeneration(CosmosClient client, CarpenterUser user, ChatMemory chatMemory, ChatSummary chatSummary, IList<ChatMessage> chatMessages, int maxTokens)
         {
-            (string,int) value = GetChatSummaryPrompt(chatMemory, chatSummary, chatMessages, maxTokens);
+            ChatSummarizationPrompt chatSummarizationPrompt = await ChatSummarizationPrompt.GetChatSummarizationPrompt(client, user);
+            (string,int) value = GetChatSummaryPrompt(chatMemory, chatSummarizationPrompt, chatSummary, chatMessages, maxTokens);
             string prompt = value.Item1;
             int chatMessagesIncluded = value.Item2;
 
@@ -162,36 +163,36 @@ namespace CarpenterApi.Models
             }
         }
 
-        public static string GeneratePromptTruncateHistory(ChatMemory chatMemory, IList<ChatMessage> chatMessages, string instruction, int maxTokens)
-        {
-            var encoding = Tiktoken.Encoding.Get(Encodings.Cl100KBase);
-            string tempMessages = chatMessages[chatMessages.Count - 1].ToPrompt();
-            string prompt = string.Empty;
+        //public static string GeneratePromptTruncateHistory(ChatMemory chatMemory, IList<ChatMessage> chatMessages, string instruction, int maxTokens)
+        //{
+        //    var encoding = Tiktoken.Encoding.Get(Encodings.Cl100KBase);
+        //    string tempMessages = chatMessages[chatMessages.Count - 1].ToPrompt();
+        //    string prompt = string.Empty;
 
-            for (int i = chatMessages.Count - 2; i >= 0; i--)
-            {
-                string newTempMessages = chatMessages[i].ToPrompt() + Environment.NewLine + tempMessages;
-                string tempPrompt = chatMemory.memory + Environment.NewLine + newTempMessages;
+        //    for (int i = chatMessages.Count - 2; i >= 0; i--)
+        //    {
+        //        string newTempMessages = chatMessages[i].ToPrompt() + Environment.NewLine + tempMessages;
+        //        string tempPrompt = chatMemory.memory + Environment.NewLine + newTempMessages;
 
-                if(!instruction.IsNullOrWhiteSpace())
-                {
-                    tempPrompt += Environment.NewLine + "### Instruction:" + instruction + Environment.NewLine + "### Response:";
-                }
+        //        if(!instruction.IsNullOrWhiteSpace())
+        //        {
+        //            tempPrompt += Environment.NewLine + "### Instruction:" + instruction + Environment.NewLine + "### Response:";
+        //        }
 
-                int tokenCount = encoding.CountTokens(newTempMessages);
+        //        int tokenCount = encoding.CountTokens(newTempMessages);
 
-                if (tokenCount > maxTokens)
-                {
-                    break;
-                }
-                else
-                {
-                    tempMessages = newTempMessages;
-                    prompt = tempPrompt;
-                }
-            }
+        //        if (tokenCount > maxTokens)
+        //        {
+        //            break;
+        //        }
+        //        else
+        //        {
+        //            tempMessages = newTempMessages;
+        //            prompt = tempPrompt;
+        //        }
+        //    }
 
-            return prompt;
-        }
+        //    return prompt;
+        //}
     }
 }

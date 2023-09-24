@@ -20,22 +20,22 @@ using Newtonsoft.Json;
 
 namespace CarpenterApi
 {
-    public class SetChatMemory
+    public class SetChatSummarizationPrompt
     {
-        private readonly ILogger<SetChatMemory> _logger;
+        private readonly ILogger<SetChatSummarizationPrompt> _logger;
 
-        public SetChatMemory(ILogger<SetChatMemory> log)
+        public SetChatSummarizationPrompt(ILogger<SetChatSummarizationPrompt> log)
         {
             _logger = log;
         }
 
-        [FunctionName("SetChatMemory")]
+        [FunctionName("SetChatSummarizationPrompt")]
         [OpenApiOperation(operationId: "Run")]
-        [OpenApiRequestBody(contentType: "text/plain", bodyType: typeof(string), Description = "The memory to be prepended at the beginning of every prompt.")]
+        [OpenApiRequestBody(contentType: "text/plain", bodyType: typeof(string), Description = "The prompt to be appended to request chat summarization.")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "text/plain", bodyType: typeof(string), Description = "The OK response")]
         public async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = null)] HttpRequest req,
-            [CosmosDB(databaseName: "carpenter-dev", containerName: "chat-memories",
+            [CosmosDB(databaseName: "carpenter-dev", containerName: "chat-summarization-prompts",
                 Connection = "CosmosDbConnectionString"
                 )] CosmosClient client,
             ClaimsPrincipal claimsPrincipal)
@@ -44,25 +44,25 @@ namespace CarpenterApi
 
             CarpenterUser user = CarpenterUser.GetCurrentUser(claimsPrincipal);
 
-            string memory = await new StreamReader(req.Body).ReadToEndAsync();
+            string prompt = await new StreamReader(req.Body).ReadToEndAsync();
 
-            ChatMemory chatMemory = await ChatMemory.GetChatMemory(client, user);
+            ChatSummarizationPrompt chatSummarizationPrompt = await ChatSummarizationPrompt.GetChatSummarizationPrompt(client, user);
 
-            if (chatMemory != null)
+            if (chatSummarizationPrompt != null)
             {
-                chatMemory.memory = memory;
-                await chatMemory.Update(client);
+                chatSummarizationPrompt.prompt = prompt;
+                await chatSummarizationPrompt.Update(client);
             }
             else
             {
-                chatMemory = new()
+                chatSummarizationPrompt = new()
                 {
                     id = Guid.NewGuid(),
                     userId = user.userId,
-                    memory = memory
+                    prompt = prompt
                 };
 
-                await chatMemory.Write(client);
+                await chatSummarizationPrompt.Write(client);
             }
 
             return new OkResult();

@@ -33,5 +33,16 @@ namespace CarpenterApi.Models
 
             return null;
         }
+
+        public async Task Write(CosmosClient client)
+        {
+            Container container = client.GetDatabase("carpenter-dev").GetContainer("chat-memories");
+            await container.CreateItemAsync(this);
+        }
+        public async Task Update(CosmosClient client)
+        {
+            Container container = client.GetDatabase("carpenter-dev").GetContainer("chat-memories");
+            await container.ReplaceItemAsync(this, id.ToString());
+        }
     }
 }
