@@ -1,0 +1,28 @@
+{
+  "short_name": "Carpenter",
+  "name": "Carpenter",
+  "icons": [
+    {
+      "src": "favicon.ico",
+      "type": "image/x-icon",
+      "sizes": "28x30"
+    }
+  ],
+  "start_url": "/",
+  "background_color": "#3f51b5",
+  "display": "standalone",
+  "scope": "/",
+  "theme_color": "#3f51b5",
+  "shortcuts": [
+    {
+      "name": "Chat Log",
+      "short_name": "Chat",
+      "url": "/chat-log"
+    },
+    {
+      "name": "Quick Messages",
+      "short_name": "Quick",
+      "url": "/quick-messages"
+    }
+  ]
+}
