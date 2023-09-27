@@ -34,7 +34,7 @@ export class QuickMessagesComponent {
   async onEditQuickMessage(quickMessage: QuickMessage) {
     let dialogRef = this.dialog.open(QuickMessageDialogComponent, {
       data: quickMessage,
-      height: '300px',
+      height: '400px',
       width: '300px',
     });
   }

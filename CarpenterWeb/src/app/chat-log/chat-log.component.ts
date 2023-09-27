@@ -36,7 +36,7 @@ export class ChatLogComponent {
   async onChatMessageClicked(chatMessage: ChatMessage) {
     let dialogRef = this.dialog.open(ChatMessageDialogComponent, {
       data: chatMessage,
-      height: '300px',
+      height: '400px',
       width: '300px',
     });
 

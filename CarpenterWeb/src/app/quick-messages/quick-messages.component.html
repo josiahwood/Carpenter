@@ -4,7 +4,7 @@
     <div *ngFor="let quickMessage of quickMessages">
       <mat-card style="margin-top: 2px; margin-bottom: 2px">
         <mat-card-content>
-          <span style="white-space-collapse: preserve">{{quickMessage.message}}</span><br/>
+          <span style="white-space-collapse: preserve; margin-bottom: 5px">{{quickMessage.message}}</span><br/>
           <button mat-raised-button color="primary" type="button" (click)="onEditQuickMessage(quickMessage)" style="margin-right: 5px">Edit</button>
           <button mat-raised-button color="primary" type="button" (click)="onUseQuickMessage(quickMessage)">Use</button>
         </mat-card-content>

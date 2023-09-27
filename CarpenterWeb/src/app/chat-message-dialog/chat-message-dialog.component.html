@@ -3,6 +3,6 @@
   <span>Timestamp: {{data.timestamp | date:'medium'}}</span>
   <span>Message:</span>
   <textarea value="{{tempMessage}}" style="flex:1 1 auto; resize:none" (input)="onChatMessageMessageValueChange($event)"></textarea>
-  <button mat-raised-button color="primary" type="button" (click)="onUpdate()">Update</button>
+  <button mat-raised-button color="primary" type="button" (click)="onUpdate()" style="margin-top: 5px; margin-bottom: 5px">Update</button>
   <button mat-raised-button color="primary" type="button" (click)="onDelete()">Delete</button>
 </div>
