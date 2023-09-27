@@ -14,7 +14,18 @@ namespace CarpenterApi.Models
 {
     internal class MessageGeneration
     {
+        internal class AIChatMessageData
+        {
+            public DateTime timestamp;
+        }
+
+        internal class ChatInstructionData
+        {
+            public string instruction;
+        }
+
         public const string AIChatMessagePurpose = "aiChatMessage";
+        public const string ChatInstructionPurpose = "chatInstruction";
         public const string ChatSummaryPurpose = "chatSummary";
 
         public const string NoneStatus = "none";
@@ -39,9 +50,10 @@ namespace CarpenterApi.Models
         public int maxInputLength;
         public int maxOutputLength;
         public string prompt;
-        public DateTime timestamp;
         public string purpose;
-        //public string nextPurpose;
+        public object purposeData;
+        public string nextPurpose;
+        public object nextPurposeData;
 
         // Outputs
         public string stableHordeId;
@@ -87,7 +99,7 @@ namespace CarpenterApi.Models
             return messageGeneration;
         }
 
-        public static async Task<MessageGeneration> StartGeneration(CosmosClient client, DateTime timestamp, CarpenterUser user, string prompt, string purpose)
+        public static async Task<MessageGeneration> StartGeneration(CosmosClient client, CarpenterUser user, string prompt, string purpose, object purposeData, string nextPurpose, object nextPurposeData)
         {
             MessageGeneration messageGeneration = new()
             {
@@ -96,8 +108,9 @@ namespace CarpenterApi.Models
                 maxInputLength = MaxInputLength,
                 maxOutputLength = MaxOutputLength,
                 prompt = prompt,
-                timestamp = timestamp,
-                purpose = purpose
+                purpose = purpose,
+                nextPurpose = nextPurpose,
+                nextPurposeData = nextPurposeData
             };
 
             return await StartGeneration(client, messageGeneration);
@@ -144,7 +157,7 @@ namespace CarpenterApi.Models
                                 {
                                     id = Guid.NewGuid(),
                                     userId = userId,
-                                    timestamp = timestamp,
+                                    timestamp = ((AIChatMessageData)purposeData).timestamp,
                                     sender = ChatMessage.AISender,
                                     message = TrimMessage(generatedOutput),
                                     messageGenerationId = id
@@ -163,14 +176,31 @@ namespace CarpenterApi.Models
                                 };
 
                                 await chatSummary.Write(client);
+                                break;
+                        }
 
-                                ChatMemory chatMemory = await ChatMemory.GetChatMemory(client, user);
-                                var chatMessages = await ChatMessage.GetChatMessages(client, user);
+                        ChatMemory chatMemory;
+                        IList<ChatMessage> chatMessages;
+                        MessageGeneration messageGeneration;
 
-                                MessageGeneration messageGeneration = await PromptGeneration.NextAIChatMessageGeneration(client, user, chatMemory, chatMessages, MaxInputLength);
+                        switch (nextPurpose)
+                        {
+                            case AIChatMessagePurpose:
+                                chatMemory = await ChatMemory.GetChatMemory(client, user);
+                                chatMessages = await ChatMessage.GetChatMessages(client, user);
+
+                                messageGeneration = await PromptGeneration.NextAIChatMessageGeneration(client, user, chatMemory, chatMessages, MaxInputLength);
 
                                 await StartGeneration(client, messageGeneration);
+                                break;
+                            case ChatInstructionPurpose:
+                                chatMemory = await ChatMemory.GetChatMemory(client, user);
+                                chatMessages = await ChatMessage.GetChatMessages(client, user);
+                                string chatInstruction = ((ChatInstructionData)nextPurposeData).instruction;
 
+                                messageGeneration = await PromptGeneration.NextChatInstructionGeneration(client, user, chatMemory, chatMessages, chatInstruction, MaxInputLength);
+
+                                await StartGeneration(client, messageGeneration);
                                 break;
                         }
                     }

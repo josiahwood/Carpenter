@@ -60,6 +60,11 @@ namespace CarpenterApi.Models
                 if (summary.Item3 != null)
                 {
                     // we don't already have the next summary we need, so generate it
+                    summary.Item3.nextPurpose = MessageGeneration.AIChatMessagePurpose;
+                    summary.Item3.nextPurposeData = new MessageGeneration.AIChatMessageData
+                    {
+                        timestamp = aiPrompt.timestamp
+                    };
                     return summary.Item3;
                 }
                 else
@@ -89,7 +94,76 @@ namespace CarpenterApi.Models
             {
                 id = Guid.NewGuid(),
                 userId = user.userId,
-                timestamp = aiPrompt.timestamp,
+                prompt = prompt,
+                maxInputLength = maxTokens,
+                maxOutputLength = MessageGeneration.MaxOutputLength,
+                purpose = MessageGeneration.AIChatMessagePurpose,
+                purposeData = new MessageGeneration.AIChatMessageData
+                {
+                    timestamp = aiPrompt.timestamp
+                },
+                status = MessageGeneration.NoneStatus
+            };
+        }
+
+        public static async Task<MessageGeneration> NextChatInstructionGeneration(CosmosClient client, CarpenterUser user, ChatMemory chatMemory, IList<ChatMessage> chatMessages, string chatInstruction, int maxTokens)
+        {
+            var encoding = Tiktoken.Encoding.Get(Encodings.Cl100KBase);
+            string prompt = chatMemory.memory;
+
+            for (int i = 0; i < chatMessages.Count; i++)
+            {
+                prompt += Environment.NewLine + chatMessages[i].ToPrompt();
+            }
+
+            string instructionPrompt = "### Instruction:" + chatInstruction + Environment.NewLine + "### Response:";
+
+            prompt += Environment.NewLine + instructionPrompt;
+            ChatSummary chatSummary = null;
+
+            int tokenCount = encoding.CountTokens(prompt);
+
+            while (tokenCount > maxTokens)
+            {
+                (ChatSummary, int, MessageGeneration) summary = await GetChatSummaryOrMessageGeneration(client, user, chatMemory, chatSummary, chatMessages, MessageGeneration.SummarizationInputLength);
+
+                if (summary.Item3 != null)
+                {
+                    // we don't already have the next summary we need, so generate it
+                    summary.Item3.nextPurpose = MessageGeneration.ChatInstructionPurpose;
+                    summary.Item3.nextPurposeData = new MessageGeneration.ChatInstructionData
+                    {
+                        instruction = chatInstruction
+                    };
+                    return summary.Item3;
+                }
+                else
+                {
+                    chatSummary = summary.Item1;
+                    prompt = chatMemory.memory;
+                    prompt += Environment.NewLine + summary.Item1.ToPrompt();
+
+                    // remove the chat messages that have been replaced by the summary
+                    for (int i = 0; i < summary.Item2; i++)
+                    {
+                        chatMessages.RemoveAt(0);
+                    }
+
+                    for (int i = 0; i < chatMessages.Count; i++)
+                    {
+                        prompt += Environment.NewLine + chatMessages[i].ToPrompt();
+                    }
+
+                    prompt += Environment.NewLine + instructionPrompt;
+
+                    tokenCount = encoding.CountTokens(prompt);
+                }
+            }
+
+            return new()
+            {
+                id = Guid.NewGuid(),
+                userId = user.userId,
                 prompt = prompt,
                 maxInputLength = maxTokens,
                 maxOutputLength = MessageGeneration.MaxOutputLength,
