@@ -14,13 +14,9 @@ namespace CarpenterApi.Models
 {
     internal class MessageGeneration
     {
-        internal class AIChatMessageData
+        internal class PurposeData
         {
             public DateTime timestamp;
-        }
-
-        internal class ChatInstructionData
-        {
             public string instruction;
         }
 
@@ -51,9 +47,9 @@ namespace CarpenterApi.Models
         public int maxOutputLength;
         public string prompt;
         public string purpose;
-        public object purposeData;
+        public PurposeData purposeData;
         public string nextPurpose;
-        public object nextPurposeData;
+        public PurposeData nextPurposeData;
 
         // Outputs
         public string stableHordeId;
@@ -99,22 +95,22 @@ namespace CarpenterApi.Models
             return messageGeneration;
         }
 
-        public static async Task<MessageGeneration> StartGeneration(CosmosClient client, CarpenterUser user, string prompt, string purpose, object purposeData, string nextPurpose, object nextPurposeData)
-        {
-            MessageGeneration messageGeneration = new()
-            {
-                id = Guid.NewGuid(),
-                userId = user.userId,
-                maxInputLength = MaxInputLength,
-                maxOutputLength = MaxOutputLength,
-                prompt = prompt,
-                purpose = purpose,
-                nextPurpose = nextPurpose,
-                nextPurposeData = nextPurposeData
-            };
+        //public static async Task<MessageGeneration> StartGeneration(CosmosClient client, CarpenterUser user, string prompt, string purpose, PurposeData purposeData, string nextPurpose, object nextPurposeData)
+        //{
+        //    MessageGeneration messageGeneration = new()
+        //    {
+        //        id = Guid.NewGuid(),
+        //        userId = user.userId,
+        //        maxInputLength = MaxInputLength,
+        //        maxOutputLength = MaxOutputLength,
+        //        prompt = prompt,
+        //        purpose = purpose,
+        //        nextPurpose = nextPurpose,
+        //        nextPurposeData = nextPurposeData
+        //    };
 
-            return await StartGeneration(client, messageGeneration);
-        }
+        //    return await StartGeneration(client, messageGeneration);
+        //}
 
         public async Task UpdateStatus(CosmosClient client, CarpenterUser user)
         {
@@ -157,7 +153,7 @@ namespace CarpenterApi.Models
                                 {
                                     id = Guid.NewGuid(),
                                     userId = userId,
-                                    timestamp = ((AIChatMessageData)purposeData).timestamp,
+                                    timestamp = purposeData.timestamp,
                                     sender = ChatMessage.AISender,
                                     message = TrimMessage(generatedOutput),
                                     messageGenerationId = id
@@ -196,7 +192,7 @@ namespace CarpenterApi.Models
                             case ChatInstructionPurpose:
                                 chatMemory = await ChatMemory.GetChatMemory(client, user);
                                 chatMessages = await ChatMessage.GetChatMessages(client, user);
-                                string chatInstruction = ((ChatInstructionData)nextPurposeData).instruction;
+                                string chatInstruction = nextPurposeData.instruction;
 
                                 messageGeneration = await PromptGeneration.NextChatInstructionGeneration(client, user, chatMemory, chatMessages, chatInstruction, MaxInputLength);
 

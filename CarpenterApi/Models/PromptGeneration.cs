@@ -61,7 +61,7 @@ namespace CarpenterApi.Models
                 {
                     // we don't already have the next summary we need, so generate it
                     summary.Item3.nextPurpose = MessageGeneration.AIChatMessagePurpose;
-                    summary.Item3.nextPurposeData = new MessageGeneration.AIChatMessageData
+                    summary.Item3.nextPurposeData = new MessageGeneration.PurposeData
                     {
                         timestamp = aiPrompt.timestamp
                     };
@@ -98,7 +98,7 @@ namespace CarpenterApi.Models
                 maxInputLength = maxTokens,
                 maxOutputLength = MessageGeneration.MaxOutputLength,
                 purpose = MessageGeneration.AIChatMessagePurpose,
-                purposeData = new MessageGeneration.AIChatMessageData
+                purposeData = new MessageGeneration.PurposeData
                 {
                     timestamp = aiPrompt.timestamp
                 },
@@ -131,7 +131,7 @@ namespace CarpenterApi.Models
                 {
                     // we don't already have the next summary we need, so generate it
                     summary.Item3.nextPurpose = MessageGeneration.ChatInstructionPurpose;
-                    summary.Item3.nextPurposeData = new MessageGeneration.ChatInstructionData
+                    summary.Item3.nextPurposeData = new MessageGeneration.PurposeData
                     {
                         instruction = chatInstruction
                     };
