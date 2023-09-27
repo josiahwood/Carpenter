@@ -23,10 +23,6 @@ export class QuickMessageDialogComponent {
   public async onUpdate() {
     this.data.message = this.tempMessage;
     await this.apiService.editQuickMessage(this.data);
-    this.closeDialog();
-  }
-
-  closeDialog() {
     this.dialogRef.close();
   }
 }
