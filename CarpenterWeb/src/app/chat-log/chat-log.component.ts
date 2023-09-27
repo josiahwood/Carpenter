@@ -28,7 +28,6 @@ export class ChatLogComponent {
   }
 
   public onUserChatMessageValueChange(event: Event): void {
-    console.log(event.target);
     const value = (event.target as any).value;
     this.userChatMessage = value;
   }
