@@ -120,7 +120,7 @@ export class CarpenterApiService {
   async getLatestChatInstructionResponse(): Promise<string> {
     var url = "https://zealous-wave-0e26a4710.3.azurestaticapps.net/api/GetLatestChatInstructionResponse";
 
-    return await lastValueFrom<string>(this.httpClient.get<string>(url));
+    return await lastValueFrom<string>(this.httpClient.get(url, { responseType: 'text' }));
   }
 
   async importChatLog(chatLog: string): Promise<Object> {
