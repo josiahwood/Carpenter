@@ -167,7 +167,7 @@ namespace CarpenterApi.Models
                 prompt = prompt,
                 maxInputLength = maxTokens,
                 maxOutputLength = MessageGeneration.MaxOutputLength,
-                purpose = MessageGeneration.AIChatMessagePurpose,
+                purpose = MessageGeneration.ChatInstructionPurpose,
                 status = MessageGeneration.NoneStatus
             };
         }
