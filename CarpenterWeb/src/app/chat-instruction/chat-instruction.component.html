@@ -1,0 +1,15 @@
+<div style="display: flex; flex-direction: column; height:100%">
+  <h1 class="mat-h1" style="margin:5px">Chat Instruction</h1>
+  <div style="padding: 5px; display:flex; flex-direction: row">
+    <textarea [value]="chatInstruction" (input)="onChatInstructionValueChange($event)" style="height:5em; flex: 1 1 auto; resize: none"></textarea>
+    <button mat-raised-button color="primary" type="button" (click)="onExecuteChatInstruction()" style="height: unset">
+      <ng-container *ngIf="!isWaiting; else isWaitingTemplate">
+        <mat-icon>send</mat-icon>
+      </ng-container>
+      <ng-template #isWaitingTemplate>
+        <mat-progress-spinner color="accent" mode="indeterminate" style="width: 24px; height:24px"></mat-progress-spinner>
+      </ng-template>
+    </button>
+  </div>
+  <textarea [value]="instructionResponse" style="flex: 1 1 auto; padding: 5px; resize: none"></textarea>
+</div>

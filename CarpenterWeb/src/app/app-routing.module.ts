@@ -7,11 +7,13 @@ import { ImportChatLogComponent } from './import-chat-log/import-chat-log.compon
 import { QuickMessagesComponent } from './quick-messages/quick-messages.component';
 import { ChatSummarizationPromptComponent } from './chat-summarization-prompt/chat-summarization-prompt.component';
 import { LandingComponent } from './landing/landing.component';
+import { ChatInstructionComponent } from './chat-instruction/chat-instruction.component';
 
 const routes: Routes = [
   { path: '', component: LandingComponent, pathMatch: "full" },
   { path: 'chat-log', component: ChatLogComponent },
   { path: 'quick-messages', component: QuickMessagesComponent },
+  { path: 'chat-instruction', component: ChatInstructionComponent },
   { path: 'chat-memory', component: ChatMemoryComponent },
   { path: 'chat-summarization-prompt', component: ChatSummarizationPromptComponent },
   { path: 'message-generations', component: MessageGenerationsComponent },

@@ -16,23 +16,23 @@ using Newtonsoft.Json;
 
 namespace CarpenterApi
 {
-    public class GetNotDoneMessageGenerations
+    public class GetLatestChatInstructionResponse
     {
-        private readonly ILogger<GetNotDoneMessageGenerations> _logger;
+        private readonly ILogger<GetLatestChatInstructionResponse> _logger;
 
-        public GetNotDoneMessageGenerations(ILogger<GetNotDoneMessageGenerations> log)
+        public GetLatestChatInstructionResponse(ILogger<GetLatestChatInstructionResponse> log)
         {
             _logger = log;
         }
 
-        [FunctionName("GetNotDoneMessageGenerations")]
+        [FunctionName("GetLatestChatInstructionResponse")]
         [OpenApiOperation(operationId: "Run")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "text/plain", bodyType: typeof(string), Description = "The OK response")]
         public async Task<IActionResult> Run(
 #pragma warning disable IDE0060 // Remove unused parameter
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = null)] HttpRequest req,
 #pragma warning restore IDE0060 // Remove unused parameter
-            [CosmosDB(databaseName: "carpenter-dev", containerName: "chat-messages",
+            [CosmosDB(databaseName: "carpenter-dev", containerName: "message-generations",
                 Connection = "CosmosDbConnectionString"
                 )] CosmosClient client,
             ClaimsPrincipal claimsPrincipal)
@@ -40,16 +40,9 @@ namespace CarpenterApi
             _logger.LogInformation("C# HTTP trigger function processed a request.");
 
             CarpenterUser user = CarpenterUser.GetCurrentUser(claimsPrincipal);
-            var messageGenerations = await MessageGeneration.GetNotDoneMessageGenerations(client, user);
-            List<MessageGeneration> updatedMessageGenerations = new();
-
-            foreach(var messageGeneration in messageGenerations)
-            {
-                await messageGeneration.UpdateStatus(client, user);
-                updatedMessageGenerations.Add(messageGeneration);
-            }
-
-            return new OkObjectResult(updatedMessageGenerations);
+            var instructionResponse = await MessageGeneration.GetLatestChatInstructionResponse(client, user);
+            
+            return new OkObjectResult(instructionResponse);
         }
     }
 }

@@ -98,6 +98,13 @@ export class CarpenterApiService {
     return await lastValueFrom(this.httpClient.get(url));
   }
 
+  async executeChatInstruction(instruction: string): Promise<Object> {
+    var url = "https://zealous-wave-0e26a4710.3.azurestaticapps.net/api/ExecuteChatInstruction";
+    var body = instruction;
+
+    return await lastValueFrom(this.httpClient.post(url, body));
+  }
+
   async getMessageGenerations(): Promise<MessageGeneration[]> {
     var url = "https://zealous-wave-0e26a4710.3.azurestaticapps.net/api/GetMessageGenerations";
 
@@ -108,6 +115,12 @@ export class CarpenterApiService {
     var url = "https://zealous-wave-0e26a4710.3.azurestaticapps.net/api/GetNotDoneMessageGenerations";
 
     return await lastValueFrom<MessageGeneration[]>(this.httpClient.get<MessageGeneration[]>(url));
+  }
+
+  async getLatestChatInstructionResponse(): Promise<string> {
+    var url = "https://zealous-wave-0e26a4710.3.azurestaticapps.net/api/GetLatestChatInstructionResponse";
+
+    return await lastValueFrom<string>(this.httpClient.get<string>(url));
   }
 
   async importChatLog(chatLog: string): Promise<Object> {
