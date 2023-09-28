@@ -266,7 +266,7 @@ namespace CarpenterApi.Models
         public static async Task<string> GetLatestChatInstructionResponse(CosmosClient client, CarpenterUser user)
         {
             Container container = client.GetDatabase("carpenter-dev").GetContainer("message-generations");
-            QueryDefinition queryDefinition = new QueryDefinition("SELECT TOP 1 * FROM c WHERE c.userId = @userId AND purpose = @purpose ORDER BY c._ts DESC")
+            QueryDefinition queryDefinition = new QueryDefinition("SELECT TOP 1 * FROM c WHERE c.userId = @userId AND c.purpose = @purpose ORDER BY c._ts DESC")
                 .WithParameter("@userId", user.userId)
                 .WithParameter("@purpose", ChatInstructionPurpose);
 
