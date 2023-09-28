@@ -149,17 +149,21 @@ namespace CarpenterApi.Models
                         switch(purpose)
                         {
                             case AIChatMessagePurpose:
-                                ChatMessage chatMessage = new()
+                                if (purposeData != null)
                                 {
-                                    id = Guid.NewGuid(),
-                                    userId = userId,
-                                    timestamp = purposeData.timestamp,
-                                    sender = ChatMessage.AISender,
-                                    message = TrimMessage(generatedOutput),
-                                    messageGenerationId = id
-                                };
+                                    ChatMessage chatMessage = new()
+                                    {
+                                        id = Guid.NewGuid(),
+                                        userId = userId,
+                                        timestamp = purposeData.timestamp,
+                                        sender = ChatMessage.AISender,
+                                        message = TrimMessage(generatedOutput),
+                                        messageGenerationId = id
+                                    };
 
-                                await chatMessage.Write(client);
+                                    await chatMessage.Write(client);
+                                }
+
                                 break;
                             case ChatInstructionPurpose:
                                 // Do nothing, the UI will just get the response directly from the MessageGeneration object

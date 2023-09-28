@@ -30,7 +30,7 @@ export class ChatInstructionComponent {
 
     if (this.chatInstruction != "") {
       await this.apiService.executeChatInstruction(this.chatInstruction);
-      this.chatInstruction = "";
+      //this.chatInstruction = "";
     }
 
     await this.onUpdateMessageGenerationStatus();
