@@ -20,6 +20,8 @@ namespace CarpenterApi.Models
             public string instruction;
         }
 
+        public const string ApiKey = "***REMOVED***";
+
         public const string AIChatMessagePurpose = "aiChatMessage";
         public const string ChatInstructionPurpose = "chatInstruction";
         public const string ChatSummaryPurpose = "chatSummary";
@@ -68,6 +70,47 @@ namespace CarpenterApi.Models
             await container.ReplaceItemAsync(this, id.ToString());
         }
 
+        public static async Task<IEnumerable<MessageGeneration>> GenerateAIChatMessageAlternatives(CosmosClient client, CarpenterUser user)
+        {
+            ChatMemory chatMemory = await ChatMemory.GetChatMemory(client, user);
+            var chatMessages = await ChatMessage.GetChatMessages(client, user);
+
+            MessageGeneration messageGeneration = await PromptGeneration.NextAIChatMessageGeneration(client, user, chatMemory, chatMessages, MaxInputLength);
+
+            List<MessageGeneration> messageGenerations = new();
+
+            switch (messageGeneration.purpose)
+            {
+                case AIChatMessagePurpose:
+                    var models = await ModelInfo.PickModels(client, user, MaxInputLength, MaxOutputLength);
+
+                    foreach (string model in models)
+                    {
+                        MessageGeneration tempMessageGeneration = new()
+                        {
+                            id = Guid.NewGuid(),
+                            maxInputLength = messageGeneration.maxInputLength,
+                            maxOutputLength = messageGeneration.maxOutputLength,
+                            model = model,
+                            prompt = messageGeneration.prompt,
+                            purpose = messageGeneration.purpose,
+                            purposeData = messageGeneration.purposeData,
+                            status = messageGeneration.status,
+                            userId = user.userId,
+                        };
+
+                        var newMessageGeneration = await StartGeneration(client, tempMessageGeneration);
+                        messageGenerations.Add(newMessageGeneration);
+                    }
+                    break;
+                case ChatSummaryPurpose:
+                    messageGenerations.Add(await StartGeneration(client, messageGeneration));
+                    break;
+            }
+
+            return messageGenerations;
+        }
+
         public static async Task<MessageGeneration> StartGeneration(CosmosClient client, MessageGeneration messageGeneration)
         {
             HttpClient httpClient = new();
@@ -76,9 +119,17 @@ namespace CarpenterApi.Models
                 BaseUrl = "https://stablehorde.net/api"
             };
 
+            string[] models = null;
+
+            if(messageGeneration.model != null)
+            {
+                models = new[] { messageGeneration.model };
+            }
+
             GenerationInputKobold payload = new()
             {
                 Prompt = messageGeneration.prompt,
+                Models = models,
                 Params = new ModelGenerationInputKobold
                 {
                     N = 1,
@@ -87,7 +138,7 @@ namespace CarpenterApi.Models
                 }
             };
 
-            var generateResult = await apiClient.Post_text_async_generateAsync("***REMOVED***", null, payload, null);
+            var generateResult = await apiClient.Post_text_async_generateAsync(ApiKey, null, payload, null);
             messageGeneration.stableHordeId = generateResult.Id;
             messageGeneration.status = PendingStatus;
             await messageGeneration.Create(client);
@@ -189,12 +240,8 @@ namespace CarpenterApi.Models
                         switch (nextPurpose)
                         {
                             case AIChatMessagePurpose:
-                                chatMemory = await ChatMemory.GetChatMemory(client, user);
-                                chatMessages = await ChatMessage.GetChatMessages(client, user);
+                                await GenerateAIChatMessageAlternatives(client, user);
 
-                                messageGeneration = await PromptGeneration.NextAIChatMessageGeneration(client, user, chatMemory, chatMessages, MaxInputLength);
-
-                                await StartGeneration(client, messageGeneration);
                                 break;
                             case ChatInstructionPurpose:
                                 chatMemory = await ChatMemory.GetChatMemory(client, user);

@@ -18,7 +18,8 @@ namespace CarpenterApi.Models
         public static async Task<ChatMemory> GetChatMemory(CosmosClient client, CarpenterUser user)
         {
             Container container = client.GetDatabase("carpenter-dev").GetContainer("chat-memories");
-            QueryDefinition queryDefinition = new QueryDefinition("SELECT TOP 1 * FROM c WHERE c.userId = @searchterm").WithParameter("@searchterm", user.userId);
+            QueryDefinition queryDefinition = new QueryDefinition("SELECT TOP 1 * FROM c WHERE c.userId = @userId")
+                .WithParameter("@userId", user.userId);
 
             using var iterator = container.GetItemQueryIterator<ChatMemory>(queryDefinition);
             while (iterator.HasMoreResults)

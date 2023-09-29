@@ -46,14 +46,9 @@ namespace CarpenterApi
             _logger.LogInformation("C# HTTP trigger function processed a request.");
 
             CarpenterUser user = CarpenterUser.GetCurrentUser(claimsPrincipal);
-            ChatMemory chatMemory = await ChatMemory.GetChatMemory(client, user);
-            var chatMessages = await ChatMessage.GetChatMessages(client, user);
+            var messageGenerations = await MessageGeneration.GenerateAIChatMessageAlternatives(client, user);
 
-            MessageGeneration messageGeneration = await PromptGeneration.NextAIChatMessageGeneration(client, user, chatMemory, chatMessages, MessageGeneration.MaxInputLength);
-
-            messageGeneration = await MessageGeneration.StartGeneration(client, messageGeneration);
-
-            return new OkObjectResult(messageGeneration);
+            return new OkObjectResult(messageGenerations);
         }
     }
 }
