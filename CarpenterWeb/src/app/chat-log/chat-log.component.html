@@ -11,11 +11,16 @@
         </mat-card>
       </ng-container>
       <ng-template #aiChat>
-        <mat-card style="margin-right: 20px; margin-top: 2px; margin-bottom: 2px" (click)="onChatMessageClicked(chatMessage)">
+        <mat-card style="margin-right: 20px; margin-top: 2px; margin-bottom: 2px">
           <mat-card-header>
             <mat-card-subtitle>{{chatMessage.sender}}: {{chatMessage.timestamp | date:'medium'}}</mat-card-subtitle>
           </mat-card-header>
-          <mat-card-content style="white-space-collapse: preserve">{{chatMessage.message}}</mat-card-content>
+          <mat-card-content>
+            <span style="white-space-collapse: preserve" (click)="onChatMessageClicked(chatMessage)">{{chatMessage.message}}</span>
+            <ng-container *ngIf="chatMessage.alternateGroupId">
+              <button mat-raised-button color="promary" type="button" (click)="onWinnerClicked(chatMessage)">Winner</button>
+            </ng-container>
+          </mat-card-content>
         </mat-card>
       </ng-template>
     </div>

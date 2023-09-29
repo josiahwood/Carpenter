@@ -12,12 +12,6 @@ namespace CarpenterApi.Models
 {
     internal class ChatMessage
     {
-        //public class Alternate
-        //{
-        //    public string message;
-        //    public Guid messageGenerationId;
-        //}
-        
         public const string UserSender = "User";
         public const string AISender = "AI";
         
@@ -27,7 +21,7 @@ namespace CarpenterApi.Models
         public string sender;
         public string message;
         public Guid messageGenerationId;
-        //public Alternate[] alternates;
+        public Guid alternateGroupId;
 
         public static async Task<IList<ChatMessage>> GetChatMessages(CosmosClient client, CarpenterUser user)
         {

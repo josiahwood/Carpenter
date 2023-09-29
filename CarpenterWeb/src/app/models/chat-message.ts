@@ -5,4 +5,5 @@ export interface ChatMessage {
   sender: string;
   message: string;
   messageGenerationId: string;
+  alternateGroupId: string;
 }

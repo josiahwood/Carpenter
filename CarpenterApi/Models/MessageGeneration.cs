@@ -40,6 +40,12 @@ namespace CarpenterApi.Models
 
         // Identifiers
         public Guid id;
+        
+        /// <summary>
+        /// Used for alternative messages or parent summaries
+        /// </summary>
+        public Guid parentId;
+        
         public string userId;
 
         // Inputs
@@ -89,6 +95,7 @@ namespace CarpenterApi.Models
                         MessageGeneration tempMessageGeneration = new()
                         {
                             id = Guid.NewGuid(),
+                            parentId = messageGeneration.id,
                             maxInputLength = messageGeneration.maxInputLength,
                             maxOutputLength = messageGeneration.maxOutputLength,
                             model = model,
@@ -209,7 +216,8 @@ namespace CarpenterApi.Models
                                         timestamp = purposeData.timestamp,
                                         sender = ChatMessage.AISender,
                                         message = TrimMessage(generatedOutput),
-                                        messageGenerationId = id
+                                        messageGenerationId = id,
+                                        alternateGroupId = parentId
                                     };
 
                                     await chatMessage.Write(client);

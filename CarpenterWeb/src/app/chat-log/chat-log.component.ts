@@ -50,6 +50,29 @@ export class ChatLogComponent {
     });
   }
 
+  async onWinnerClicked(chatMessage: ChatMessage) {
+    var winnerModel: string = (await this.apiService.getMessageGeneration(chatMessage.messageGenerationId)).model;
+    var loserModel: string;
+
+    for (var alternate of this.chatMessages) {
+      if (alternate.alternateGroupId == chatMessage.alternateGroupId) {
+        var loserModel: string = (await this.apiService.getMessageGeneration(alternate.messageGenerationId)).model;
+        await this.apiService.compareModels(winnerModel, loserModel);
+        chatMessage.alternateGroupId = "";
+        await this.apiService.editChatMessage(chatMessage);
+        await this.apiService.deleteChatMessage(alternate.id);
+
+        const index = this.chatMessages.indexOf(alternate);
+
+        if (index > -1) {
+          this.chatMessages.splice(index, 1);
+        }
+
+        break;
+      }
+    }
+  }
+
   async onSendUserChatMessage() {
     console.log("onSendUserChatMessage");
     console.log(this.userChatMessage);
