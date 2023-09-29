@@ -310,6 +310,27 @@ namespace CarpenterApi.Models
             return messageGenerations;
         }
 
+        public static async Task<MessageGeneration> GetMessageGeneration(CosmosClient client, CarpenterUser user, Guid id)
+        {
+            Container container = client.GetDatabase("carpenter-dev").GetContainer("message-generations");
+            QueryDefinition queryDefinition = new QueryDefinition("SELECT * FROM c WHERE c.userId = @userId AND c.id = @id")
+                .WithParameter("@userId", user.userId)
+                .WithParameter("@id", id);
+
+            using var iterator = container.GetItemQueryIterator<MessageGeneration>(queryDefinition);
+            while (iterator.HasMoreResults)
+            {
+                var messageGeneration = (await iterator.ReadNextAsync()).FirstOrDefault();
+
+                if (messageGeneration != null)
+                {
+                    return messageGeneration;
+                }
+            }
+
+            return null;
+        }
+
         public static async Task<string> GetLatestChatInstructionResponse(CosmosClient client, CarpenterUser user)
         {
             Container container = client.GetDatabase("carpenter-dev").GetContainer("message-generations");

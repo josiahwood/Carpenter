@@ -15,9 +15,15 @@ export enum ChatMessageDialogResult {
 })
 export class ChatMessageDialogComponent {
   public tempMessage: string;
+  public model: string;
 
   constructor(public dialogRef: MatDialogRef<ChatMessageDialogComponent>, @Inject(MAT_DIALOG_DATA) public data: ChatMessage, private apiService: CarpenterApiService) {
     this.tempMessage = data.message;
+    this.model = ""
+  }
+
+  async ngOnInit() {
+    this.model = (await this.apiService.getMessageGeneration(this.data.messageGenerationId)).model
   }
 
   public onChatMessageMessageValueChange(event: Event): void {
