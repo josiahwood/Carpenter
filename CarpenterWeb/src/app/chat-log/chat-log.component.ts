@@ -4,6 +4,7 @@ import { MessageGeneration } from '../models/message-generation'
 import { CarpenterApiService } from '../carpenter-api.service';
 import { MatDialog } from '@angular/material/dialog';
 import { ChatMessageDialogComponent, ChatMessageDialogResult } from '../chat-message-dialog/chat-message-dialog.component';
+import { isEmpty } from 'rxjs';
 
 @Component({
   selector: 'app-chat-log',
@@ -51,9 +52,12 @@ export class ChatLogComponent {
   }
 
   async onWinnerClicked(chatMessage: ChatMessage) {
-    var winnerModel: string = (await this.apiService.getMessageGeneration(chatMessage.messageGenerationId)).model;
-    var loserModel: string;
+    if (chatMessage.alternateGroupId == null || chatMessage.alternateGroupId == "") {
+      return;
+    }
 
+    var winnerModel: string = (await this.apiService.getMessageGeneration(chatMessage.messageGenerationId)).model;
+    
     for (var alternate of this.chatMessages) {
       if (alternate.alternateGroupId == chatMessage.alternateGroupId) {
         var loserModel: string = (await this.apiService.getMessageGeneration(alternate.messageGenerationId)).model;

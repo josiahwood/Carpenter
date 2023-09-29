@@ -2,6 +2,7 @@
   <span>Sender: {{data.sender}}</span>
   <span>Timestamp: {{data.timestamp | date:'medium'}}</span>
   <span>Model: {{model}}</span>
+  <span>Alternate Group Id: {{data.alternateGroupId}}</span>
   <span>Message:</span>
   <textarea value="{{tempMessage}}" style="flex:1 1 auto; resize:none" (input)="onChatMessageMessageValueChange($event)"></textarea>
   <button mat-raised-button color="primary" type="button" (click)="onUpdate()" style="margin-top: 5px; margin-bottom: 5px">Update</button>
