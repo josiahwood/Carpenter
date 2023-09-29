@@ -160,8 +160,8 @@ namespace CarpenterApi.Models
             winnerInfo.rating = ratings.Item1;
             loserInfo.rating = ratings.Item2;
 
-            await winnerInfo.Write(client);
-            await loserInfo.Write(client);
+            await winnerInfo.Update(client);
+            await loserInfo.Update(client);
         }
 
         /// <summary>
