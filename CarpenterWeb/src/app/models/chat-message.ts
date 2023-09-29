@@ -5,5 +5,5 @@ export interface ChatMessage {
   sender: string;
   message: string;
   messageGenerationId: string;
-  alternateGroupId: string;
+  alternateGroupId: string | undefined;
 }
