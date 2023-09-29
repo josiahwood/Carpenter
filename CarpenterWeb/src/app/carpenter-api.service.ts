@@ -69,7 +69,7 @@ export class CarpenterApiService {
   async deleteChatMessage(id: string): Promise<Object> {
     var url = "https://zealous-wave-0e26a4710.3.azurestaticapps.net/api/DeleteChatMessage";
     var params = new HttpParams();
-    params.set("id", id)
+    params = params.set("id", id)
 
     return await lastValueFrom(this.httpClient.get(url, { params: params }));
   }
@@ -122,7 +122,7 @@ export class CarpenterApiService {
   async getMessageGeneration(id: string): Promise<MessageGeneration> {
     var url = "https://zealous-wave-0e26a4710.3.azurestaticapps.net/api/GetMessageGeneration";
     var params = new HttpParams();
-    params.set("id", id)
+    params = params.set("id", id)
 
     return await lastValueFrom<MessageGeneration>(this.httpClient.get<MessageGeneration>(url, { params: params }));
   }
@@ -143,8 +143,8 @@ export class CarpenterApiService {
   async compareModels(winnerModel: string, loserModel: string): Promise<Object> {
     var url = "https://zealous-wave-0e26a4710.3.azurestaticapps.net/api/CompareModels";
     var params = new HttpParams();
-    params.set("winnerModel", winnerModel);
-    params.set("loserModel", loserModel);
+    params = params.set("winnerModel", winnerModel);
+    params = params.set("loserModel", loserModel);
 
     return await lastValueFrom(this.httpClient.get(url, { params: params }));
   }
