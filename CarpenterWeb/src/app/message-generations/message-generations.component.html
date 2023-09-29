@@ -3,9 +3,9 @@
   <div style="flex: 1 1 auto; overflow-y: scroll; padding: 5px" #messageGenerationsDiv>
     <div *ngFor="let messageGeneration of messageGenerations">
       <mat-card style="margin-top: 2px; margin-bottom: 2px">
-        <mat-card-header>
+        <!--<mat-card-header>
           <mat-card-subtitle>{{messageGeneration.timestamp | date:'medium'}}</mat-card-subtitle>
-        </mat-card-header>
+        </mat-card-header>-->
         <mat-card-content>
           <span>id: {{messageGeneration.id}}</span><br />
           <span>model: {{messageGeneration.model}}</span><br />
