@@ -17,8 +17,8 @@
           </mat-card-header>
           <mat-card-content>
             <span style="white-space-collapse: preserve" (click)="onChatMessageClicked(chatMessage)">{{chatMessage.message}}</span>
-            <ng-container *ngIf="chatMessage.alternateGroupId">
-              <button mat-raised-button color="promary" type="button" (click)="onWinnerClicked(chatMessage)">Winner</button>
+            <ng-container *ngIf="chatMessage.alternateGroupId?.length">
+              <br /><button mat-raised-button color="primary" type="button" (click)="onWinnerClicked(chatMessage)">Winner</button>
             </ng-container>
           </mat-card-content>
         </mat-card>
