@@ -21,7 +21,7 @@ namespace CarpenterApi.Models
         public string sender;
         public string message;
         public Guid messageGenerationId;
-        public Guid alternateGroupId;
+        public Guid? alternateGroupId;
 
         public static async Task<IList<ChatMessage>> GetChatMessages(CosmosClient client, CarpenterUser user)
         {

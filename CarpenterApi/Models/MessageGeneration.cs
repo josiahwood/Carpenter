@@ -44,7 +44,7 @@ namespace CarpenterApi.Models
         /// <summary>
         /// Used for alternative messages or parent summaries
         /// </summary>
-        public Guid parentId;
+        public Guid? parentId;
         
         public string userId;
 
