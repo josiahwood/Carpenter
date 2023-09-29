@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ChatMessage } from './models/chat-message';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { lastValueFrom } from 'rxjs';
 import { MessageGeneration } from './models/message-generation';
 import { QuickMessage } from './models/quick-message';
@@ -67,9 +67,11 @@ export class CarpenterApiService {
   }
 
   async deleteChatMessage(id: string): Promise<Object> {
-    var url = "https://zealous-wave-0e26a4710.3.azurestaticapps.net/api/DeleteChatMessage?id=" + id;
+    var url = "https://zealous-wave-0e26a4710.3.azurestaticapps.net/api/DeleteChatMessage";
+    var params = new HttpParams();
+    params.set("id", id)
 
-    return await lastValueFrom(this.httpClient.get(url));
+    return await lastValueFrom(this.httpClient.get(url, { params: params }));
   }
 
   async getQuickMessages(): Promise<QuickMessage[]> {
@@ -118,9 +120,11 @@ export class CarpenterApiService {
   }
 
   async getMessageGeneration(id: string): Promise<MessageGeneration> {
-    var url = "https://zealous-wave-0e26a4710.3.azurestaticapps.net/api/GetMessageGeneration?id=" + id;
+    var url = "https://zealous-wave-0e26a4710.3.azurestaticapps.net/api/GetMessageGeneration";
+    var params = new HttpParams();
+    params.set("id", id)
 
-    return await lastValueFrom<MessageGeneration>(this.httpClient.get<MessageGeneration>(url));
+    return await lastValueFrom<MessageGeneration>(this.httpClient.get<MessageGeneration>(url, { params: params }));
   }
 
   async getLatestChatInstructionResponse(): Promise<string> {
@@ -134,5 +138,14 @@ export class CarpenterApiService {
     var body = chatLog;
 
     return await lastValueFrom(this.httpClient.post(url, body));
+  }
+
+  async compareModels(winnerModel: string, loserModel: string): Promise<Object> {
+    var url = "https://zealous-wave-0e26a4710.3.azurestaticapps.net/api/CompareModels";
+    var params = new HttpParams();
+    params.set("winnerModel", winnerModel);
+    params.set("loserModel", loserModel);
+
+    return await lastValueFrom(this.httpClient.get(url, { params: params }));
   }
 }

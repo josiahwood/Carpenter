@@ -151,7 +151,7 @@ namespace CarpenterApi.Models
             return modelRatings.Last().Key;
         }
 
-        public static async void CompareModels(CosmosClient client, CarpenterUser user, string winnerModel, string loserModel)
+        public static async Task CompareModels(CosmosClient client, CarpenterUser user, string winnerModel, string loserModel)
         {
             ModelInfo winnerInfo = await GetModelInfo(client, user, winnerModel);
             ModelInfo loserInfo = await GetModelInfo(client, user, loserModel);
