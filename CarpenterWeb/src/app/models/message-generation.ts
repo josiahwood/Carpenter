@@ -9,8 +9,8 @@ export interface MessageGeneration {
   maxInputLength: number;
   maxOutputLength: number;
   prompt: string;
-  timestamp: Date;
   purpose: string;
+  nextPurpose: string;
 
   // Outputs
   stableHordeId: string;
