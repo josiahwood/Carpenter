@@ -74,7 +74,7 @@ namespace CarpenterApi.Models
             await container.ReplaceItemAsync(this, id.ToString());
         }
 
-        public static async Task<string[]> PickModels(CosmosClient client, CarpenterUser user, int maxInputLength, int maxOutputLength)
+        public static async Task<(string[], string[])> PickModels(CosmosClient client, CarpenterUser user, int maxInputLength, int maxOutputLength)
         {
             HttpClient httpClient = new();
             StableHordeApi.Client apiClient = new(httpClient)
@@ -118,11 +118,24 @@ namespace CarpenterApi.Models
                 }
             }
 
-            string model1 = GetRandomModel(modelRatings);
-            modelRatings.Remove(model1);
-            string model2 = GetRandomModel(modelRatings);
+            int modelCount = modelRatings.Count / 4;
+            modelCount = Math.Max(modelCount, 1);
 
-            return new string[] { model1, model2 };
+            List<string> models1 = new();
+            List<string> models2 = new();
+
+            for (int i = 0; i < modelCount; i++)
+            {
+                string model1 = GetRandomModel(modelRatings);
+                models1.Add(model1);
+                modelRatings.Remove(model1);
+
+                string model2 = GetRandomModel(modelRatings);
+                models2.Add(model2);
+                modelRatings.Remove(model2);
+            }
+
+            return (models1.ToArray(), models2.ToArray());
         }
 
         public static string GetRandomModel(Dictionary<string, double> modelRatings)
@@ -153,15 +166,19 @@ namespace CarpenterApi.Models
 
         public static async Task CompareModels(CosmosClient client, CarpenterUser user, string winnerModel, string loserModel)
         {
-            ModelInfo winnerInfo = await GetModelInfo(client, user, winnerModel);
-            ModelInfo loserInfo = await GetModelInfo(client, user, loserModel);
+            if (winnerModel != loserModel)
+            {
 
-            (double, double) ratings = UpdateRatings(winnerInfo.rating, loserInfo.rating);
-            winnerInfo.rating = ratings.Item1;
-            loserInfo.rating = ratings.Item2;
+                ModelInfo winnerInfo = await GetModelInfo(client, user, winnerModel);
+                ModelInfo loserInfo = await GetModelInfo(client, user, loserModel);
 
-            await winnerInfo.Update(client);
-            await loserInfo.Update(client);
+                (double, double) ratings = UpdateRatings(winnerInfo.rating, loserInfo.rating);
+                winnerInfo.rating = ratings.Item1;
+                loserInfo.rating = ratings.Item2;
+
+                await winnerInfo.Update(client);
+                await loserInfo.Update(client);
+            }
         }
 
         /// <summary>

@@ -49,7 +49,7 @@ namespace CarpenterApi.Models
         public string userId;
 
         // Inputs
-        public string model;
+        public string[] models;
         public string worker;
         public int maxInputLength;
         public int maxOutputLength;
@@ -62,6 +62,7 @@ namespace CarpenterApi.Models
         // Outputs
         public string stableHordeId;
         public string status;
+        public string model;
         public string generatedOutput;
 
         public async Task Create(CosmosClient client)
@@ -90,25 +91,40 @@ namespace CarpenterApi.Models
                 case AIChatMessagePurpose:
                     var models = await ModelInfo.PickModels(client, user, MaxInputLength, MaxOutputLength);
 
-                    foreach (string model in models)
+                    MessageGeneration messageGeneration1 = new()
                     {
-                        MessageGeneration tempMessageGeneration = new()
-                        {
-                            id = Guid.NewGuid(),
-                            parentId = messageGeneration.id,
-                            maxInputLength = messageGeneration.maxInputLength,
-                            maxOutputLength = messageGeneration.maxOutputLength,
-                            model = model,
-                            prompt = messageGeneration.prompt,
-                            purpose = messageGeneration.purpose,
-                            purposeData = messageGeneration.purposeData,
-                            status = messageGeneration.status,
-                            userId = user.userId,
-                        };
+                        id = Guid.NewGuid(),
+                        parentId = messageGeneration.id,
+                        maxInputLength = messageGeneration.maxInputLength,
+                        maxOutputLength = messageGeneration.maxOutputLength,
+                        models = models.Item1,
+                        prompt = messageGeneration.prompt,
+                        purpose = messageGeneration.purpose,
+                        purposeData = messageGeneration.purposeData,
+                        status = messageGeneration.status,
+                        userId = user.userId,
+                    };
 
-                        var newMessageGeneration = await StartGeneration(client, tempMessageGeneration);
-                        messageGenerations.Add(newMessageGeneration);
-                    }
+                    var newMessageGeneration1 = await StartGeneration(client, messageGeneration1);
+                    messageGenerations.Add(newMessageGeneration1);
+
+                    MessageGeneration messageGeneration2 = new()
+                    {
+                        id = Guid.NewGuid(),
+                        parentId = messageGeneration.id,
+                        maxInputLength = messageGeneration.maxInputLength,
+                        maxOutputLength = messageGeneration.maxOutputLength,
+                        models = models.Item2,
+                        prompt = messageGeneration.prompt,
+                        purpose = messageGeneration.purpose,
+                        purposeData = messageGeneration.purposeData,
+                        status = messageGeneration.status,
+                        userId = user.userId,
+                    };
+
+                    var newMessageGeneration2 = await StartGeneration(client, messageGeneration2);
+                    messageGenerations.Add(newMessageGeneration2);
+
                     break;
                 case ChatSummaryPurpose:
                     messageGenerations.Add(await StartGeneration(client, messageGeneration));
@@ -126,17 +142,10 @@ namespace CarpenterApi.Models
                 BaseUrl = "https://stablehorde.net/api"
             };
 
-            string[] models = null;
-
-            if(messageGeneration.model != null)
-            {
-                models = new[] { messageGeneration.model };
-            }
-
             GenerationInputKobold payload = new()
             {
                 Prompt = messageGeneration.prompt,
-                Models = models,
+                Models = messageGeneration.models,
                 Params = new ModelGenerationInputKobold
                 {
                     N = 1,
