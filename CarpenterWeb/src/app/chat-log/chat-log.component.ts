@@ -87,6 +87,9 @@ export class ChatLogComponent {
       var chatMessage = await this.apiService.sendUserChatMessage(this.userChatMessage);
       this.userChatMessage = "";
       this.chatMessages.push(chatMessage);
+      setTimeout(() => {
+        this.chatLogDiv.nativeElement.scrollTop = this.chatLogDiv.nativeElement.scrollHeight;
+      }, 0);
     }
 
     await this.apiService.generateAIChatMessage();
