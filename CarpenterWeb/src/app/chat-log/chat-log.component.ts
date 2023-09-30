@@ -59,7 +59,7 @@ export class ChatLogComponent {
     var winnerModel: string = (await this.apiService.getMessageGeneration(chatMessage.messageGenerationId)).model;
     
     for (var alternate of this.chatMessages) {
-      if (alternate.alternateGroupId == chatMessage.alternateGroupId) {
+      if (alternate.id != chatMessage.id && alternate.alternateGroupId == chatMessage.alternateGroupId) {
         var loserModel: string = (await this.apiService.getMessageGeneration(alternate.messageGenerationId)).model;
         await this.apiService.compareModels(winnerModel, loserModel);
         chatMessage.alternateGroupId = "";
