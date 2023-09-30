@@ -84,8 +84,9 @@ export class ChatLogComponent {
     this.isWaiting = true;
 
     if (this.userChatMessage != "") {
-      await this.apiService.sendUserChatMessage(this.userChatMessage);
+      var chatMessage = await this.apiService.sendUserChatMessage(this.userChatMessage);
       this.userChatMessage = "";
+      this.chatMessages.push(chatMessage);
     }
 
     await this.apiService.generateAIChatMessage();

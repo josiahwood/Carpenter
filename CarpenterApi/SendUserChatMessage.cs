@@ -54,7 +54,7 @@ namespace CarpenterApi
 
             await chatMessage.Write(client);
 
-            return new OkResult();
+            return new OkObjectResult(chatMessage);
         }
     }
 }

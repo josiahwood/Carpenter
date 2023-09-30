@@ -52,11 +52,11 @@ export class CarpenterApiService {
     return await lastValueFrom<ChatMessage[]>(this.httpClient.get<ChatMessage[]>(url));
   }
 
-  async sendUserChatMessage(userChatMessage: string): Promise<Object> {
+  async sendUserChatMessage(userChatMessage: string): Promise<ChatMessage> {
     var url = "https://zealous-wave-0e26a4710.3.azurestaticapps.net/api/SendUserChatMessage";
     var body = userChatMessage;
 
-    return await lastValueFrom(this.httpClient.post(url, body));
+    return await lastValueFrom<ChatMessage>(this.httpClient.post<ChatMessage>(url, body));
   }
 
   async editChatMessage(chatMessage: ChatMessage): Promise<Object> {
