@@ -33,6 +33,8 @@ namespace CarpenterApi.Models
         public const string DoneStatus = "done";
         public const string ErrorStatus = "error";
 
+        public const string ImEndToken = "<|im_end|>";
+
         public const int MaxInputLength = 4096;
         public const int MaxOutputLength = 256;
         public const int SummarizationInputLength = 2048;
@@ -235,6 +237,7 @@ namespace CarpenterApi.Models
                                 break;
                             case ChatInstructionPurpose:
                                 // Do nothing, the UI will just get the response directly from the MessageGeneration object
+                                generatedOutput = TrimImEnd(generatedOutput);
                                 break;
                             case ChatSummaryPurpose:
                                 ChatSummary chatSummary = new()
@@ -242,7 +245,7 @@ namespace CarpenterApi.Models
                                     id = Guid.NewGuid(),
                                     userId = userId,
                                     promptHash = PromptGeneration.GetHash(prompt),
-                                    summary = generatedOutput,
+                                    summary = TrimImEnd(generatedOutput),
                                     messageGenerationId = id
                                 };
 
@@ -369,9 +372,23 @@ namespace CarpenterApi.Models
             return null;
         }
 
+        private static string TrimImEnd(string message)
+        {
+            int imEndTokenIndex = message.IndexOf(ImEndToken);
+
+            if (imEndTokenIndex >= 0)
+            {
+                message = message.Substring(0, imEndTokenIndex);
+            }
+
+            return message;
+        }
+
         private static string TrimMessage(string message)
         {
             message = message.ReplaceLineEndings();
+            message = TrimImEnd(message);
+
             var lines = message.Split(Environment.NewLine, StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
             string trimmed = "";
 
