@@ -210,7 +210,7 @@ namespace CarpenterApi.Models
 
                     if (generation != null)
                     {
-                        generatedOutput = generation.Text;
+                        generatedOutput = TrimGeneratedOutput(generation.Text);
                         model = generation.Model;
                         worker = generation.Worker_name;
                         status = DoneStatus;
@@ -237,7 +237,6 @@ namespace CarpenterApi.Models
                                 break;
                             case ChatInstructionPurpose:
                                 // Do nothing, the UI will just get the response directly from the MessageGeneration object
-                                generatedOutput = TrimImEnd(generatedOutput);
                                 break;
                             case ChatSummaryPurpose:
                                 ChatSummary chatSummary = new()
@@ -245,7 +244,7 @@ namespace CarpenterApi.Models
                                     id = Guid.NewGuid(),
                                     userId = userId,
                                     promptHash = PromptGeneration.GetHash(prompt),
-                                    summary = TrimImEnd(generatedOutput),
+                                    summary = generatedOutput,
                                     messageGenerationId = id
                                 };
 
@@ -372,7 +371,7 @@ namespace CarpenterApi.Models
             return null;
         }
 
-        private static string TrimImEnd(string message)
+        private static string TrimGeneratedOutput(string message)
         {
             int imEndTokenIndex = message.IndexOf(ImEndToken);
 
@@ -381,14 +380,14 @@ namespace CarpenterApi.Models
                 message = message.Substring(0, imEndTokenIndex);
             }
 
+            message = message.Trim();
+            message = message.ReplaceLineEndings();
+
             return message;
         }
 
         private static string TrimMessage(string message)
         {
-            message = message.ReplaceLineEndings();
-            message = TrimImEnd(message);
-
             var lines = message.Split(Environment.NewLine, StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
             string trimmed = "";
 
