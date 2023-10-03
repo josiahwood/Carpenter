@@ -377,7 +377,7 @@ namespace CarpenterApi.Models
 
             if (imEndTokenIndex >= 0)
             {
-                message = message.Substring(0, imEndTokenIndex);
+                message = message[..imEndTokenIndex];
             }
 
             message = message.Trim();

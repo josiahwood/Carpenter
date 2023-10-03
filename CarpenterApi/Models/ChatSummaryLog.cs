@@ -60,13 +60,13 @@ namespace CarpenterApi.Models
             prompt += Environment.NewLine + aiPrompt.ToPrompt();
             ChatSummary chatSummary = null;
 
-            ChatSummarizationPrompt chatSummarizationPrompt = await ChatSummarizationPrompt.GetChatSummarizationPrompt(client, user);
-
             int tokenCount = encoding.CountTokens(prompt);
+
+            ChatSummarizationPrompt chatSummarizationPrompt = await ChatSummarizationPrompt.GetChatSummarizationPrompt(client, user);
 
             while (tokenCount > maxTokens)
             {
-                (ChatSummary, int, MessageGeneration) summary = await PromptGeneration.GetChatSummaryOrMessageGeneration(client, user, chatMemory, chatSummary, chatMessages, MessageGeneration.SummarizationInputLength);
+                (ChatSummary, int, MessageGeneration) summary = await PromptGeneration.GetChatSummaryOrMessageGeneration(client, user, chatMemory, chatSummary, chatMessages, chatSummarizationPrompt, MessageGeneration.SummarizationInputLength);
 
                 if (summary.Item3 != null)
                 {

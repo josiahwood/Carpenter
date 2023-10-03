@@ -52,10 +52,12 @@ namespace CarpenterApi.Models
             ChatSummary chatSummary = null;
 
             int tokenCount = encoding.CountTokens(prompt);
-            
-            while(tokenCount > maxTokens)
+
+            ChatSummarizationPrompt chatSummarizationPrompt = await ChatSummarizationPrompt.GetChatSummarizationPrompt(client, user);
+
+            while (tokenCount > maxTokens)
             {
-                (ChatSummary, int, MessageGeneration) summary = await GetChatSummaryOrMessageGeneration(client, user, chatMemory, chatSummary, chatMessages, MessageGeneration.SummarizationInputLength);
+                (ChatSummary, int, MessageGeneration) summary = await GetChatSummaryOrMessageGeneration(client, user, chatMemory, chatSummary, chatMessages, chatSummarizationPrompt, MessageGeneration.SummarizationInputLength);
 
                 if (summary.Item3 != null)
                 {
@@ -123,9 +125,11 @@ namespace CarpenterApi.Models
 
             int tokenCount = encoding.CountTokens(prompt);
 
+            ChatSummarizationPrompt chatSummarizationPrompt = await ChatSummarizationPrompt.GetChatSummarizationPrompt(client, user);
+
             while (tokenCount > maxTokens)
             {
-                (ChatSummary, int, MessageGeneration) summary = await GetChatSummaryOrMessageGeneration(client, user, chatMemory, chatSummary, chatMessages, MessageGeneration.SummarizationInputLength);
+                (ChatSummary, int, MessageGeneration) summary = await GetChatSummaryOrMessageGeneration(client, user, chatMemory, chatSummary, chatMessages, chatSummarizationPrompt, MessageGeneration.SummarizationInputLength);
 
                 if (summary.Item3 != null)
                 {
@@ -208,9 +212,8 @@ namespace CarpenterApi.Models
             return (promptInstruction, chatMessagesIncluded);
         }
 
-        public static async Task<(ChatSummary,int,MessageGeneration)> GetChatSummaryOrMessageGeneration(CosmosClient client, CarpenterUser user, ChatMemory chatMemory, ChatSummary chatSummary, IList<ChatMessage> chatMessages, int maxTokens)
+        public static async Task<(ChatSummary,int,MessageGeneration)> GetChatSummaryOrMessageGeneration(CosmosClient client, CarpenterUser user, ChatMemory chatMemory, ChatSummary chatSummary, IList<ChatMessage> chatMessages, ChatSummarizationPrompt chatSummarizationPrompt, int maxTokens)
         {
-            ChatSummarizationPrompt chatSummarizationPrompt = await ChatSummarizationPrompt.GetChatSummarizationPrompt(client, user);
             (string,int) value = GetChatSummaryPrompt(chatMemory, chatSummarizationPrompt, chatSummary, chatMessages, maxTokens);
             string prompt = value.Item1;
             int chatMessagesIncluded = value.Item2;
