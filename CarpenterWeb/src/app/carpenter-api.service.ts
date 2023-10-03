@@ -4,6 +4,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { lastValueFrom } from 'rxjs';
 import { MessageGeneration } from './models/message-generation';
 import { QuickMessage } from './models/quick-message';
+import { ChatSummaryLog } from './models/chat-summary-log';
 
 @Injectable({
   providedIn: 'root'
@@ -147,5 +148,11 @@ export class CarpenterApiService {
     params = params.set("loserModel", loserModel);
 
     return await lastValueFrom(this.httpClient.get(url, { params: params }));
+  }
+
+  async getChatSummaryLogs(): Promise<ChatSummaryLog[]> {
+    var url = "https://zealous-wave-0e26a4710.3.azurestaticapps.net/api/GetChatSummaryLogs";
+
+    return await lastValueFrom<ChatSummaryLog[]>(this.httpClient.get<ChatSummaryLog[]>(url));
   }
 }

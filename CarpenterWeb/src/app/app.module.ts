@@ -29,6 +29,7 @@ import { QuickMessageDialogComponent } from './quick-message-dialog/quick-messag
 import { ChatSummarizationPromptComponent } from './chat-summarization-prompt/chat-summarization-prompt.component';
 import { LandingComponent } from './landing/landing.component';
 import { ChatInstructionComponent } from './chat-instruction/chat-instruction.component';
+import { ChatSummaryLogsComponent } from './chat-summary-logs/chat-summary-logs.component';
 
 @NgModule({
   declarations: [
@@ -44,7 +45,8 @@ import { ChatInstructionComponent } from './chat-instruction/chat-instruction.co
     QuickMessageDialogComponent,
     ChatSummarizationPromptComponent,
     LandingComponent,
-    ChatInstructionComponent
+    ChatInstructionComponent,
+    ChatSummaryLogsComponent
   ],
   imports: [
     BrowserModule,

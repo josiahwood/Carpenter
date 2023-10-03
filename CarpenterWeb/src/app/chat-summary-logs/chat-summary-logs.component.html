@@ -1,0 +1,15 @@
+<div style="display: flex; flex-direction: column; height:100%">
+  <h1 class="mat-h1" style="margin:5px">Chat Summary Logs</h1>
+  <div style="flex: 1 1 auto; overflow-y: scroll; padding: 5px" #chatSummaryLogsDiv>
+    <div *ngFor="let chatSummaryLog of chatSummaryLogs">
+      <mat-card style="margin-top: 2px; margin-bottom: 2px">
+        <mat-card-header>
+          <mat-card-subtitle>{{chatSummaryLog.type}}</mat-card-subtitle>
+        </mat-card-header>
+        <mat-card-content>
+          <span style="white-space-collapse: preserve">{{chatSummaryLog.text}}</span>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </div>
+</div>
