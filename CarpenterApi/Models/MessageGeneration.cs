@@ -371,6 +371,7 @@ namespace CarpenterApi.Models
 
         private static string TrimMessage(string message)
         {
+            message = message.ReplaceLineEndings();
             var lines = message.Split(Environment.NewLine, StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
             string trimmed = "";
 
