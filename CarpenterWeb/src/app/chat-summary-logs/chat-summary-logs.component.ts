@@ -26,6 +26,10 @@ export class ChatSummaryLogsComponent {
 
     if (chatSummaryId !== undefined) {
       await this.apiService.deleteChatSummary(chatSummaryId);
+      this.chatSummaryLogs = await this.apiService.getChatSummaryLogs();
+      setTimeout(() => {
+        this.chatSummaryLogsDiv.nativeElement.scrollTop = this.chatSummaryLogsDiv.nativeElement.scrollHeight;
+      }, 0);
     }
   }
 }
