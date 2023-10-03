@@ -8,6 +8,9 @@
         </mat-card-header>
         <mat-card-content>
           <span style="white-space-collapse: preserve">{{chatSummaryLog.text}}</span>
+          <ng-container *ngIf="chatSummaryLog.chatSummaryId">
+            <br /><button mat-raised-button color="primary" type="button" (click)="onDeleteClicked(chatSummaryLog)">Delete</button>
+          </ng-container>
         </mat-card-content>
       </mat-card>
     </div>

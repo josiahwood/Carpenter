@@ -155,4 +155,12 @@ export class CarpenterApiService {
 
     return await lastValueFrom<ChatSummaryLog[]>(this.httpClient.get<ChatSummaryLog[]>(url));
   }
+
+  async deleteChatSummary(id: string): Promise<Object> {
+    var url = "https://zealous-wave-0e26a4710.3.azurestaticapps.net/api/DeleteChatSummary";
+    var params = new HttpParams();
+    params = params.set("id", id)
+
+    return await lastValueFrom(this.httpClient.get(url, { params: params }));
+  }
 }

@@ -20,4 +20,12 @@ export class ChatSummaryLogsComponent {
       this.chatSummaryLogsDiv.nativeElement.scrollTop = this.chatSummaryLogsDiv.nativeElement.scrollHeight;
     }, 0);
   }
+
+  async onDeleteClicked(chatSummaryLog: ChatSummaryLog) {
+    var chatSummaryId: string | undefined = chatSummaryLog.chatSummaryId
+
+    if (chatSummaryId !== undefined) {
+      await this.apiService.deleteChatSummary(chatSummaryId);
+    }
+  }
 }
