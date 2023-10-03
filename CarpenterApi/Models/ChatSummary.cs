@@ -18,7 +18,8 @@ namespace CarpenterApi.Models
         public static async Task<IEnumerable<ChatSummary>> GetChatSummaries(CosmosClient client, CarpenterUser user)
         {
             Container container = client.GetDatabase("carpenter-dev").GetContainer("chat-summaries");
-            QueryDefinition queryDefinition = new QueryDefinition("SELECT * FROM c WHERE c.userId = @searchterm").WithParameter("@searchterm", user.userId);
+            QueryDefinition queryDefinition = new QueryDefinition("SELECT * FROM c WHERE c.userId = @userId")
+                .WithParameter("@userId", user.userId);
 
             List<ChatSummary> chatSummaries = new();
 
@@ -63,6 +64,12 @@ namespace CarpenterApi.Models
         {
             Container container = client.GetDatabase("carpenter-dev").GetContainer("chat-summaries");
             await container.CreateItemAsync(this);
+        }
+
+        public static async Task Delete(CosmosClient client, string id)
+        {
+            Container container = client.GetDatabase("carpenter-dev").GetContainer("chat-summaries");
+            await container.DeleteItemAsync<ChatSummary>(id, new PartitionKey(id));
         }
     }
 }
