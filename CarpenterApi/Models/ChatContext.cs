@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace CarpenterApi.Models
 {
-    public class ChatContext
+    public record ChatContext
     {
         public Guid id;
         public string userId;
