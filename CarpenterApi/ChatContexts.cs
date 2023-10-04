@@ -73,7 +73,7 @@ namespace CarpenterApi
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(ChatContext), Description = "The OK response")]
         public async Task<IActionResult> CreateChatContext(
 #pragma warning disable IDE0060 // Remove unused parameter
-            [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "chat-contexts")] HttpRequest req,
+            [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "chat-contexts")] //HttpRequest req,
 #pragma warning restore IDE0060 // Remove unused parameter
             ChatContext chatContext
             //,
