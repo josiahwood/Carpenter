@@ -109,7 +109,7 @@ namespace CarpenterApi
                 return new BadRequestResult();
             }
 
-            await chatContext.Write(client);
+            await chatContext.Update(client);
 
             return new OkObjectResult(chatContext);
         }
