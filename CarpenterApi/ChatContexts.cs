@@ -88,6 +88,51 @@ namespace CarpenterApi
 
             return new OkObjectResult(chatContext);
         }
+
+        [FunctionName("UpdateChatContext")]
+        [OpenApiOperation(operationId: "UpdateChatContext")]
+        [OpenApiRequestBody("application/json", typeof(ChatContext))]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(ChatContext), Description = "The OK response")]
+        public async Task<IActionResult> UpdateChatContext(
+            [HttpTrigger(AuthorizationLevel.Anonymous, "put", Route = "chat-contexts")] ChatContext chatContext,
+            [CosmosDB(databaseName: "carpenter-dev", containerName: "chat-contexts",
+                Connection = "CosmosDbConnectionString"
+                )] CosmosClient client,
+            ClaimsPrincipal claimsPrincipal)
+        {
+            _logger.LogInformation("C# HTTP trigger function processed a request.");
+
+            CarpenterUser user = CarpenterUser.GetCurrentUser(claimsPrincipal);
+
+            if (chatContext.userId != user.userId)
+            {
+                return new BadRequestResult();
+            }
+
+            await chatContext.Write(client);
+
+            return new OkObjectResult(chatContext);
+        }
+
+        [FunctionName("DeleteChatContext")]
+        [OpenApiOperation(operationId: "DeleteChatContext", tags: new[] { "id" })]
+        [OpenApiParameter(name: "id", In = ParameterLocation.Path, Required = true, Type = typeof(Guid), Description = "The **id** parameter")]
+        [OpenApiResponseWithoutBody(statusCode: HttpStatusCode.OK, Description = "The OK response")]
+        public async Task<IActionResult> DeleteChatContext(
+#pragma warning disable IDE0060 // Remove unused parameter
+            [HttpTrigger(AuthorizationLevel.Anonymous, "delete", Route = "chat-contexts/{id:guid}")] HttpRequest req,
+#pragma warning restore IDE0060 // Remove unused parameter
+            [CosmosDB(databaseName: "carpenter-dev", containerName: "chat-contexts",
+                Connection = "CosmosDbConnectionString"
+                )] CosmosClient client,
+            Guid id)
+        {
+            _logger.LogInformation("C# HTTP trigger function processed a request.");
+
+            await ChatContext.Delete(client, id);
+
+            return new OkResult();
+        }
     }
 }
 
