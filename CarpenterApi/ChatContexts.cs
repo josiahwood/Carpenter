@@ -75,20 +75,22 @@ namespace CarpenterApi
 #pragma warning disable IDE0060 // Remove unused parameter
             [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "chat-contexts")] HttpRequest req,
 #pragma warning restore IDE0060 // Remove unused parameter
-            ChatContext chatContext,
-            [CosmosDB(databaseName: "carpenter-dev", containerName: "chat-contexts",
-                Connection = "CosmosDbConnectionString"
-                )] CosmosClient client,
-            ClaimsPrincipal claimsPrincipal)
+            ChatContext chatContext
+            //,
+            //[CosmosDB(databaseName: "carpenter-dev", containerName: "chat-contexts",
+            //    Connection = "CosmosDbConnectionString"
+            //    )] CosmosClient client,
+            //ClaimsPrincipal claimsPrincipal
+            )
         {
             _logger.LogInformation("C# HTTP trigger function processed a request.");
 
-            CarpenterUser user = CarpenterUser.GetCurrentUser(claimsPrincipal);
+            //CarpenterUser user = CarpenterUser.GetCurrentUser(claimsPrincipal);
 
-            chatContext.id = Guid.NewGuid();
-            chatContext.userId = user.userId;
+            //chatContext.id = Guid.NewGuid();
+            //chatContext.userId = user.userId;
 
-            await chatContext.Write(client);
+            //await chatContext.Write(client);
 
             return new OkObjectResult(chatContext);
         }
