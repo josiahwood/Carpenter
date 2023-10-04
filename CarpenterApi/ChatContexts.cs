@@ -14,6 +14,7 @@ using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Attributes;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
+using FromBodyAttribute = Microsoft.Azure.Functions.Worker.Http.FromBodyAttribute;
 
 namespace CarpenterApi
 {
@@ -31,13 +32,17 @@ namespace CarpenterApi
         [OpenApiParameter(name: "id", In = ParameterLocation.Path, Required = true, Type = typeof(Guid), Description = "The **id** parameter")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(ChatContext), Description = "The OK response")]
         public async Task<IActionResult> GetChatContext(
+#pragma warning disable IDE0060 // Remove unused parameter
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "chat-contexts/{id:guid}")] HttpRequest req,
+#pragma warning restore IDE0060 // Remove unused parameter
             [CosmosDB(databaseName: "carpenter-dev", containerName: "chat-contexts",
                 Connection = "CosmosDbConnectionString"
                 )] CosmosClient client,
             ClaimsPrincipal claimsPrincipal,
             Guid id)
         {
+            _logger.LogInformation("C# HTTP trigger function processed a request.");
+
             CarpenterUser user = CarpenterUser.GetCurrentUser(claimsPrincipal);
 
             return new OkObjectResult(await ChatContext.GetChatContext(client, user, id));
@@ -47,12 +52,16 @@ namespace CarpenterApi
         [OpenApiOperation(operationId: "GetChatContexts")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(ChatContext[]), Description = "The OK response")]
         public async Task<IActionResult> GetChatContexts(
+#pragma warning disable IDE0060 // Remove unused parameter
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "chat-contexts")] HttpRequest req,
+#pragma warning restore IDE0060 // Remove unused parameter
             [CosmosDB(databaseName: "carpenter-dev", containerName: "chat-contexts",
                 Connection = "CosmosDbConnectionString"
                 )] CosmosClient client,
             ClaimsPrincipal claimsPrincipal)
         {
+            _logger.LogInformation("C# HTTP trigger function processed a request.");
+
             CarpenterUser user = CarpenterUser.GetCurrentUser(claimsPrincipal);
 
             return new OkObjectResult(await ChatContext.GetChatContexts(client, user));
@@ -63,13 +72,17 @@ namespace CarpenterApi
         [OpenApiRequestBody("application/json", typeof(ChatContext))]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(ChatContext), Description = "The OK response")]
         public async Task<IActionResult> CreateChatContext(
+#pragma warning disable IDE0060 // Remove unused parameter
             [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "chat-contexts")] HttpRequest req,
+#pragma warning restore IDE0060 // Remove unused parameter
+            [FromBody] ChatContext chatContext,
             [CosmosDB(databaseName: "carpenter-dev", containerName: "chat-contexts",
                 Connection = "CosmosDbConnectionString"
                 )] CosmosClient client,
-            ClaimsPrincipal claimsPrincipal,
-            [FromBody] ChatContext chatContext)
+            ClaimsPrincipal claimsPrincipal)
         {
+            _logger.LogInformation("C# HTTP trigger function processed a request.");
+
             CarpenterUser user = CarpenterUser.GetCurrentUser(claimsPrincipal);
 
             chatContext.id = Guid.NewGuid();
