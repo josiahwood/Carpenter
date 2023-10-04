@@ -14,7 +14,6 @@ using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Attributes;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
-using FromBodyAttribute = Microsoft.Azure.Functions.Worker.Http.FromBodyAttribute;
 
 namespace CarpenterApi
 {
@@ -72,25 +71,20 @@ namespace CarpenterApi
         [OpenApiRequestBody("application/json", typeof(ChatContext))]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(ChatContext), Description = "The OK response")]
         public async Task<IActionResult> CreateChatContext(
-#pragma warning disable IDE0060 // Remove unused parameter
-            [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "chat-contexts")] //HttpRequest req,
-#pragma warning restore IDE0060 // Remove unused parameter
-            ChatContext chatContext
-            //,
-            //[CosmosDB(databaseName: "carpenter-dev", containerName: "chat-contexts",
-            //    Connection = "CosmosDbConnectionString"
-            //    )] CosmosClient client,
-            //ClaimsPrincipal claimsPrincipal
-            )
+            [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "chat-contexts")] ChatContext chatContext,
+            [CosmosDB(databaseName: "carpenter-dev", containerName: "chat-contexts",
+                Connection = "CosmosDbConnectionString"
+                )] CosmosClient client,
+            ClaimsPrincipal claimsPrincipal)
         {
             _logger.LogInformation("C# HTTP trigger function processed a request.");
 
-            //CarpenterUser user = CarpenterUser.GetCurrentUser(claimsPrincipal);
+            CarpenterUser user = CarpenterUser.GetCurrentUser(claimsPrincipal);
 
-            //chatContext.id = Guid.NewGuid();
-            //chatContext.userId = user.userId;
+            chatContext.id = Guid.NewGuid();
+            chatContext.userId = user.userId;
 
-            //await chatContext.Write(client);
+            await chatContext.Write(client);
 
             return new OkObjectResult(chatContext);
         }
