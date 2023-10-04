@@ -26,7 +26,8 @@ namespace CarpenterApi.Models
         public static async Task<IList<ChatMessage>> GetChatMessages(CosmosClient client, CarpenterUser user)
         {
             Container container = client.GetDatabase("carpenter-dev").GetContainer("chat-messages");
-            QueryDefinition queryDefinition = new QueryDefinition("SELECT * FROM c WHERE c.userId = @searchterm ORDER BY c.timestamp ASC").WithParameter("@searchterm", user.userId);
+            QueryDefinition queryDefinition = new QueryDefinition("SELECT * FROM c WHERE c.userId = @userId ORDER BY c.timestamp ASC")
+                .WithParameter("@userId", user.userId);
 
             List<ChatMessage> chatMessages = new();
 

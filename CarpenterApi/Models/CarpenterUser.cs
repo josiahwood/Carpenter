@@ -9,6 +9,9 @@ namespace CarpenterApi.Models
 {
     internal class CarpenterUser
     {
+        /// <summary>
+        /// Hexadecimal string
+        /// </summary>
         public string userId;
 
         public static CarpenterUser GetCurrentUser(ClaimsPrincipal claimsPrincipal)
