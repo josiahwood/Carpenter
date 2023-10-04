@@ -75,7 +75,7 @@ namespace CarpenterApi
 #pragma warning disable IDE0060 // Remove unused parameter
             [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "chat-contexts")] HttpRequest req,
 #pragma warning restore IDE0060 // Remove unused parameter
-            [FromBody] ChatContext chatContext,
+            ChatContext chatContext,
             [CosmosDB(databaseName: "carpenter-dev", containerName: "chat-contexts",
                 Connection = "CosmosDbConnectionString"
                 )] CosmosClient client,
