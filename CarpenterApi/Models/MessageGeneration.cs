@@ -66,6 +66,7 @@ namespace CarpenterApi.Models
         public string status;
         public string model;
         public string generatedOutput;
+        public RequestStatusKobold koboldStatus;
 
         public async Task Create(CosmosClient client)
         {
@@ -196,6 +197,8 @@ namespace CarpenterApi.Models
                 try
                 {
                     statusResult = await apiClient.Get_text_async_statusAsync(null, null, stableHordeId);
+                    koboldStatus = statusResult;
+                    await Update(client);
                 }
                 catch(ApiException)
                 {
