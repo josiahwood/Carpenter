@@ -27,12 +27,11 @@ namespace CarpenterApi
         }
 
         [FunctionName("DeleteCarpenterUser")]
-        [OpenApiOperation(operationId: "DeleteCarpenterUser", tags: new[] { "id" })]
-        [OpenApiParameter(name: "id", In = ParameterLocation.Path, Required = true, Type = typeof(string), Description = "The **id** parameter")]
+        [OpenApiOperation(operationId: "DeleteCarpenterUser")]
         [OpenApiResponseWithoutBody(statusCode: HttpStatusCode.OK, Description = "The OK response")]
         public async Task<IActionResult> DeleteChatContext(
 #pragma warning disable IDE0060 // Remove unused parameter
-            [HttpTrigger(AuthorizationLevel.Anonymous, "delete", Route = "carpenter-users/{id:guid}")] HttpRequest req,
+            [HttpTrigger(AuthorizationLevel.Anonymous, "delete", Route = "carpenter-users")] HttpRequest req,
 #pragma warning restore IDE0060 // Remove unused parameter
             [CosmosDB(databaseName: "carpenter-dev", containerName: "users",
                 Connection = "CosmosDbConnectionString"
