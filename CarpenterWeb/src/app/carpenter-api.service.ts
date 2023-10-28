@@ -5,6 +5,7 @@ import { lastValueFrom } from 'rxjs';
 import { MessageGeneration } from './models/message-generation';
 import { QuickMessage } from './models/quick-message';
 import { ChatSummaryLog } from './models/chat-summary-log';
+import { ChatContext } from './models/chat-context';
 
 @Injectable({
   providedIn: 'root'
@@ -162,5 +163,39 @@ export class CarpenterApiService {
     params = params.set("id", id)
 
     return await lastValueFrom(this.httpClient.get(url, { params: params }));
+  }
+
+  // chat-contexts
+
+  async getChatContext(id: string): Promise<ChatContext> {
+    var url = "https://zealous-wave-0e26a4710.3.azurestaticapps.net/api/chat-contexts/" + id; 
+    return await lastValueFrom<ChatContext>(this.httpClient.get<ChatContext>(url));
+  }
+
+  async getChatContexts(): Promise<ChatContext[]> {
+    var url = "https://zealous-wave-0e26a4710.3.azurestaticapps.net/api/chat-contexts";
+    return await lastValueFrom<ChatContext[]>(this.httpClient.get<ChatContext[]>(url));
+  }
+
+  async createChatContext(chatContext: ChatContext): Promise<ChatContext> {
+    var url = "https://zealous-wave-0e26a4710.3.azurestaticapps.net/api/chat-contexts";
+    var body = JSON.stringify(chatContext);
+    return await lastValueFrom<ChatContext>(this.httpClient.post<ChatContext>(url, body));
+  }
+
+  async updateChatContext(chatContext: ChatContext): Promise<ChatContext> {
+    var url = "https://zealous-wave-0e26a4710.3.azurestaticapps.net/api/chat-contexts";
+    var body = JSON.stringify(chatContext);
+    return await lastValueFrom<ChatContext>(this.httpClient.put<ChatContext>(url, body));
+  }
+
+  async deleteCarpenterUser(): Promise<Object> {
+    var url = "https://zealous-wave-0e26a4710.3.azurestaticapps.net/api/carpenter-users";
+    return await lastValueFrom(this.httpClient.delete(url));
+  }
+
+  async deleteChatContext(id: string): Promise<Object> {
+    var url = "https://zealous-wave-0e26a4710.3.azurestaticapps.net/api/chat-contexts/" + id;
+    return await lastValueFrom(this.httpClient.delete(url));
   }
 }

@@ -30,6 +30,9 @@ import { ChatSummarizationPromptComponent } from './chat-summarization-prompt/ch
 import { LandingComponent } from './landing/landing.component';
 import { ChatInstructionComponent } from './chat-instruction/chat-instruction.component';
 import { ChatSummaryLogsComponent } from './chat-summary-logs/chat-summary-logs.component';
+import { ChatContextComponent } from './chat-context/chat-context.component';
+import { ChatContextsComponent } from './chat-contexts/chat-contexts.component';
+import { DeleteUserDataComponent } from './delete-user-data/delete-user-data.component';
 
 @NgModule({
   declarations: [
@@ -46,7 +49,10 @@ import { ChatSummaryLogsComponent } from './chat-summary-logs/chat-summary-logs.
     ChatSummarizationPromptComponent,
     LandingComponent,
     ChatInstructionComponent,
-    ChatSummaryLogsComponent
+    ChatSummaryLogsComponent,
+    ChatContextComponent,
+    ChatContextsComponent,
+    DeleteUserDataComponent
   ],
   imports: [
     BrowserModule,

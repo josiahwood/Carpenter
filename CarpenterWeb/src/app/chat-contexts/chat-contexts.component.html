@@ -1,0 +1,27 @@
+<div style="display: flex; flex-direction: column; height:100%">
+  <h1 class="mat-h1" style="margin:5px">Chat Contexts</h1>
+  <div style="flex: 1 1 auto; overflow-y: scroll; padding: 5px" #chatContextsDiv>
+    <div *ngFor="let chatContext of chatContexts">
+      <mat-card style="margin-top: 2px; margin-bottom: 2px">
+        <mat-card-header>
+          <mat-card-title>{{chatContext.name}}</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <span>memory:</span><br />
+          <div style="margin-left:20px">
+            <span style="white-space-collapse: preserve">{{chatContext.memory}}</span>
+          </div><br />
+          <span>author's note:</span><br />
+          <div style="margin-left:20px">
+            <span style="white-space-collapse: preserve">{{chatContext.authorsNote}}</span>
+          </div><br />
+          <span>summarization prompt:</span><br />
+          <div style="margin-left:20px">
+            <span style="white-space-collapse: preserve">{{chatContext.summarizationPrompt}}</span>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </div>
+  <button type="button" mat-raised-button color="primary" (click)="onCreateNewChatContext()" style="margin:5px">Create New Chat Context</button>
+</div>
