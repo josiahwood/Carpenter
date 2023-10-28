@@ -309,6 +309,12 @@ namespace CarpenterApi.Models
             return messageGenerations;
         }
 
+        public static async Task Delete(CosmosClient client, Guid id)
+        {
+            Container container = client.GetDatabase("carpenter-dev").GetContainer("message-generations");
+            await container.DeleteItemAsync<MessageGeneration>(id.ToString(), new PartitionKey(id.ToString()));
+        }
+
         public static async Task<IEnumerable<MessageGeneration>> GetNotDoneMessageGenerations(CosmosClient client, CarpenterUser user)
         {
             Container container = client.GetDatabase("carpenter-dev").GetContainer("message-generations");

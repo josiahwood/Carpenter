@@ -59,10 +59,10 @@ namespace CarpenterApi.Models
             await container.ReplaceItemAsync(this, id.ToString());
         }
 
-        public static async Task Delete(CosmosClient client, string id)
+        public static async Task Delete(CosmosClient client, Guid id)
         {
             Container container = client.GetDatabase("carpenter-dev").GetContainer("chat-messages");
-            await container.DeleteItemAsync<ChatMessage>(id, new PartitionKey(id));
+            await container.DeleteItemAsync<ChatMessage>(id.ToString(), new PartitionKey(id.ToString()));
         }
     }
 }

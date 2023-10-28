@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using System.Net;
 using System.Security.Claims;
@@ -27,8 +28,8 @@ namespace CarpenterApi
 
         [FunctionName("DeleteChatSummary")]
         [OpenApiOperation(operationId: "Run", tags: new[] { "id" })]
-        [OpenApiParameter(name: "id", In = ParameterLocation.Query, Required = true, Type = typeof(string), Description = "The **id** parameter")]
-        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "text/plain", bodyType: typeof(string), Description = "The OK response")]
+        [OpenApiParameter(name: "id", In = ParameterLocation.Query, Required = true, Type = typeof(Guid), Description = "The **id** parameter")]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "text/plain", bodyType: typeof(Guid), Description = "The OK response")]
         public async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = null)] HttpRequest req,
             [CosmosDB(databaseName: "carpenter-dev", containerName: "chat-messages",
@@ -37,7 +38,7 @@ namespace CarpenterApi
         {
             _logger.LogInformation("C# HTTP trigger function processed a request.");
 
-            string id = req.Query["id"];
+            Guid id = Guid.Parse(req.Query["id"]);
 
             await ChatSummary.Delete(client, id);
             return new OkResult();
