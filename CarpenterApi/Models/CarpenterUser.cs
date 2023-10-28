@@ -36,7 +36,7 @@ namespace CarpenterApi.Models
         {
             var chatMemory = await ChatMemory.GetChatMemory(client, this);
             chatMemory.memory = string.Empty;
-            await chatMemory.Write(client);
+            await chatMemory.Update(client);
 
             var chatSummarizationPrompt = await ChatSummarizationPrompt.GetChatSummarizationPrompt(client, this);
             chatSummarizationPrompt.prompt = string.Empty;
