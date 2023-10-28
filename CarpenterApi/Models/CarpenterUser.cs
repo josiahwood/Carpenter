@@ -40,7 +40,7 @@ namespace CarpenterApi.Models
 
             var chatSummarizationPrompt = await ChatSummarizationPrompt.GetChatSummarizationPrompt(client, this);
             chatSummarizationPrompt.prompt = string.Empty;
-            await chatSummarizationPrompt.Write(client);
+            await chatSummarizationPrompt.Update(client);
 
             var chatMessages = await ChatMessage.GetChatMessages(client, this);
 
