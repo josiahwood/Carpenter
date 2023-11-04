@@ -23,6 +23,7 @@ namespace CarpenterApi.Models
         public const string ApiKey = "***REMOVED***";
 
         public const string AIChatMessagePurpose = "aiChatMessage";
+        public const string UserChatMessagePurpose = "userChatMessage";
         public const string ChatInstructionPurpose = "chatInstruction";
         public const string ChatSummaryPurpose = "chatSummary";
 
@@ -80,18 +81,19 @@ namespace CarpenterApi.Models
             await container.ReplaceItemAsync(this, id.ToString());
         }
 
-        public static async Task<IEnumerable<MessageGeneration>> GenerateAIChatMessageAlternatives(CosmosClient client, CarpenterUser user)
+        public static async Task<IEnumerable<MessageGeneration>> GenerateChatMessageAlternatives(CosmosClient client, CarpenterUser user, string sender)
         {
             ChatMemory chatMemory = await ChatMemory.GetChatMemory(client, user);
             var chatMessages = await ChatMessage.GetChatMessages(client, user);
 
-            MessageGeneration messageGeneration = await PromptGeneration.NextAIChatMessageGeneration(client, user, chatMemory, chatMessages, MaxInputLength);
+            MessageGeneration messageGeneration = await PromptGeneration.NextChatMessageGeneration(client, user, chatMemory, chatMessages, sender, MaxInputLength);
 
             List<MessageGeneration> messageGenerations = new();
 
             switch (messageGeneration.purpose)
             {
                 case AIChatMessagePurpose:
+                case UserChatMessagePurpose:
                     var models = await ModelInfo.PickModels(client, user, MaxInputLength, MaxOutputLength);
 
                     MessageGeneration messageGeneration1 = new()
@@ -238,6 +240,24 @@ namespace CarpenterApi.Models
                                 }
 
                                 break;
+                            case UserChatMessagePurpose:
+                                if (purposeData != null)
+                                {
+                                    ChatMessage chatMessage = new()
+                                    {
+                                        id = Guid.NewGuid(),
+                                        userId = userId,
+                                        timestamp = purposeData.timestamp,
+                                        sender = ChatMessage.UserSender,
+                                        message = TrimMessage(generatedOutput),
+                                        messageGenerationId = id,
+                                        alternateGroupId = parentId
+                                    };
+
+                                    await chatMessage.Write(client);
+                                }
+
+                                break;
                             case ChatInstructionPurpose:
                                 // Do nothing, the UI will just get the response directly from the MessageGeneration object
                                 break;
@@ -262,7 +282,11 @@ namespace CarpenterApi.Models
                         switch (nextPurpose)
                         {
                             case AIChatMessagePurpose:
-                                await GenerateAIChatMessageAlternatives(client, user);
+                                await GenerateChatMessageAlternatives(client, user, ChatMessage.AISender);
+
+                                break;
+                            case UserChatMessagePurpose:
+                                await GenerateChatMessageAlternatives(client, user, ChatMessage.UserSender);
 
                                 break;
                             case ChatInstructionPurpose:

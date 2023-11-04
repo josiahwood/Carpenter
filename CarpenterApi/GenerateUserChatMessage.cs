@@ -22,16 +22,16 @@ using StableHordeApi;
 
 namespace CarpenterApi
 {
-    public class GenerateAIChatMessage
+    public class GenerateUserChatMessage
     {
-        private readonly ILogger<GenerateAIChatMessage> _logger;
+        private readonly ILogger<GenerateUserChatMessage> _logger;
 
-        public GenerateAIChatMessage(ILogger<GenerateAIChatMessage> log)
+        public GenerateUserChatMessage(ILogger<GenerateUserChatMessage> log)
         {
             _logger = log;
         }
 
-        [FunctionName("GenerateAIChatMessage")]
+        [FunctionName("GenerateUserChatMessage")]
         [OpenApiOperation(operationId: "Run")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "text/plain", bodyType: typeof(string), Description = "The OK response")]
         public async Task<IActionResult> Run(
@@ -46,7 +46,7 @@ namespace CarpenterApi
             _logger.LogInformation("C# HTTP trigger function processed a request.");
 
             CarpenterUser user = CarpenterUser.GetCurrentUser(claimsPrincipal);
-            var messageGenerations = await MessageGeneration.GenerateChatMessageAlternatives(client, user, ChatMessage.AISender);
+            var messageGenerations = await MessageGeneration.GenerateChatMessageAlternatives(client, user, ChatMessage.UserSender);
 
             return new OkObjectResult(messageGenerations);
         }

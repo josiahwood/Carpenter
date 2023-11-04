@@ -3,11 +3,16 @@
   <div style="flex: 1 1 auto; overflow-y: scroll; padding: 5px" #chatLogDiv>
     <div *ngFor="let chatMessage of chatMessages">
       <ng-container *ngIf="chatMessage.sender === 'User'; else aiChat">
-        <mat-card style="margin-left: 20px; margin-top: 2px; margin-bottom: 2px" (click)="onChatMessageClicked(chatMessage)">
+        <mat-card style="margin-left: 20px; margin-top: 2px; margin-bottom: 2px">
           <mat-card-header>
             <mat-card-subtitle>{{chatMessage.sender}}: {{chatMessage.timestamp | date:'medium'}}</mat-card-subtitle>
           </mat-card-header>
-          <mat-card-content style="white-space-collapse: preserve">{{chatMessage.message}}</mat-card-content>
+          <mat-card-content>
+            <span style="white-space-collapse: preserve" (click)="onChatMessageClicked(chatMessage)">{{chatMessage.message}}</span>
+            <ng-container *ngIf="chatMessage.alternateGroupId">
+              <br /><button mat-raised-button color="primary" type="button" (click)="onWinnerClicked(chatMessage)">Winner</button>
+            </ng-container>
+          </mat-card-content>
         </mat-card>
       </ng-container>
       <ng-template #aiChat>
@@ -34,6 +39,9 @@
       <ng-template #isWaitingTemplate>
         <mat-progress-spinner color="accent" mode="indeterminate" style="width: 24px; height:24px"></mat-progress-spinner>
       </ng-template>
+    </button>
+    <button mat-raised-button color="primary" type="button" (click)="onGenerateUserChatMessage()" style="height: unset">
+      <mat-icon>question_answer</mat-icon>
     </button>
   </div>
 </div>

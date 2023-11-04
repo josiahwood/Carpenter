@@ -31,7 +31,7 @@ namespace CarpenterApi.Models
             return BitConverter.ToUInt32(hashBytes);
         }
 
-        public static async Task<MessageGeneration> NextAIChatMessageGeneration(CosmosClient client, CarpenterUser user, ChatMemory chatMemory, IList<ChatMessage> chatMessages, int maxTokens)
+        public static async Task<MessageGeneration> NextChatMessageGeneration(CosmosClient client, CarpenterUser user, ChatMemory chatMemory, IList<ChatMessage> chatMessages, string sender, int maxTokens)
         {
             var encoding = Tiktoken.Encoding.Get(Encodings.Cl100KBase);
             string prompt = chatMemory.memory;
@@ -44,7 +44,7 @@ namespace CarpenterApi.Models
             ChatMessage aiPrompt = new()
             {
                 timestamp = DateTime.UtcNow,
-                sender = ChatMessage.AISender,
+                sender = sender,
                 message = ""
             };
 
@@ -62,7 +62,17 @@ namespace CarpenterApi.Models
                 if (summary.Item3 != null)
                 {
                     // we don't already have the next summary we need, so generate it
-                    summary.Item3.nextPurpose = MessageGeneration.AIChatMessagePurpose;
+                    
+                    switch(sender)
+                    {
+                        case ChatMessage.AISender:
+                            summary.Item3.nextPurpose = MessageGeneration.AIChatMessagePurpose;
+                            break;
+                        case ChatMessage.UserSender:
+                            summary.Item3.nextPurpose = MessageGeneration.UserChatMessagePurpose;
+                            break;
+                    }
+                    
                     summary.Item3.nextPurposeData = new MessageGeneration.PurposeData
                     {
                         timestamp = aiPrompt.timestamp
@@ -92,19 +102,37 @@ namespace CarpenterApi.Models
                 }
             }
 
-            return new()
+            return sender switch
             {
-                id = Guid.NewGuid(),
-                userId = user.userId,
-                prompt = prompt,
-                maxInputLength = maxTokens,
-                maxOutputLength = MessageGeneration.MaxOutputLength,
-                purpose = MessageGeneration.AIChatMessagePurpose,
-                purposeData = new MessageGeneration.PurposeData
+                ChatMessage.AISender => new()
                 {
-                    timestamp = aiPrompt.timestamp
+                    id = Guid.NewGuid(),
+                    userId = user.userId,
+                    prompt = prompt,
+                    maxInputLength = maxTokens,
+                    maxOutputLength = MessageGeneration.MaxOutputLength,
+                    purpose = MessageGeneration.AIChatMessagePurpose,
+                    purposeData = new MessageGeneration.PurposeData
+                    {
+                        timestamp = aiPrompt.timestamp
+                    },
+                    status = MessageGeneration.NoneStatus
                 },
-                status = MessageGeneration.NoneStatus
+                ChatMessage.UserSender => new()
+                {
+                    id = Guid.NewGuid(),
+                    userId = user.userId,
+                    prompt = prompt,
+                    maxInputLength = maxTokens,
+                    maxOutputLength = MessageGeneration.MaxOutputLength,
+                    purpose = MessageGeneration.UserChatMessagePurpose,
+                    purposeData = new MessageGeneration.PurposeData
+                    {
+                        timestamp = aiPrompt.timestamp
+                    },
+                    status = MessageGeneration.NoneStatus
+                },
+                _ => throw new InvalidOperationException($"Unknown sender \"{sender}\"."),
             };
         }
 

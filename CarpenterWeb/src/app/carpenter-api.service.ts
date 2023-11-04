@@ -102,6 +102,12 @@ export class CarpenterApiService {
     return await lastValueFrom(this.httpClient.get(url));
   }
 
+  async generateUserChatMessage(): Promise<Object> {
+    var url = "https://zealous-wave-0e26a4710.3.azurestaticapps.net/api/GenerateUserChatMessage";
+
+    return await lastValueFrom(this.httpClient.get(url));
+  }
+
   async executeChatInstruction(instruction: string): Promise<Object> {
     var url = "https://zealous-wave-0e26a4710.3.azurestaticapps.net/api/ExecuteChatInstruction";
     var body = instruction;

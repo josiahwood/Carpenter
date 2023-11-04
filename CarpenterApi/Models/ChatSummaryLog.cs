@@ -33,12 +33,12 @@ namespace CarpenterApi.Models
                 text = chatMemory.memory
             });
 
-            logs.AddRange(await NextAIChatMessageGeneration(client, user, chatMemory, chatMessages, maxTokens));
+            logs.AddRange(await NextChatMessageGeneration(client, user, chatMemory, chatMessages, ChatMessage.AISender, maxTokens));
 
             return logs;
         }
 
-        public static async Task<IList<ChatSummaryLog>> NextAIChatMessageGeneration(CosmosClient client, CarpenterUser user, ChatMemory chatMemory, IList<ChatMessage> chatMessages, int maxTokens)
+        public static async Task<IList<ChatSummaryLog>> NextChatMessageGeneration(CosmosClient client, CarpenterUser user, ChatMemory chatMemory, IList<ChatMessage> chatMessages, string sender, int maxTokens)
         {
             List<ChatSummaryLog> logs = new();
             
@@ -53,7 +53,7 @@ namespace CarpenterApi.Models
             ChatMessage aiPrompt = new()
             {
                 timestamp = DateTime.UtcNow,
-                sender = ChatMessage.AISender,
+                sender = sender,
                 message = ""
             };
 

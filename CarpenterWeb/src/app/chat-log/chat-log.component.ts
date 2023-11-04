@@ -96,6 +96,13 @@ export class ChatLogComponent {
     await this.onUpdateMessageGenerationStatus();
   }
 
+  async onGenerateUserChatMessage() {
+    this.isWaiting = true;
+
+    await this.apiService.generateUserChatMessage();
+    await this.onUpdateMessageGenerationStatus();
+  }
+
   async onUpdateMessageGenerationStatus() {
     var messageGenerations:MessageGeneration[] = await this.apiService.getNotDoneMessageGenerations();
 
