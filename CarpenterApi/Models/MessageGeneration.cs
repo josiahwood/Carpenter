@@ -205,13 +205,10 @@ namespace CarpenterApi.Models
                     koboldStatus = statusResult;
                     await Update(client);
                 }
-                catch(ApiException)
+                catch (ApiException)
                 {
                     status = ErrorStatus;
-
-                    var modelInfo = await ModelInfo.GetModelInfo(client, user, model);
-                    modelInfo.rating--;
-                    await modelInfo.Update(client);
+                    await ModelInfo.DecrementModelInfo(client, user, model);
 
                     await Update(client);
                     return;
@@ -228,7 +225,7 @@ namespace CarpenterApi.Models
                         worker = generation.Worker_name;
                         status = DoneStatus;
 
-                        switch(purpose)
+                        switch (purpose)
                         {
                             case AIChatMessagePurpose:
                                 if (purposeData != null)
@@ -311,10 +308,7 @@ namespace CarpenterApi.Models
                     else
                     {
                         status = ErrorStatus;
-
-                        var modelInfo = await ModelInfo.GetModelInfo(client, user, model);
-                        modelInfo.rating--;
-                        await modelInfo.Update(client);
+                        await ModelInfo.DecrementModelInfo(client, user, model);
                     }
 
                     await Update(client);
@@ -323,15 +317,15 @@ namespace CarpenterApi.Models
                 {
                     // result is not done
 
-                    if(DateTime.UtcNow - startTime > TimeSpan.FromMinutes(5))
+                    if (startTime.HasValue)
                     {
-                        status = ErrorStatus;
+                        if (DateTime.UtcNow - startTime > TimeSpan.FromMinutes(5))
+                        {
+                            status = ErrorStatus;
+                            await ModelInfo.DecrementModelInfo(client, user, model);
 
-                        var modelInfo = await ModelInfo.GetModelInfo(client, user, model);
-                        modelInfo.rating--;
-                        await modelInfo.Update(client);
-
-                        await Update(client);
+                            await Update(client);
+                        }
                     }
                 }
             }

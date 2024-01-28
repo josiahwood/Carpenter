@@ -17,6 +17,29 @@ namespace CarpenterApi.Models
         public int maxOutputLength;
         public double rating;
 
+        public static async Task DecrementModelInfo(CosmosClient client, CarpenterUser user, string model)
+        {
+            ModelInfo modelInfo = await GetModelInfo(client, user, model);
+
+            if (modelInfo != null)
+            {
+                modelInfo.rating--;
+                await modelInfo.Update(client);
+            }
+            else
+            {
+                modelInfo = new()
+                {
+                    id = Guid.NewGuid(),
+                    userId = user.userId,
+                    model = model,
+                    rating = 999
+                };
+
+                await modelInfo.Write(client);
+            }
+        }
+
         public static async Task<ModelInfo> GetModelInfo(CosmosClient client, CarpenterUser user, string model)
         {
             Container container = client.GetDatabase("carpenter-dev").GetContainer("model-infos");
