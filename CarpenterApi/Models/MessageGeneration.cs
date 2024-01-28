@@ -51,6 +51,8 @@ namespace CarpenterApi.Models
         
         public string userId;
 
+        public DateTime? startTime;
+
         // Inputs
         public string[] models;
         public string worker;
@@ -162,6 +164,7 @@ namespace CarpenterApi.Models
             var generateResult = await apiClient.Post_text_async_generateAsync(ApiKey, null, payload, null);
             messageGeneration.stableHordeId = generateResult.Id;
             messageGeneration.status = PendingStatus;
+            messageGeneration.startTime = DateTime.UtcNow;
             await messageGeneration.Create(client);
 
             return messageGeneration;
@@ -205,6 +208,11 @@ namespace CarpenterApi.Models
                 catch(ApiException)
                 {
                     status = ErrorStatus;
+
+                    var modelInfo = await ModelInfo.GetModelInfo(client, user, model);
+                    modelInfo.rating--;
+                    await modelInfo.Update(client);
+
                     await Update(client);
                     return;
                 }
@@ -303,9 +311,28 @@ namespace CarpenterApi.Models
                     else
                     {
                         status = ErrorStatus;
+
+                        var modelInfo = await ModelInfo.GetModelInfo(client, user, model);
+                        modelInfo.rating--;
+                        await modelInfo.Update(client);
                     }
 
                     await Update(client);
+                }
+                else
+                {
+                    // result is not done
+
+                    if(DateTime.UtcNow - startTime > TimeSpan.FromMinutes(5))
+                    {
+                        status = ErrorStatus;
+
+                        var modelInfo = await ModelInfo.GetModelInfo(client, user, model);
+                        modelInfo.rating--;
+                        await modelInfo.Update(client);
+
+                        await Update(client);
+                    }
                 }
             }
         }
