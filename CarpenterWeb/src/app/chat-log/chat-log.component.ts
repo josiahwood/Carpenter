@@ -62,8 +62,6 @@ export class ChatLogComponent {
       if (alternate.id != chatMessage.id && alternate.alternateGroupId == chatMessage.alternateGroupId) {
         var loserModel: string = (await this.apiService.getMessageGeneration(alternate.messageGenerationId)).model;
         await this.apiService.compareModels(winnerModel, loserModel);
-        chatMessage.alternateGroupId = "";
-        await this.apiService.editChatMessage(chatMessage);
         await this.apiService.deleteChatMessage(alternate.id);
 
         const index = this.chatMessages.indexOf(alternate);
@@ -75,6 +73,9 @@ export class ChatLogComponent {
         break;
       }
     }
+
+    chatMessage.alternateGroupId = "";
+    await this.apiService.editChatMessage(chatMessage);
   }
 
   async onSendUserChatMessage() {
