@@ -86,9 +86,10 @@ namespace CarpenterApi.Models
         public static async Task<IEnumerable<MessageGeneration>> GenerateChatMessageAlternatives(CosmosClient client, CarpenterUser user, string sender)
         {
             ChatMemory chatMemory = await ChatMemory.GetChatMemory(client, user);
+            ChatAuthorsNote chatAuthorsNote = await ChatAuthorsNote.GetChatAuthorsNote(client, user);
             var chatMessages = await ChatMessage.GetChatMessages(client, user);
 
-            MessageGeneration messageGeneration = await PromptGeneration.NextChatMessageGeneration(client, user, chatMemory, chatMessages, sender, MaxInputLength);
+            MessageGeneration messageGeneration = await PromptGeneration.NextChatMessageGeneration(client, user, chatMemory, chatAuthorsNote, chatMessages, sender, MaxInputLength);
 
             List<MessageGeneration> messageGenerations = new();
 

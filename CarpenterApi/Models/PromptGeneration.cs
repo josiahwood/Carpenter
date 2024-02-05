@@ -13,6 +13,18 @@ namespace CarpenterApi.Models
     {
         //private const string ChatSummarizationPrompt = "### Instruction:Summarize this chat session from the perspective of the AI, who is a psychotherapist seeking to perform Mindfulness-Based Cognitive Therapy with the user.\n### Response:";
 
+        public static string ToPrompt(this ChatAuthorsNote chatAuthorsNote)
+        {
+            if(chatAuthorsNote != null && !string.IsNullOrWhiteSpace(chatAuthorsNote.authorsNote))
+            {
+                return $"[Author's note:{chatAuthorsNote.authorsNote}]";
+            }
+            else
+            {
+                return null;
+            }
+        }
+
         public static string ToPrompt(this ChatMessage chatMessage)
         {
             return $"{chatMessage.timestamp:yyyy-MM-dd HH:mm:ss zzz} {chatMessage.sender}: {chatMessage.message}";
@@ -31,7 +43,7 @@ namespace CarpenterApi.Models
             return BitConverter.ToUInt32(hashBytes);
         }
 
-        public static async Task<MessageGeneration> NextChatMessageGeneration(CosmosClient client, CarpenterUser user, ChatMemory chatMemory, IList<ChatMessage> chatMessages, string sender, int maxTokens)
+        public static async Task<MessageGeneration> NextChatMessageGeneration(CosmosClient client, CarpenterUser user, ChatMemory chatMemory, ChatAuthorsNote chatAuthorsNote, IList<ChatMessage> chatMessages, string sender, int maxTokens)
         {
             var encoding = Tiktoken.Encoding.Get(Encodings.Cl100KBase);
             string prompt = chatMemory.memory;
@@ -41,14 +53,21 @@ namespace CarpenterApi.Models
                 prompt += Environment.NewLine + chatMessages[i].ToPrompt();
             }
 
-            ChatMessage aiPrompt = new()
+            ChatMessage senderPrompt = new()
             {
                 timestamp = DateTime.UtcNow,
                 sender = sender,
                 message = ""
             };
 
-            prompt += Environment.NewLine + aiPrompt.ToPrompt();
+            string authorsNote = chatAuthorsNote.ToPrompt();
+
+            if(authorsNote != null)
+            {
+                prompt += Environment.NewLine + authorsNote;
+            }
+
+            prompt += Environment.NewLine + senderPrompt.ToPrompt();
             ChatSummary chatSummary = null;
 
             int tokenCount = encoding.CountTokens(prompt);
@@ -75,7 +94,7 @@ namespace CarpenterApi.Models
                     
                     summary.Item3.nextPurposeData = new MessageGeneration.PurposeData
                     {
-                        timestamp = aiPrompt.timestamp
+                        timestamp = senderPrompt.timestamp
                     };
                     return summary.Item3;
                 }
@@ -96,7 +115,12 @@ namespace CarpenterApi.Models
                         prompt += Environment.NewLine + chatMessages[i].ToPrompt();
                     }
 
-                    prompt += Environment.NewLine + aiPrompt.ToPrompt();
+                    if (authorsNote != null)
+                    {
+                        prompt += Environment.NewLine + authorsNote;
+                    }
+
+                    prompt += Environment.NewLine + senderPrompt.ToPrompt();
 
                     tokenCount = encoding.CountTokens(prompt);
                 }
@@ -114,7 +138,7 @@ namespace CarpenterApi.Models
                     purpose = MessageGeneration.AIChatMessagePurpose,
                     purposeData = new MessageGeneration.PurposeData
                     {
-                        timestamp = aiPrompt.timestamp
+                        timestamp = senderPrompt.timestamp
                     },
                     status = MessageGeneration.NoneStatus
                 },
@@ -128,7 +152,7 @@ namespace CarpenterApi.Models
                     purpose = MessageGeneration.UserChatMessagePurpose,
                     purposeData = new MessageGeneration.PurposeData
                     {
-                        timestamp = aiPrompt.timestamp
+                        timestamp = senderPrompt.timestamp
                     },
                     status = MessageGeneration.NoneStatus
                 },
