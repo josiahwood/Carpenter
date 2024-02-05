@@ -231,36 +231,46 @@ namespace CarpenterApi.Models
                             case AIChatMessagePurpose:
                                 if (purposeData != null)
                                 {
-                                    ChatMessage chatMessage = new()
-                                    {
-                                        id = Guid.NewGuid(),
-                                        userId = userId,
-                                        timestamp = purposeData.timestamp,
-                                        sender = ChatMessage.AISender,
-                                        message = TrimMessage(generatedOutput),
-                                        messageGenerationId = id,
-                                        alternateGroupId = parentId
-                                    };
-
-                                    await chatMessage.Write(client);
+                                    if(!string.IsNullOrWhitespace(TrimMessage(generatedOutput))) {
+                                        ChatMessage chatMessage = new()
+                                        {
+                                            id = Guid.NewGuid(),
+                                            userId = userId,
+                                            timestamp = purposeData.timestamp,
+                                            sender = ChatMessage.AISender,
+                                            message = TrimMessage(generatedOutput),
+                                            messageGenerationId = id,
+                                            alternateGroupId = parentId
+                                        };
+    
+                                        await chatMessage.Write(client);
+                                    }
+                                } else {
+                                    status = ErrorStatus;
+                                    await ModelInfo.DecrementModelInfo(client, user, model);
                                 }
 
                                 break;
                             case UserChatMessagePurpose:
                                 if (purposeData != null)
                                 {
-                                    ChatMessage chatMessage = new()
-                                    {
-                                        id = Guid.NewGuid(),
-                                        userId = userId,
-                                        timestamp = purposeData.timestamp,
-                                        sender = ChatMessage.UserSender,
-                                        message = TrimMessage(generatedOutput),
-                                        messageGenerationId = id,
-                                        alternateGroupId = parentId
-                                    };
-
-                                    await chatMessage.Write(client);
+                                    if(!string.IsNullOrWhitespace(TrimMessage(generatedOutput))) {
+                                        ChatMessage chatMessage = new()
+                                        {
+                                            id = Guid.NewGuid(),
+                                            userId = userId,
+                                            timestamp = purposeData.timestamp,
+                                            sender = ChatMessage.UserSender,
+                                            message = TrimMessage(generatedOutput),
+                                            messageGenerationId = id,
+                                            alternateGroupId = parentId
+                                        };
+    
+                                        await chatMessage.Write(client);
+                                    }
+                                } else {
+                                    status = ErrorStatus;
+                                    await ModelInfo.DecrementModelInfo(client, user, model);
                                 }
 
                                 break;
