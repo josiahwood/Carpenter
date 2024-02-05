@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { ChatLogComponent } from './chat-log/chat-log.component';
 import { ChatMemoryComponent } from './chat-memory/chat-memory.component';
+import { ChatAuthorsNoteComponent } from './chat-authors-note/chat-authors-note.component';
 import { MessageGenerationsComponent } from './message-generations/message-generations.component';
 import { ImportChatLogComponent } from './import-chat-log/import-chat-log.component';
 import { QuickMessagesComponent } from './quick-messages/quick-messages.component';
@@ -19,6 +20,7 @@ const routes: Routes = [
   { path: 'chat-contexts', component: ChatContextsComponent },
   { path: 'chat-instruction', component: ChatInstructionComponent },
   { path: 'chat-memory', component: ChatMemoryComponent },
+  { path: 'chat-authors-note', component: ChatAuthorsNoteComponent },
   { path: 'chat-summary-logs', component: ChatSummaryLogsComponent },
   { path: 'chat-summarization-prompt', component: ChatSummarizationPromptComponent },
   { path: 'message-generations', component: MessageGenerationsComponent },

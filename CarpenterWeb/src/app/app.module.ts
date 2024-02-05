@@ -33,6 +33,7 @@ import { ChatSummaryLogsComponent } from './chat-summary-logs/chat-summary-logs.
 import { ChatContextComponent } from './chat-context/chat-context.component';
 import { ChatContextsComponent } from './chat-contexts/chat-contexts.component';
 import { DeleteUserDataComponent } from './delete-user-data/delete-user-data.component';
+import { ChatAuthorsNoteComponent } from './chat-authors-note/chat-authors-note.component';
 
 @NgModule({
   declarations: [
@@ -52,7 +53,8 @@ import { DeleteUserDataComponent } from './delete-user-data/delete-user-data.com
     ChatSummaryLogsComponent,
     ChatContextComponent,
     ChatContextsComponent,
-    DeleteUserDataComponent
+    DeleteUserDataComponent,
+    ChatAuthorsNoteComponent
   ],
   imports: [
     BrowserModule,

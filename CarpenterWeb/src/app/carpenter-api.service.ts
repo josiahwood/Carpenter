@@ -26,6 +26,18 @@ export class CarpenterApiService {
     return await lastValueFrom(this.httpClient.post(url, body));
   }
 
+  async getChatAuthorsNote(): Promise<string> {
+    var url = "https://zealous-wave-0e26a4710.3.azurestaticapps.net/api/GetChatAuthorsNote";
+    return await lastValueFrom<string>(this.httpClient.get(url, { responseType: 'text' }));
+  }
+
+  async setChatAuthorsNote(chatAuthorsNote: string): Promise<Object> {
+    var url = "https://zealous-wave-0e26a4710.3.azurestaticapps.net/api/SetChatAuthorsNote";
+    var body = chatAuthorsNote;
+
+    return await lastValueFrom(this.httpClient.post(url, body));
+  }
+
   async getChatSummarizationPrompt(): Promise<string> {
     var url = "https://zealous-wave-0e26a4710.3.azurestaticapps.net/api/GetChatSummarizationPrompt";
     return await lastValueFrom<string>(this.httpClient.get(url, { responseType: 'text' }));

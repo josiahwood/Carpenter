@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace CarpenterApi.Models
 {
-    internal class CarpenterUser
+    public class CarpenterUser
     {
         /// <summary>
         /// Hexadecimal string
