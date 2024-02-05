@@ -231,7 +231,7 @@ namespace CarpenterApi.Models
                             case AIChatMessagePurpose:
                                 if (purposeData != null)
                                 {
-                                    if(!string.IsNullOrWhitespace(TrimMessage(generatedOutput))) {
+                                    if(!string.IsNullOrWhiteSpace(TrimMessage(generatedOutput))) {
                                         ChatMessage chatMessage = new()
                                         {
                                             id = Guid.NewGuid(),
@@ -254,7 +254,7 @@ namespace CarpenterApi.Models
                             case UserChatMessagePurpose:
                                 if (purposeData != null)
                                 {
-                                    if(!string.IsNullOrWhitespace(TrimMessage(generatedOutput))) {
+                                    if(!string.IsNullOrWhiteSpace(TrimMessage(generatedOutput))) {
                                         ChatMessage chatMessage = new()
                                         {
                                             id = Guid.NewGuid(),
