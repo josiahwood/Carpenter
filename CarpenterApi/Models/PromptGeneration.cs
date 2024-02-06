@@ -48,8 +48,18 @@ namespace CarpenterApi.Models
             var encoding = Tiktoken.Encoding.Get(Encodings.Cl100KBase);
             string prompt = chatMemory.memory;
 
+            string authorsNote = chatAuthorsNote.ToPrompt();
+
             for (int i = 0; i < chatMessages.Count; i++)
             {
+                if(i == chatMessages.Count - 1)
+                {
+                    if(authorsNote != null)
+                    {
+                        prompt += Environment.NewLine + authorsNote;
+                    }
+                }
+                
                 prompt += Environment.NewLine + chatMessages[i].ToPrompt();
             }
 
@@ -59,13 +69,6 @@ namespace CarpenterApi.Models
                 sender = sender,
                 message = ""
             };
-
-            string authorsNote = chatAuthorsNote.ToPrompt();
-
-            if(authorsNote != null)
-            {
-                prompt += Environment.NewLine + authorsNote;
-            }
 
             prompt += Environment.NewLine + senderPrompt.ToPrompt();
             ChatSummary chatSummary = null;
@@ -112,12 +115,15 @@ namespace CarpenterApi.Models
 
                     for(int i = 0; i < chatMessages.Count; i++)
                     {
+                        if(i == chatMessages.Count - 1)
+                        {
+                            if(authorsNote != null)
+                            {
+                                prompt += Environment.NewLine + authorsNote;
+                            }
+                        }
+                        
                         prompt += Environment.NewLine + chatMessages[i].ToPrompt();
-                    }
-
-                    if (authorsNote != null)
-                    {
-                        prompt += Environment.NewLine + authorsNote;
                     }
 
                     prompt += Environment.NewLine + senderPrompt.ToPrompt();
