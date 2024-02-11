@@ -52,7 +52,7 @@ namespace CarpenterApi.Models
 
             for (int i = 0; i < chatMessages.Count; i++)
             {
-                if(i == chatMessages.Count - 1)
+                if(i == chatMessages.Count - 2)
                 {
                     if(authorsNote != null)
                     {
@@ -115,7 +115,7 @@ namespace CarpenterApi.Models
 
                     for(int i = 0; i < chatMessages.Count; i++)
                     {
-                        if(i == chatMessages.Count - 1)
+                        if(i == chatMessages.Count - 2)
                         {
                             if(authorsNote != null)
                             {
