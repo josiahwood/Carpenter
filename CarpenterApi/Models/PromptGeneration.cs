@@ -32,7 +32,7 @@ namespace CarpenterApi.Models
             TimeZoneInfo cstZone = TimeZoneInfo.FindSystemTimeZoneById("Central Standard Time");
             DateTime cstTime = TimeZoneInfo.ConvertTimeFromUtc(utcTime, cstZone);
 
-            return $"{cstTime:yyyy-MM-dd HH:mm:ss zzz} {chatMessage.sender}: {chatMessage.message}";
+            return $"{cstTime:yyyy-MM-dd HH:mm:ss} {chatMessage.sender}: {chatMessage.message}";
         }
 
         public static string ToPrompt(this ChatSummary chatSummary)
