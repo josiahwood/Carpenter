@@ -27,8 +27,11 @@ namespace CarpenterApi.Models
 
         public static string ToPrompt(this ChatMessage chatMessage)
         {
+            DateTime utcTime = chatMessage.timestamp.ToUniversalTime();
+
             TimeZoneInfo cstZone = TimeZoneInfo.FindSystemTimeZoneById("Central Standard Time");
-            DateTime cstTime = TimeZoneInfo.ConvertTimeFromUtc(chatMessage.timestamp, cstZone);
+            DateTime cstTime = TimeZoneInfo.ConvertTimeFromUtc(utcTime, cstZone);
+
             return $"{cstTime:yyyy-MM-dd HH:mm:ss zzz} {chatMessage.sender}: {chatMessage.message}";
         }
 
