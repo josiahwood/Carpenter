@@ -27,7 +27,9 @@ namespace CarpenterApi.Models
 
         public static string ToPrompt(this ChatMessage chatMessage)
         {
-            return $"{chatMessage.timestamp:yyyy-MM-dd HH:mm:ss zzz} {chatMessage.sender}: {chatMessage.message}";
+            TimeZoneInfo cstZone = TimeZoneInfo.FindSystemTimeZoneById("Central Standard Time");
+            DateTime cstTime = TimeZoneInfo.ConvertTimeFromUtc(chatMessage.timestamp, cstZone);
+            return $"{cstTime:yyyy-MM-dd HH:mm:ss zzz} {chatMessage.sender}: {chatMessage.message}";
         }
 
         public static string ToPrompt(this ChatSummary chatSummary)
