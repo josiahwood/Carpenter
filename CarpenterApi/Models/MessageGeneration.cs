@@ -209,7 +209,11 @@ namespace CarpenterApi.Models
                 catch (ApiException)
                 {
                     status = ErrorStatus;
-                    await ModelInfo.DecrementModelInfo(client, user, model);
+                    
+                    foreach(string m in models)
+                    {
+                        await ModelInfo.DecrementModelInfo(client, user, m);
+                    }
 
                     await Update(client);
                     return;
@@ -231,7 +235,8 @@ namespace CarpenterApi.Models
                             case AIChatMessagePurpose:
                                 if (purposeData != null)
                                 {
-                                    if(!string.IsNullOrWhiteSpace(TrimMessage(generatedOutput))) {
+                                    if (!string.IsNullOrWhiteSpace(TrimMessage(generatedOutput)))
+                                    {
                                         ChatMessage chatMessage = new()
                                         {
                                             id = Guid.NewGuid(),
@@ -242,12 +247,18 @@ namespace CarpenterApi.Models
                                             messageGenerationId = id,
                                             alternateGroupId = parentId
                                         };
-    
+
                                         await chatMessage.Write(client);
                                     }
-                                } else {
+                                }
+                                else
+                                {
                                     status = ErrorStatus;
-                                    await ModelInfo.DecrementModelInfo(client, user, model);
+
+                                    foreach (string m in models)
+                                    {
+                                        await ModelInfo.DecrementModelInfo(client, user, m);
+                                    }    
                                 }
 
                                 break;
@@ -270,7 +281,11 @@ namespace CarpenterApi.Models
                                     }
                                 } else {
                                     status = ErrorStatus;
-                                    await ModelInfo.DecrementModelInfo(client, user, model);
+
+                                    foreach (string m in models)
+                                    {
+                                        await ModelInfo.DecrementModelInfo(client, user, m);
+                                    }
                                 }
 
                                 break;
@@ -319,7 +334,11 @@ namespace CarpenterApi.Models
                     else
                     {
                         status = ErrorStatus;
-                        await ModelInfo.DecrementModelInfo(client, user, model);
+
+                        foreach (string m in models)
+                        {
+                            await ModelInfo.DecrementModelInfo(client, user, m);
+                        }
                     }
 
                     await Update(client);
@@ -333,7 +352,11 @@ namespace CarpenterApi.Models
                         if (DateTime.UtcNow - startTime > TimeSpan.FromMinutes(5))
                         {
                             status = ErrorStatus;
-                            await ModelInfo.DecrementModelInfo(client, user, model);
+
+                            foreach (string m in models)
+                            {
+                                await ModelInfo.DecrementModelInfo(client, user, m);
+                            }
 
                             await Update(client);
                         }
