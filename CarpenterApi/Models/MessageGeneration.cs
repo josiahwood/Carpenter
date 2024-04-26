@@ -209,10 +209,13 @@ namespace CarpenterApi.Models
                 catch (ApiException)
                 {
                     status = ErrorStatus;
-                    
-                    foreach(string m in models)
+
+                    if(models != null)
                     {
-                        await ModelInfo.DecrementModelInfo(client, user, m);
+                        foreach(string m in models)
+                        {
+                            await ModelInfo.DecrementModelInfo(client, user, m);
+                        }
                     }
 
                     await Update(client);
@@ -255,10 +258,13 @@ namespace CarpenterApi.Models
                                 {
                                     status = ErrorStatus;
 
-                                    foreach (string m in models)
+                                    if(models != null)
                                     {
-                                        await ModelInfo.DecrementModelInfo(client, user, m);
-                                    }    
+                                        foreach(string m in models)
+                                        {
+                                            await ModelInfo.DecrementModelInfo(client, user, m);
+                                        }
+                                    } 
                                 }
 
                                 break;
@@ -282,9 +288,12 @@ namespace CarpenterApi.Models
                                 } else {
                                     status = ErrorStatus;
 
-                                    foreach (string m in models)
+                                    if(models != null)
                                     {
-                                        await ModelInfo.DecrementModelInfo(client, user, m);
+                                        foreach(string m in models)
+                                        {
+                                            await ModelInfo.DecrementModelInfo(client, user, m);
+                                        }
                                     }
                                 }
 
@@ -335,9 +344,12 @@ namespace CarpenterApi.Models
                     {
                         status = ErrorStatus;
 
-                        foreach (string m in models)
+                        if(models != null)
                         {
-                            await ModelInfo.DecrementModelInfo(client, user, m);
+                            foreach(string m in models)
+                            {
+                                await ModelInfo.DecrementModelInfo(client, user, m);
+                            }
                         }
                     }
 
@@ -353,9 +365,12 @@ namespace CarpenterApi.Models
                         {
                             status = ErrorStatus;
 
-                            foreach (string m in models)
+                            if(models != null)
                             {
-                                await ModelInfo.DecrementModelInfo(client, user, m);
+                                foreach(string m in models)
+                                {
+                                    await ModelInfo.DecrementModelInfo(client, user, m);
+                                }
                             }
 
                             await Update(client);
