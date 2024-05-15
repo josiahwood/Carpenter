@@ -102,7 +102,7 @@ namespace CarpenterApi.Models
             HttpClient httpClient = new();
             StableHordeApi.Client apiClient = new(httpClient)
             {
-                BaseUrl = "https://stablehorde.net/api"
+                BaseUrl = "https://aihorde.net/api"
             };
 
             var workers = await apiClient.Get_workersAsync(MessageGeneration.ApiKey, null, "text", null);

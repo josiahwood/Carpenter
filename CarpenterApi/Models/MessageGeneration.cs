@@ -147,7 +147,7 @@ namespace CarpenterApi.Models
             HttpClient httpClient = new();
             StableHordeApi.Client apiClient = new(httpClient)
             {
-                BaseUrl = "https://stablehorde.net/api"
+                BaseUrl = "https://aihorde.net/api"
             };
 
             GenerationInputKobold payload = new()
@@ -195,7 +195,7 @@ namespace CarpenterApi.Models
                 HttpClient httpClient = new();
                 StableHordeApi.Client apiClient = new(httpClient)
                 {
-                    BaseUrl = "https://stablehorde.net/api"
+                    BaseUrl = "https://aihorde.net/api"
                 };
 
                 RequestStatusKobold statusResult;

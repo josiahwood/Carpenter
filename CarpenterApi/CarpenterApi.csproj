@@ -6,7 +6,7 @@
   </PropertyGroup>
   <ItemGroup>
     <OpenApiReference Include="OpenAPIs\StableHordeApi.json" CodeGenerator="NSwagCSharp" Namespace="StableHordeApi" Options="$(OpenApiGenerateCodeOptions) /OperationGenerationMode:SingleClientFromOperationId" ClassName="{controller}Client">
-      <SourceUri>https://stablehorde.net/api/swagger.json</SourceUri>
+      <SourceUri>https://aihorde.net/api/swagger.json</SourceUri>
     </OpenApiReference>
   </ItemGroup>
   <ItemGroup>
