@@ -20,7 +20,7 @@ namespace CarpenterApi.Models
             public string instruction;
         }
 
-        public const string ApiKey = "***REMOVED***";
+        public readonly static string ApiKey;
 
         public const string AIChatMessagePurpose = "aiChatMessage";
         public const string UserChatMessagePurpose = "userChatMessage";
@@ -40,6 +40,8 @@ namespace CarpenterApi.Models
         public const int MaxOutputLength = 256;
         public const int SummarizationInputLength = 2048;
         public const int SummarizationOutputLength = 256;
+
+        static MessageGeneration() => ApiKey = Environment.GetEnvironmentVariable("AiHordeKey");
 
         // Identifiers
         public Guid id;
