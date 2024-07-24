@@ -52,7 +52,15 @@ namespace CarpenterApi.Models
         public static async Task<MessageGeneration> NextChatMessageGeneration(CosmosClient client, CarpenterUser user, ChatMemory chatMemory, ChatAuthorsNote chatAuthorsNote, IList<ChatMessage> chatMessages, string sender, int maxTokens)
         {
             var encoding = Tiktoken.Encoding.Get(Encodings.Cl100KBase);
-            string prompt = chatMemory.memory;
+            string prompt;
+
+            if (chatMemory != null)
+            {
+                prompt = chatMemory.memory;
+            } else
+            {
+                prompt = "";
+            }
 
             string authorsNote = chatAuthorsNote.ToPrompt();
 
