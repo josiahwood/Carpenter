@@ -502,6 +502,14 @@ namespace CarpenterApi.Models
                 {
                     break;
                 }
+                else if(line.StartsWith("AI:"))
+                {
+                    break;
+                }
+                else if (line.StartsWith("User:"))
+                {
+                    break;
+                }
                 else
                 {
                     if(!trimmed.IsNullOrWhiteSpace())
