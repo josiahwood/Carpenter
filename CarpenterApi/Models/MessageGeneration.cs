@@ -36,7 +36,7 @@ namespace CarpenterApi.Models
 
         public const string ImEndToken = "<|im_end|>";
 
-        public const int MaxInputLength = 4096;
+        public const int MaxInputLength = 8192;
         public const int MaxOutputLength = 256;
         public const int SummarizationInputLength = 2048;
         public const int SummarizationOutputLength = 256;
